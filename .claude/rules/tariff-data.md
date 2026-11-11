@@ -36,6 +36,9 @@ paths:
   Run `python3 -m scripts.build`, then commit the result with the change that caused it.
 - A change to a country's tax rate is a new dated entry in `vat`, never an edit of a past rate.
 - A country with no rates goes in `unavailable.json` with a reason and the date checked.
+- `holidays` in a country block holds the public holidays by year, with the https `source` they
+  were read from. Take the dates from that page, never from memory or a rule of thumb. Add a
+  year only when it is published. A year that is not listed is refused, not read as no holidays.
 
 ## What never goes in
 
