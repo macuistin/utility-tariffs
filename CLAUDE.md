@@ -7,8 +7,8 @@ in a rule file, not here.
 ## What this is
 
 Open, versioned utility tariff definitions as JSON, the indexes built from them, the scripts that
-sync them from published sources, and a small library that finds, caches and compiles a tariff
-for a bill engine. Electricity is the only service held today. The first user is the GivEnergy
+sync them from published sources, a library that finds, caches and compiles a tariff, and the
+bill engine that prices it. Electricity is the only service held today. The first user is the GivEnergy
 Inverter Manager integration for Home Assistant (`macuistin/givenergy_inverter_manager`).
 
 A tariff file is data. It holds no code and no formulas.
@@ -22,7 +22,7 @@ A tariff file is data. It holds no code and no formulas.
 | `tariffs/electricity/<cc>/index.json` | Country values on top, edited by hand. Then `providers`, generated |
 | `tariffs/electricity/<cc>/<provider>/<tariff>/<n>.json` | One revision of one tariff. Written by hand or by a sync |
 | `lib/tariffstore/` | The format in code: validator (`schema.py`), index build, compile step, layout and the client (`Store`, `FolderCache`). Written here |
-| `lib/tariff/`, `lib/timeutil/` | The bill engine, copied from the integration. Never edited here |
+| `lib/tariff/`, `lib/timeutil/` | The bill engine and its clock helpers: the tariff model, bill maths, bands, half-hourly slots, repricing. Written here. The integration copies all of `lib/` and never edits its copy |
 | `scripts/build.py` | Writes or checks the indexes. The only writer of an index |
 | `scripts/sync/` | The sync: `plan.py`, `apply.py`, `http.py`, and one module per source under `sources/` |
 | `scripts/tools/` | Tools a person runs by hand. Never run by a workflow |
@@ -34,9 +34,11 @@ A tariff file is data. It holds no code and no formulas.
 
 ## Architecture rules
 
-- `lib/tariffstore/` and `scripts/` import only the standard library and each other.
-  `lib/tariffstore/` never imports `lib/tariff/` or `scripts/`. `tests/test_repo_rules.py`
-  enforces both.
+- This repository is the source of truth for all tariff and billing code and calculations.
+  A project that uses it copies `lib/` and changes nothing in the copy.
+- `lib/` and `scripts/` import only the standard library and each other. `lib/tariffstore/`
+  never imports `lib/tariff/` or `scripts/`, and `lib/tariff/` imports only `lib/timeutil/`.
+  `tests/test_repo_rules.py` enforces all of it.
 - There is one way in. Every tariff, typed or synced, passes `validate_tariff` and
   `scripts.build --check`. Do not add a second validator or a second build path.
 - The indexes are derived from the tariff files and nothing else. They hold no timestamps and no
@@ -47,24 +49,24 @@ A tariff file is data. It holds no code and no formulas.
   format cannot express is skipped and reported, never approximated.
 - The update path has no AI and no private machine. A sync is plain Python on a GitHub runner
   and is deterministic given the responses, the stored files and the run date.
-- A new billing structure reaches the engine first, in the integration repository. Then the
+- A new billing structure reaches the engine first, in `lib/tariff/` with its tests. Then the
   format gains the field here, then a real bill is added as a `checks` entry.
 - A client that holds a tariff must be able to price it with no network. Keep everything the
   compile step needs in the tariff file and its country index.
 
 ## Commands
 
-Run from the repository root. Python 3.14 runs everything. An older Python skips the tests that
-need the bill engine, so a green run on an older Python is not a full run.
+Run from the repository root with Python 3.14. The bill engine uses its syntax, so an older
+Python cannot run the suite. The tests need `pytest`, and nothing in `lib/` or `scripts/` does.
 
 ```bash
 python3 -m scripts.build                    # rewrite the indexes after editing a tariff or a country block
 python3 -m scripts.build --check            # validate every file and compare the indexes
 python3 -m scripts.build --check --base origin/main   # also refuse a changed published revision
-python3 -m unittest discover tests          # the whole suite
-python3 -m coverage run -m unittest discover tests && python3 -m coverage report   # CI fails under 98%
+python3 -m pytest tests -q                  # the whole suite
+python3 -m coverage run -m pytest tests -q && python3 -m coverage report   # CI fails under 98%
 python3 -m scripts.sync all --replay DIR    # run the sources from saved responses
-ruff check lib/tariffstore && mypy          # lint and strict types for the copied library
+ruff check lib && mypy && bandit -q -r lib -c .bandit.yaml   # lint, strict types and security for lib/
 ```
 
 Run the build check and the tests before pushing. Say plainly which you ran and on which Python.
@@ -77,7 +79,7 @@ Read the file that matches what you are changing.
 | --- | --- |
 | `.claude/rules/tariff-data.md` | Tariff files, country blocks, revisions, indexes, adding a tariff by hand |
 | `.claude/rules/sync-sources.md` | The sync path, source modules, source notes, fetching |
-| `.claude/rules/library.md` | `lib/tariffstore`, the copied engine, the client and its cache, format changes |
+| `.claude/rules/library.md` | `lib/tariffstore`, the bill engine, the client and its cache, format changes |
 | `.claude/rules/tests.md` | What each test file proves, rules for new tests, coverage |
 | `.claude/rules/workflows.md` | CI and the scheduled sync, permissions, what a workflow may never do |
 | `.claude/rules/docs-and-style.md` | UK English, generic docs, how commits, pull requests and issues are named, branches |

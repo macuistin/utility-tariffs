@@ -1,7 +1,7 @@
 """From the store to a priced bill, the way the Home Assistant integration would do it.
 
-The client finds and checks a tariff and compiles it, the bill engine (lib/tariff, copied from the
-integration) reads the result and prices energy with it. Expected totals are worked by hand here.
+The client finds and checks a tariff and compiles it, the bill engine (lib/tariff) reads the
+result and prices energy with it. Expected totals are worked by hand here.
 The engine uses Python 3.14 syntax, so these are skipped on an older Python.
 """
 from __future__ import annotations

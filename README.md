@@ -12,7 +12,7 @@ is a JSON document. No tariff contains code or formulas.
 | `tariffs/electricity/<cc>/index.json` | One country: its shared values at the top (currency, time zone, VAT, standard bill), edited by hand, then `providers`, the tariff collection, generated. Holds no prices |
 | `tariffs/electricity/<cc>/<provider>/<tariff>/<n>.json` | One revision of one tariff: name, provider, dates, source, bands, one row of rates per area |
 | `lib/tariffstore/` | The format in code: validator, checksum, index build, compile step and the client. Standard library only. Scripts and clients share it |
-| `lib/tariff/` | The bill engine, copied from the Home Assistant integration. See `lib/README.md` |
+| `lib/tariff/`, `lib/timeutil/` | The bill engine: the tariff model, bill maths, bands, half-hourly slots and repricing. Written here, and copied by the projects that use it. See `lib/README.md` |
 | `scripts/` | `build` (write or check the indexes) and `sync` (read the sources). See `scripts/README.md` |
 | `sources/` | One note per upstream source: what it covers, how it is read, how often |
 | `.github/workflows/` | `ci.yml` checks every change. `sync.yml` runs the sources on a schedule and opens a pull request |
@@ -72,7 +72,7 @@ definition = store.custom_definition("IE", mine, date.today())
     python3 -m scripts.build             # rewrite the indexes after editing a tariff or a country block
     python3 -m scripts.build --check     # what CI runs
     python3 -m scripts.sync all          # read every source and write new revisions
-    python3 -m unittest discover tests   # Python 3.14 runs everything; older skips the engine tests
+    python3 -m pytest tests -q           # needs Python 3.14 and pytest
 
 ## Licence
 
