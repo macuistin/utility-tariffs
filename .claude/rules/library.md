@@ -19,7 +19,7 @@ paths:
 
 - Standard library only. No import of `lib.tariff`, `scripts` or anything installed with pip. It
   is written to be copied into another project as it stands.
-- It passes `ruff check lib/tariffstore` and `mypy` with the settings in `pyproject.toml`: strict
+- It passes `ruff check lib/tariffstore`, `mypy` and `bandit -r lib/tariffstore` with the settings in `pyproject.toml`: strict
   types, lines to 100, a function to complexity 8 and four arguments. They are the limits of the
   integration that copies it. CI runs both. A `# noqa` needs a reason a reviewer would accept;
   the three public functions that take a country, provider, tariff and date carry one.
