@@ -1,7 +1,8 @@
 """Great Britain: Octopus Energy import and export tariffs from its public product API.
 
-Import: single-register electricity only, one area per distribution region. Dual register,
-half-hourly, time of use and restricted products are skipped and listed. Export: flat and
+Import: single-register electricity only, one area per distribution region, at the monthly
+direct debit price. Dual register, half-hourly, time of use and restricted products are skipped
+and listed, and so is any other payment method whose price differs. Export: flat and
 fixed-time-band products only. Prices are pence on the API and pounds in the files.
 The API gives no start date for an import price, so a changed price is dated by the run.
 """
@@ -23,6 +24,8 @@ API = "https://api.octopus.energy/v1"
 PRODUCTS = ("VAR-22-11-01", "OE-FIX-12M-26-11-09", "OE-FIX-18M-26-11-09")
 EXPORT_PRODUCTS = ("OUTGOING-VAR-24-10-26", "OUTGOING-SEG-FIX-12M-20-07-07",
                    "OUTGOING-SEG-FIX-12M-26-10-21", "OUTGOING-PRIME-FIX-12M-26-06-23")
+# The payment method held. A product lists a price for each method it can be paid by.
+PAYMENT = "direct_debit_monthly"
 LONDON = ZoneInfo("Europe/London")
 MIN_SHARE = Decimal("0.05")  # a band seen on fewer than this share of rows is an edge row
 MAX_RATE_PAGES = 5
@@ -53,6 +56,17 @@ def _plan(product: dict, **fields) -> Plan:
                 source_url=f"{API}/products/{code}/", **fields)
 
 
+def _held(methods: dict) -> dict | None:
+    """The price held for a region: monthly direct debit, or the only method there is."""
+    if PAYMENT in methods:
+        return methods[PAYMENT]
+    return next(iter(methods.values())) if len(methods) == 1 else None
+
+
+def _prices(tariff: dict) -> tuple:
+    return tariff["standard_unit_rate_inc_vat"], tariff["standing_charge_inc_vat"]
+
+
 def import_plan(product: dict, today: str) -> tuple[Plan | None, list[str]]:
     """One plan with an area per region, and what was skipped."""
     code = product["code"]
@@ -62,15 +76,22 @@ def import_plan(product: dict, today: str) -> tuple[Plan | None, list[str]]:
     if product["dual_register_electricity_tariffs"]:
         skipped.append(f"{code}: dual register (Economy 7 hours are set by the meter, not the API)")
     areas = {}
+    others: set[str] = set()
     for region_key, methods in sorted(product["single_register_electricity_tariffs"].items()):
         letter = region_key.strip("_").lower()
-        tariff = list(methods.values())[-1]
+        tariff = _held(methods)
+        if tariff is None:
+            return None, skipped + [f"{code}: region {letter.upper()} has no {PAYMENT} price and "
+                                    f"lists {', '.join(sorted(methods))}"]
+        others |= {name for name, other in methods.items() if _prices(other) != _prices(tariff)}
         areas[letter] = Area(rates={"Single rate": pounds(tariff["standard_unit_rate_inc_vat"])},
                              standing=pounds(tariff["standing_charge_inc_vat"]),
                              label=f"{GSP_NAMES[letter]} ({letter.upper()})",
                              region=f"GSP-{letter.upper()}")
     if not areas:
         return None, skipped + [f"{code}: no single-register electricity tariff"]
+    if others:
+        skipped.append(f"{code}: prices for {', '.join(sorted(others))} differ and are not held")
     start = (product.get("tariffs_active_at") or "")[:10] or today
     return _plan(product, effective_from=start, dated=False, bands=[{"name": "Single rate"}],
                  areas=areas), skipped

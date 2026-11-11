@@ -34,5 +34,7 @@ read, so its `effective_from` is the date the rate was fetched.
 
 ## Import products
 
-Where a product lists several payment methods, the sync takes the last one listed. Rates by payment
-method are not held separately yet.
+A product lists a price for each payment method it can be paid by. The sync holds the monthly
+direct debit price (`direct_debit_monthly`). Where another method's price differs, the run report
+lists it as not held. A product that lists one method only is held at that price. A region that
+has several methods and no monthly direct debit price makes the sync skip the product and say so.
