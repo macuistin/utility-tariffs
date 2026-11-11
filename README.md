@@ -18,6 +18,7 @@ is a JSON document. No tariff contains code or formulas.
 | `.github/workflows/` | `ci.yml` checks every change. `sync.yml` runs the sources on a schedule and opens a pull request |
 | `docs/` | `format.md` (the files), `design.md` (why it is this way, what runs where, what is not built) |
 | `tests/` | Tests for the library, the scripts and every stored tariff |
+| `CONTRIBUTING.md`, `CLAUDE.md`, `.claude/rules/` | How to change the store, how things are named, and the rules for AI assistants (`AGENTS.md` is the same file) |
 
 ## Rules
 
