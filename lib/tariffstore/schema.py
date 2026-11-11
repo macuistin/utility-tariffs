@@ -10,6 +10,7 @@ import hashlib
 import json
 import re
 from datetime import date
+from typing import Any
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 DECIMAL = re.compile(r"^-?\d+(\.\d+)?$")
@@ -40,6 +41,10 @@ NODE_FIELDS = {
     "sum": {"kind", "of", "round"},
 }
 MAX_DEPTH = 8
+OPEN = "9999-12-31"
+COUNTRY_REQUIRED = ("country", "currency", "timezone", "vat_percent", "bill")
+AREA_FIELDS = {"label", "region", "standing", "rates"}
+Doc = dict[str, Any]
 
 
 def canonical(doc: object) -> bytes:
@@ -80,6 +85,20 @@ def _date(value: object, field: str, errors: list[str]) -> None:
         errors.append(f"{field}: not an ISO date")
 
 
+def _children(node: Doc, path: str, depth: int, errors: list[str]) -> None:
+    kind = node["kind"]
+    if kind in ("adjust", "tax"):
+        _node(node.get("of"), f"{path}.of", depth + 1, errors)
+    if kind != "sum":
+        return
+    children = node.get("of")
+    if not isinstance(children, dict) or not children:
+        errors.append(f"{path}.of: sum needs one or more named children")
+        return
+    for name, child in children.items():
+        _node(child, f"{path}.of.{name}", depth + 1, errors)
+
+
 def _node(node: object, path: str, depth: int, errors: list[str]) -> None:
     if depth > MAX_DEPTH:
         errors.append(f"{path}: tree too deep")
@@ -88,26 +107,17 @@ def _node(node: object, path: str, depth: int, errors: list[str]) -> None:
         errors.append(f"{path}: unknown node kind")
         return
     kind = node["kind"]
-    for key in node:
-        if key not in NODE_FIELDS[kind]:
-            errors.append(f"{path}.{key}: not allowed on {kind}")
+    errors += [f"{path}.{key}: not allowed on {kind}" for key in node
+               if key not in NODE_FIELDS[kind]]
     for key in ("amount", "percent"):
         if key in node:
             _number(node[key], f"{path}.{key}", errors)
     if kind == "tax" and node.get("mode") not in ("added", "included"):
         errors.append(f"{path}.mode: must be added or included")
-    if kind in ("adjust", "tax"):
-        _node(node.get("of"), f"{path}.of", depth + 1, errors)
-    if kind == "sum":
-        children = node.get("of")
-        if not isinstance(children, dict) or not children:
-            errors.append(f"{path}.of: sum needs one or more named children")
-        else:
-            for name, child in children.items():
-                _node(child, f"{path}.of.{name}", depth + 1, errors)
+    _children(node, path, depth, errors)
 
 
-def _band_window(band: dict, where: str, errors: list[str]) -> None:
+def _band_window(band: Doc, where: str, errors: list[str]) -> None:
     """When a band after the first applies: hours every time, and optionally days and months."""
     hours = str(band.get("hours"))
     if not HOURS.match(hours) or hours[:5] == hours[6:]:
@@ -137,18 +147,21 @@ def _timezone(value: object, field: str, errors: list[str]) -> None:
         errors.append(f"{field}: not an IANA time zone")
 
 
+def _period(period: object, errors: list[str]) -> None:
+    if not isinstance(period, dict) or period.get("rule") != "monthly":
+        errors.append("bill.period: rule must be monthly")
+        return
+    start = period.get("start_day")
+    if not (isinstance(start, int) or (isinstance(start, str) and REF.match(start))):
+        errors.append("bill.period.start_day: must be a day number or a reference")
+
+
 def _bill(bill: object, errors: list[str]) -> None:
     if not isinstance(bill, dict) or "total" not in bill or set(bill) - {"period", "total"}:
         errors.append("bill: needs total and optional period")
         return
-    period = bill.get("period")
-    if period is not None:
-        if not isinstance(period, dict) or period.get("rule") != "monthly":
-            errors.append("bill.period: rule must be monthly")
-        else:
-            start = period.get("start_day")
-            if not (isinstance(start, int) or (isinstance(start, str) and REF.match(start))):
-                errors.append("bill.period.start_day: must be a day number or a reference")
+    if bill.get("period") is not None:
+        _period(bill["period"], errors)
     _node(bill["total"], "bill.total", 0, errors)
 
 
@@ -162,22 +175,12 @@ def _inputs(inputs: object, errors: list[str]) -> None:
             errors.append(f"inputs.{name}: needs type integer, min, max and default")
 
 
-def validate_tariff(doc: object) -> list[str]:
-    """Refusals for a tariff file, each naming the field. Empty means valid."""
-    errors: list[str] = []
-    if not isinstance(doc, dict):
-        return ["document: must be an object"]
-    for key in TARIFF_REQUIRED - doc.keys():
-        errors.append(f"{key}: missing")
-    for key in doc.keys() - TARIFF_REQUIRED - TARIFF_OPTIONAL:
-        errors.append(f"{key}: not allowed")
-    if errors:
-        return sorted(errors)
+def _header(doc: Doc, errors: list[str]) -> None:
+    """The fields that say what the tariff is and where it came from."""
     if doc["schema"] != 1:
         errors.append("schema: must be 1")
-    for key in ("name", "provider"):
-        if not doc[key] or not isinstance(doc[key], str):
-            errors.append(f"{key}: must be text")
+    errors += [f"{key}: must be text" for key in ("name", "provider")
+               if not doc[key] or not isinstance(doc[key], str)]
     _source(doc["source"], errors)
     if "service" in doc:
         errors.append("service: electricity is the default and no other service is priced yet")
@@ -185,55 +188,77 @@ def validate_tariff(doc: object) -> list[str]:
         errors.append("customer_class: write it only when commercial")
     if "timezone" in doc:
         _timezone(doc["timezone"], "timezone", errors)
-    _date(doc["effective_from"], "effective_from", errors)
-    if doc.get("effective_to") is not None:
-        _date(doc["effective_to"], "effective_to", errors)
-        if str(doc["effective_to"]) <= str(doc["effective_from"]):
-            errors.append("effective_to: must be after effective_from")
     if doc.get("direction", "import") not in ("import", "export"):
         errors.append("direction: must be export when present")
     if doc.get("prices_include_tax", False) is not False:
         errors.append("prices_include_tax: write it only when false")
-    bands = doc["bands"]
+
+
+def _dates(doc: Doc, errors: list[str]) -> None:
+    _date(doc["effective_from"], "effective_from", errors)
+    if doc.get("effective_to") is None:
+        return
+    _date(doc["effective_to"], "effective_to", errors)
+    if str(doc["effective_to"]) <= str(doc["effective_from"]):
+        errors.append("effective_to: must be after effective_from")
+
+
+def _bands(bands: object, errors: list[str]) -> list[str]:
+    """Check the bands and return their names, which every area must price."""
     names: list[str] = []
     if not isinstance(bands, list) or not bands:
         errors.append("bands: needs at least one band")
-    else:
-        for i, band in enumerate(bands):
-            if not isinstance(band, dict) or not band.get("name") or set(band) - BAND_FIELDS:
-                errors.append(f"bands[{i}]: needs name and, after the first, hours")
-                continue
-            names.append(band["name"])
-            if i == 0 and len(band) > 1:
-                errors.append("bands[0]: the first band is the base and has only a name")
-            if i > 0:
-                _band_window(band, f"bands[{i}]", errors)
-        if len(set(names)) != len(names):
-            errors.append("bands: names must be unique")
-    is_export = doc.get("direction") == "export"
-    areas = doc["areas"]
+        return names
+    for i, band in enumerate(bands):
+        if not isinstance(band, dict) or not band.get("name") or set(band) - BAND_FIELDS:
+            errors.append(f"bands[{i}]: needs name and, after the first, hours")
+            continue
+        names.append(band["name"])
+        if i == 0 and len(band) > 1:
+            errors.append("bands[0]: the first band is the base and has only a name")
+        if i > 0:
+            _band_window(band, f"bands[{i}]", errors)
+    if len(set(names)) != len(names):
+        errors.append("bands: names must be unique")
+    return names
+
+
+def _rates(rates: object, where: str, names: list[str], errors: list[str]) -> None:
+    if not isinstance(rates, dict) or set(rates) != set(names):
+        errors.append(f"{where}.rates: must price exactly the bands {names}")
+        return
+    for band, price in rates.items():
+        _price(price, f"{where}.rates.{band}", errors)
+
+
+def _area(key: object, row: object, tariff: tuple[list[str], bool], errors: list[str]) -> None:
+    """One area row. `tariff` is the band names and whether the file is an export."""
+    names, is_export = tariff
+    where = f"areas.{key}"
+    if not SLUG.match(str(key)) or not isinstance(row, dict):
+        errors.append(f"{where}: key must be a slug and the row an object")
+        return
+    if set(row) - AREA_FIELDS:
+        errors.append(f"{where}: only label, region, standing and rates are allowed")
+    if key != "all" and not row.get("label"):
+        errors.append(f"{where}.label: missing")
+    if is_export and "standing" in row:
+        errors.append(f"{where}.standing: an export has no standing charge")
+    if not is_export:
+        _price(row.get("standing"), f"{where}.standing", errors)
+    _rates(row.get("rates"), where, names, errors)
+
+
+def _areas(areas: object, tariff: tuple[list[str], bool], errors: list[str]) -> None:
     if not isinstance(areas, dict) or not areas:
         errors.append("areas: needs at least one area")
-    else:
-        for key, row in areas.items():
-            where = f"areas.{key}"
-            if not SLUG.match(str(key)) or not isinstance(row, dict):
-                errors.append(f"{where}: key must be a slug and the row an object")
-                continue
-            if set(row) - {"label", "region", "standing", "rates"}:
-                errors.append(f"{where}: only label, region, standing and rates are allowed")
-            if key != "all" and not row.get("label"):
-                errors.append(f"{where}.label: missing")
-            if is_export and "standing" in row:
-                errors.append(f"{where}.standing: an export has no standing charge")
-            if not is_export:
-                _price(row.get("standing"), f"{where}.standing", errors)
-            rates = row.get("rates")
-            if not isinstance(rates, dict) or set(rates) != set(names):
-                errors.append(f"{where}.rates: must price exactly the bands {names}")
-            else:
-                for band, price in rates.items():
-                    _price(price, f"{where}.rates.{band}", errors)
+        return
+    for key, row in areas.items():
+        _area(key, row, tariff, errors)
+
+
+def _extras(doc: Doc, errors: list[str], *, is_export: bool) -> None:
+    """The optional parts: a bill of its own, inputs, checks and a paired export."""
     if "bill" in doc:
         _bill(doc["bill"], errors)
         if is_export:
@@ -242,20 +267,54 @@ def validate_tariff(doc: object) -> list[str]:
         _inputs(doc["inputs"], errors)
     if "checks" in doc and not isinstance(doc["checks"], dict):
         errors.append("checks: must be an object")
-    if "export" in doc:
-        if is_export or not EXPORT_REF.match(str(doc["export"])):
-            errors.append("export: an import file may name one export file as provider-id/tariff-id")
+    if "export" in doc and (is_export or not EXPORT_REF.match(str(doc["export"]))):
+        errors.append("export: an import file may name one export file as provider-id/tariff-id")
+
+
+def validate_tariff(doc: object) -> list[str]:
+    """Refusals for a tariff file, each naming the field. Empty means valid."""
+    if not isinstance(doc, dict):
+        return ["document: must be an object"]
+    errors = [f"{key}: missing" for key in TARIFF_REQUIRED - doc.keys()]
+    errors += [f"{key}: not allowed" for key in doc.keys() - TARIFF_REQUIRED - TARIFF_OPTIONAL]
+    if errors:
+        return sorted(errors)
+    is_export = doc.get("direction") == "export"
+    _header(doc, errors)
+    _dates(doc, errors)
+    names = _bands(doc["bands"], errors)
+    _areas(doc["areas"], (names, is_export), errors)
+    _extras(doc, errors, is_export=is_export)
     return sorted(errors)
+
+
+def _vat(vat: object, errors: list[str]) -> None:
+    """One rate, or a list of rates with the dates each applies."""
+    if not isinstance(vat, list):
+        _price(vat, "vat_percent", errors)
+        return
+    for i, entry in enumerate(vat):
+        dated = entry if isinstance(entry, dict) else {}
+        _price(dated.get("percent"), f"vat_percent[{i}].percent", errors)
+        for key in ("effective_from", "effective_to"):
+            if key in dated:
+                _date(dated[key], f"vat_percent[{i}].{key}", errors)
+
+
+def _availability(block: Doc, errors: list[str]) -> None:
+    availability = block.get("availability", "available")
+    if availability not in ("available", "partial"):
+        errors.append("availability: a country with tariff files is available or partial")
+    reason = block.get("reason")
+    if availability == "partial" and not (isinstance(reason, str) and reason.strip()):
+        errors.append("reason: a partial country says what is missing")
 
 
 def validate_country(block: object) -> list[str]:
     """Refusals for the hand-maintained top block of a country index."""
-    errors: list[str] = []
     if not isinstance(block, dict):
         return ["country block: must be an object"]
-    for key in ("country", "currency", "timezone", "vat_percent", "bill"):
-        if key not in block:
-            errors.append(f"{key}: missing")
+    errors = [f"{key}: missing" for key in COUNTRY_REQUIRED if key not in block]
     if errors:
         return errors
     if not re.match(r"^[A-Z]{2}$", str(block["country"])):
@@ -263,26 +322,13 @@ def validate_country(block: object) -> list[str]:
     if not re.match(r"^[A-Z]{3}$", str(block["currency"])):
         errors.append("currency: must be an ISO 4217 code")
     _timezone(block["timezone"], "timezone", errors)
-    vat = block["vat_percent"]
-    if isinstance(vat, list):
-        for i, entry in enumerate(vat):
-            _price(entry.get("percent") if isinstance(entry, dict) else None,
-                   f"vat_percent[{i}].percent", errors)
-            for key in ("effective_from", "effective_to"):
-                if isinstance(entry, dict) and key in entry:
-                    _date(entry[key], f"vat_percent[{i}].{key}", errors)
-    else:
-        _price(vat, "vat_percent", errors)
+    _vat(block["vat_percent"], errors)
     for key in block.keys() - COUNTRY_RESERVED:
         _price(block[key], key, errors)
     _bill(block["bill"], errors)
     if "inputs" in block:
         _inputs(block["inputs"], errors)
-    availability = block.get("availability", "available")
-    if availability not in ("available", "partial"):
-        errors.append("availability: a country with tariff files is available or partial")
-    if availability == "partial" and not (isinstance(block.get("reason"), str) and block["reason"].strip()):
-        errors.append("reason: a partial country says what is missing")
+    _availability(block, errors)
     return errors
 
 
@@ -305,16 +351,16 @@ def validate_unavailable(doc: object) -> list[str]:
     return errors
 
 
-def vat_on(block: dict, on: str) -> str | None:
+def vat_on(block: Doc, on: str) -> str | None:
     """The VAT rate in force on an ISO date, or None when no entry covers it.
 
     Later entries win, so an undated first entry is the fallback and a dated entry after it is a
     temporary change that ends and hands back to the fallback."""
     vat = block["vat_percent"]
     if not isinstance(vat, list):
-        return vat
-    found = None
+        return str(vat)
+    found: str | None = None
     for entry in vat:
-        if entry.get("effective_from", "0000-01-01") <= on < entry.get("effective_to", "9999-12-31"):
+        if entry.get("effective_from", "0000-01-01") <= on < entry.get("effective_to", OPEN):
             found = entry["percent"]
     return found

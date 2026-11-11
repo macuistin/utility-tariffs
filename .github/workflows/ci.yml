@@ -36,6 +36,11 @@ jobs:
           else
             python -m scripts.build --check
           fi
+      - name: Lint and types for the library that other projects copy
+        run: |
+          python -m pip install --quiet "ruff==0.*" "mypy==2.*"
+          ruff check lib/tariffstore
+          mypy
       - name: Tests with coverage
         run: |
           python -m pip install --quiet "coverage==7.*"

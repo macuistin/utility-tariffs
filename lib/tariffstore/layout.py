@@ -6,6 +6,7 @@ a checksum, which sorts keys itself.
 from __future__ import annotations
 
 import json
+from typing import Any
 
 INDEX_FIRST = ("schema", "country", "currency", "timezone", "vat_percent", "availability", "reason",
                "inputs", "bill")
@@ -14,11 +15,11 @@ TARIFF_FIRST = ("schema", "name", "provider", "service", "customer_class", "dire
 TARIFF_LAST = ("bands", "areas")
 
 
-def _sorted(value):
+def _sorted(value: object) -> Any:
     return json.loads(json.dumps(value, sort_keys=True))
 
 
-def dumps(doc: dict, first: tuple = (), last: tuple = ()) -> str:
+def dumps(doc: dict[str, Any], first: tuple[str, ...] = (), last: tuple[str, ...] = ()) -> str:
     head = [k for k in first if k in doc]
     tail = [k for k in last if k in doc]
     middle = sorted(k for k in doc if k not in head and k not in tail)
@@ -26,13 +27,13 @@ def dumps(doc: dict, first: tuple = (), last: tuple = ()) -> str:
                       ensure_ascii=False) + "\n"
 
 
-def dumps_index(doc: dict) -> str:
+def dumps_index(doc: dict[str, Any]) -> str:
     return dumps(doc, first=INDEX_FIRST, last=("providers",))
 
 
-def dumps_root(doc: dict) -> str:
+def dumps_root(doc: dict[str, Any]) -> str:
     return dumps(doc, first=("schema",), last=("countries",))
 
 
-def dumps_tariff(doc: dict) -> str:
+def dumps_tariff(doc: dict[str, Any]) -> str:
     return dumps(doc, first=TARIFF_FIRST, last=TARIFF_LAST)
