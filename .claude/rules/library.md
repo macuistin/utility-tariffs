@@ -19,6 +19,10 @@ paths:
 
 - Standard library only. No import of `lib.tariff`, `scripts` or anything installed with pip. It
   is written to be copied into another project as it stands.
+- It passes `ruff check lib/tariffstore` and `mypy` with the settings in `pyproject.toml`: strict
+  types, lines to 100, a function to complexity 8 and four arguments. They are the limits of the
+  integration that copies it. CI runs both. A `# noqa` needs a reason a reviewer would accept;
+  the three public functions that take a country, provider, tariff and date carry one.
 - `schema.py` is the one definition of the format. The sync, the build, the client and the tests
   all call it. A rule that exists only in a script or a test is a bug.
 - A validator returns a list of refusals, each naming the field. It never repairs a value.

@@ -30,7 +30,7 @@ from pathlib import Path
 
 from .compile import CompileError, compile_area
 from .index import SCHEMA, block_of
-from .schema import checksum, validate_country, validate_tariff
+from .schema import Doc, checksum, validate_country, validate_tariff
 
 OPEN = "9999-12-31"
 USER_AGENT = "tariffstore-client/1"
@@ -55,9 +55,11 @@ def url_reader(base: str, timeout: float = 30) -> Callable[[str], bytes]:
         raise ValueError("the store is read over https only")
 
     def read(path: str) -> bytes:
-        request = urllib.request.Request(f"{base.rstrip('/')}/{path}", headers={"User-Agent": USER_AGENT})
+        request = urllib.request.Request(f"{base.rstrip('/')}/{path}",
+                                         headers={"User-Agent": USER_AGENT})
         with urllib.request.urlopen(request, timeout=timeout) as response:
-            return response.read()
+            body: bytes = response.read()
+        return body
     return read
 
 
@@ -129,8 +131,8 @@ class Store:
         self._read = read
         self._cache = cache if cache is not None else MemoryCache()
         self._max_age = max_age
-        self._root: dict | None = None
-        self._countries: dict[str, dict] = {}
+        self._root: Doc | None = None
+        self._countries: dict[str, Doc] = {}
         self._forced = False
         self.offline = False
 
@@ -139,7 +141,7 @@ class Store:
         """A store read from an https address, with a cache in `folder`."""
         return cls(url_reader(base), FolderCache(folder), max_age=max_age)
 
-    def _parsed(self, path: str, raw: bytes) -> dict:
+    def _parsed(self, path: str, raw: bytes) -> Doc:
         try:
             doc = json.loads(raw)
         except ValueError as error:
@@ -154,17 +156,18 @@ class Store:
         except OSError as error:
             raise StoreError(f"{path}: cannot be read ({error})") from error
 
-    def _checked(self, path: str, wanted: str) -> dict:
+    def _checked(self, path: str, wanted: str) -> Doc:
         """The file at `path` whose checksum is `wanted`: from the cache when it holds that very
         file, else from the store, and then kept."""
         held = self._cache.get(path)
         if held is not None:
+            kept: Doc | None
             try:
-                doc = self._parsed(path, held)
+                kept = self._parsed(path, held)
             except StoreError:
-                doc = None
-            if doc is not None and checksum(doc) == wanted:
-                return doc
+                kept = None
+            if kept is not None and checksum(kept) == wanted:
+                return kept
         raw = self._fetch(path)
         doc = self._parsed(path, raw)
         if checksum(doc) != wanted:
@@ -172,7 +175,7 @@ class Store:
         self._cache.put(path, raw)
         return doc
 
-    def _read_root(self) -> dict:
+    def _read_root(self) -> Doc:
         held, age = self._cache.get(ROOT), self._cache.age(ROOT)
         if held is not None and not self._forced and age is not None and age <= self._max_age:
             return self._parsed(ROOT, held)
@@ -197,16 +200,17 @@ class Store:
 
     # Finding
 
-    def countries(self) -> dict[str, dict]:
+    def countries(self) -> dict[str, Doc]:
         """{country code: {availability, reason, providers, tariffs}} for every country listed."""
         if self._root is None:
             root = self._read_root()
             if root.get("schema") != SCHEMA or not isinstance(root.get("countries"), dict):
                 raise StoreError(f"index.json: not a schema {SCHEMA} countries index")
             self._root = root
-        return self._root["countries"]
+        countries: dict[str, Doc] = self._root["countries"]
+        return countries
 
-    def country(self, code: str) -> dict:
+    def country(self, code: str) -> Doc:
         """The country's index, checked against the countries index: its values and its tariffs."""
         code = code.upper()
         if code not in self._countries:
@@ -232,7 +236,7 @@ class Store:
                 if t.get("direction", "import") == direction
                 and (on is None or _in_force(t, on) is not None)}
 
-    def revision(self, code: str, provider: str, tariff: str, on: date) -> tuple[int, dict]:
+    def revision(self, code: str, provider: str, tariff: str, on: date) -> tuple[int, Doc]:
         """(revision number, its index entry) in force on a day."""
         try:
             entry = self.country(code)["providers"][provider]["tariffs"][tariff]
@@ -245,8 +249,9 @@ class Store:
 
     # Fetching
 
-    def tariff(self, code: str, provider: str, tariff: str, on: date) -> tuple[int, dict]:
-        """(revision number, tariff file) in force on a day. The file is checksum-checked and valid."""
+    def tariff(self, code: str, provider: str, tariff: str, on: date) -> tuple[int, Doc]:
+        """(revision number, tariff file) in force on a day, checked against its checksum and
+        valid."""
         number, entry = self.revision(code, provider, tariff, on)
         path = f"{code.lower()}/{provider}/{tariff}/{number}.json"
         doc = self._checked(path, entry["checksum"])
@@ -275,8 +280,16 @@ class Store:
         _, doc = self.tariff(code, provider, tariff, on)
         return {key: row.get("label", doc["name"]) for key, row in doc["areas"].items()}
 
-    def definition(self, code: str, provider: str, tariff: str, on: date, *,
-                   area: str = "all", export: str | None = None) -> dict:
+    def _export_file(self, code: str, target: str, on: date) -> Doc:
+        """The stored export tariff named `provider-id/tariff-id`."""
+        provider, _, tariff = target.partition("/")
+        doc = self.tariff(code, provider, tariff, on)[1]
+        if doc.get("direction") != "export":
+            raise StoreError(f"{target}: not an export tariff")
+        return doc
+
+    def definition(self, code: str, provider: str, tariff: str, on: date, *,  # noqa: PLR0913
+                   area: str = "all", export: str | None = None) -> Doc:
         """The engine's definition for one area of a tariff on a day.
 
         `export` names an export tariff as `provider-id/tariff-id` to pay for exported energy. Left
@@ -286,12 +299,8 @@ class Store:
         if doc.get("direction") == "export":
             raise StoreError(f"{provider}/{tariff}: an export tariff is paired with an import "
                              "tariff, it has no bill of its own")
-        export_file = None
         target = export or doc.get("export")
-        if target:
-            export_file = self.tariff(code, *target.split("/"), on)[1]
-            if export_file.get("direction") != "export":
-                raise StoreError(f"{target}: not an export tariff")
+        export_file = self._export_file(code, target, on) if target else None
         _, entry = self.revision(code, provider, tariff, on)
         meta = {"country": code, "provider": provider, "tariff": tariff, "revision": number,
                 "effective_to": entry["effective_to"]}
@@ -300,8 +309,21 @@ class Store:
 
     # A tariff the store does not hold
 
-    def custom_definition(self, code: str, doc: dict, on: date, *, area: str = "all",
-                          export: str | dict | None = None, block: dict | None = None) -> dict:
+    def _custom_export(self, code: str, export: str | Doc | None, on: date) -> Doc | None:
+        if export is None:
+            return None
+        if isinstance(export, str):
+            provider, _, tariff = export.partition("/")
+            found = self.tariff(code, provider, tariff, on)[1]
+        else:
+            found = _custom(export)
+        if found.get("direction") != "export":
+            raise StoreError("custom tariff: the export given is not an export tariff")
+        return found
+
+    def custom_definition(self, code: str, doc: Doc, on: date, *,  # noqa: PLR0913
+                          area: str = "all", export: str | Doc | None = None,
+                          block: Doc | None = None) -> Doc:
         """The engine's definition for a tariff the caller supplies, written like a tariff file.
 
         The country's currency, time zone, tax and standard bill come from the store, so the
@@ -312,18 +334,13 @@ class Store:
         code = code.upper()
         doc = _custom(doc)
         if doc.get("direction") == "export":
-            raise StoreError("custom tariff: pass an export tariff as `export`, with an import tariff")
+            raise StoreError("custom tariff: pass an export tariff as `export`, with an import "
+                             "tariff")
         if block is None:
             block = block_of(self.country(code))
         else:
             _refuse("custom country", validate_country(block))
-        export_file = export
-        if isinstance(export, str):
-            export_file = self.tariff(code, *export.split("/"), on)[1]
-        elif export is not None:
-            export_file = _custom(export)
-        if export_file is not None and export_file.get("direction") != "export":
-            raise StoreError("custom tariff: the export given is not an export tariff")
+        export_file = self._custom_export(code, export, on)
         meta = {"country": code, "provider": CUSTOM, "tariff": CUSTOM, "revision": 1,
                 "effective_to": doc.get("effective_to")}
         try:
@@ -341,7 +358,7 @@ def _refuse(what: str, errors: list[str]) -> None:
         raise StoreError(f"{what}: " + "; ".join(errors))
 
 
-def _custom(doc: dict) -> dict:
+def _custom(doc: Doc) -> Doc:
     """A supplied tariff with the fields a person need not type filled in, then validated."""
     if not isinstance(doc, dict):
         raise StoreError("custom tariff: not a JSON object")
@@ -350,7 +367,7 @@ def _custom(doc: dict) -> dict:
     return full
 
 
-def _in_force(entry: dict, on: date) -> int | None:
+def _in_force(entry: Doc, on: date) -> int | None:
     day = on.isoformat()
     for number, revision in entry["revisions"].items():
         if revision["effective_from"] <= day < (revision["effective_to"] or OPEN):

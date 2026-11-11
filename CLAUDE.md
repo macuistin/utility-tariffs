@@ -64,6 +64,7 @@ python3 -m scripts.build --check --base origin/main   # also refuse a changed pu
 python3 -m unittest discover tests          # the whole suite
 python3 -m coverage run -m unittest discover tests && python3 -m coverage report   # CI fails under 98%
 python3 -m scripts.sync all --replay DIR    # run the sources from saved responses
+ruff check lib/tariffstore && mypy          # lint and strict types for the copied library
 ```
 
 Run the build check and the tests before pushing. Say plainly which you ran and on which Python.
