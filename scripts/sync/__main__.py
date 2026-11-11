@@ -3,6 +3,7 @@
     python3 -m scripts.sync <source> [<source> ...] [--date YYYY-MM-DD] [--report FILE]
                                                     [--record DIR | --replay DIR]
     python3 -m scripts.sync all
+    python3 -m scripts.sync all --list              # the sources it would run, as JSON, and stop
 
 `all` is the scheduled sources. A source that is run by hand is only run when it is named.
 
@@ -14,6 +15,7 @@ changed, what was skipped and what to look at. It is the body of the pull reques
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -84,17 +86,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--report", type=Path, help="also write the report to this file")
     parser.add_argument("--record", type=Path, help="save every response in this folder")
     parser.add_argument("--replay", type=Path, help="answer from this folder, no network")
+    parser.add_argument("--list", action="store_true",
+                        help="print the sources that would run, as a JSON list, and run nothing")
     args = parser.parse_args(argv)
     today = args.date or datetime.now(timezone.utc).date().isoformat()
     date.fromisoformat(today)
     named = [n for name in args.sources for n in (sources.SCHEDULED if name == "all" else (name,))]
     names = tuple(dict.fromkeys(named))
+    if args.list:
+        print(json.dumps(names))
+        return 0
     fetch = Fetcher(record=args.record, replay=args.replay)
     results = [run(name, today, fetch) for name in names]
     failed = [name for name, (code, _) in zip(names, results) if code]
     text = "\n".join(text for _, text in results)
     if failed:
-        text = f"**Failed: {', '.join(failed)}.** The other sources ran.\n\n" + text
+        others = " The other sources ran." if len(names) > len(failed) else ""
+        text = f"**Failed: {', '.join(failed)}.**{others}\n\n" + text
     print(text)
     if args.report:
         args.report.write_text(text, encoding="utf-8")

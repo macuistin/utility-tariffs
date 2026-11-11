@@ -27,8 +27,9 @@ Run every script from the repository root as a module. Standard library only.
 4. A source that fails has its files restored. The others still run and the exit code is 1.
 5. The indexes are rebuilt once at the end.
 
-A run with no price change writes nothing. `.github/workflows/sync.yml` runs this weekly and opens
-a pull request. `docs/design.md` has the reasons.
+A run with no price change writes nothing. `.github/workflows/sync.yml` runs this weekly, one job
+for each source from `python3 -m scripts.sync all --list`, and opens a pull request. A source that
+fails there gets its own issue. `docs/design.md` has the reasons.
 
 ## Sources
 

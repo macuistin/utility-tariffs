@@ -53,7 +53,7 @@ the period belongs to the country or the tariff is still an open decision.
 | What | Where | When | Needs |
 | --- | --- | --- | --- |
 | `ci.yml`: validate every file, rebuild and compare the indexes, refuse an edited revision, run the tests with a 98% coverage floor | GitHub Actions runner | Every pull request, every push to `main` | Nothing |
-| `sync.yml`: read every scheduled source, write new revisions, open one pull request | GitHub Actions runner | Mondays 05:17 UTC, or by hand | The repository setting "Allow GitHub Actions to create and approve pull requests" |
+| `sync.yml`: read every scheduled source, each in its own job, write new revisions, open one pull request | GitHub Actions runner | Mondays 05:17 UTC, or by hand | The repository setting "Allow GitHub Actions to create and approve pull requests" |
 | Review and merge | A person | When a sync pull request is open | A few minutes |
 | Client library | Wherever the caller runs, for example a Home Assistant integration | On demand | HTTPS to the raw files |
 
@@ -70,7 +70,12 @@ ours. A public repository gets Actions minutes free. A weekly run takes a few mi
 - `apply` decides: new tariff, new revision, unchanged, or refused. A stored tariff the source no
   longer lists is reported as missing and left alone. Withdrawing a tariff is a person's call.
 - Each source is all or nothing. If it fails, its files are restored and the other sources still
-  run. The run exits non-zero and the workflow opens or updates one `sync-failed` issue.
+  run. In the workflow each source is its own job. The last job takes the tariff files of the
+  sources that finished, builds the indexes once and opens the pull request.
+- A source that failed gets its own `sync-failed` issue with its report and a link to the run.
+  If that source already has an open issue, the new failure is added to it as a comment. The
+  run is marked failed so it is noticed, and the other sources' changes still reach the pull
+  request.
 - A run that finds no price change writes nothing, so there is no pull request and no noise.
 
 ### The pull request
