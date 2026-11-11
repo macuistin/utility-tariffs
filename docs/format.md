@@ -51,6 +51,7 @@ in the country shares.
 | `vat_percent` | A decimal string, or a list where later entries win. An entry with no dates is the fallback and a dated entry after it is a temporary rate. A date no entry covers has no rate, and compiling stops rather than price at zero |
 | `bill` | The country's standard bill: a period and a tree of nodes (below) |
 | `inputs` | What the customer supplies, with type and range. Today only the bill start day |
+| `holidays` | The public holidays a band with `"holidays": "weekend"` is priced by. `source` is the https address the dates are published at. `years` holds one sorted list of dates for each year held: `{"2026": ["2026-01-01", "2026-12-25"]}`. `regions` is optional, keyed by ISO 3166-2 code, for a region that keeps different days. A region's list is its whole list, not an addition. A year that is not listed is not known, so a client refuses to price a holiday band in it. A tariff with a holiday band cannot be built until its country holds holidays |
 | `availability`, `reason` | `partial` needs a `reason` saying what is missing. Left out means `available` |
 | any other key | A decimal string a bill can use as `$country.<name>`, a levy say |
 

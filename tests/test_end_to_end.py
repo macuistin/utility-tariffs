@@ -17,7 +17,7 @@ from zoneinfo import ZoneInfo
 from lib.tariffstore import Store, folder_reader
 from scripts import build
 from scripts.paths import TARIFFS
-from tests.fixtures import country, export, flat, tariff, write_store
+from tests.fixtures import country, export, flat, holidays, tariff, write_store
 
 try:
     from lib.tariff import BillInputs, SlotDay, load_definition, price_bill
@@ -41,7 +41,8 @@ class MadeUpStore(unittest.TestCase):
         self.addCleanup(tmp.cleanup)
         weekend = tariff(name="Weekender", bands=[
             {"name": "Day"}, {"name": "Night", "hours": "23:00-08:00"},
-            {"name": "Weekend", "hours": "08:00-23:00", "days": ["sat", "sun"]}])
+            {"name": "Weekend", "hours": "08:00-23:00", "days": ["sat", "sun"],
+             "holidays": "weekend"}])
         for row in weekend["areas"].values():
             row["rates"]["Weekend"] = "0.2"
         levy = flat(name="With levy", bill={"total": {
@@ -55,7 +56,7 @@ class MadeUpStore(unittest.TestCase):
             "p/plan/1.json": tariff(export="p/out"), "p/out/1.json": export(),
             "p/flat/1.json": flat(), "p/flat/2.json": flat("0.3", "2026-06-01"),
             "p/weekender/1.json": weekend, "p/levy/1.json": levy},
-            block={**country(), "pso_levy": "3.23"})
+            block={**country(), "pso_levy": "3.23", "holidays": holidays()})
         self.assertEqual(build.main([], self.tariffs), 0)
         self.store = Store(folder_reader(self.tariffs))
 
@@ -100,6 +101,26 @@ class MadeUpStore(unittest.TestCase):
         self.assertEqual(import_by_band([tuesday], definition), {"Night": Decimal("9.0"), "Day": Decimal("15.0")})
         self.assertEqual(import_by_band([saturday], definition),
                          {"Night": Decimal("9.0"), "Weekend": Decimal("15.0")})
+
+    def test_a_public_holiday_on_a_monday_is_priced_as_a_weekend_day(self) -> None:
+        definition = load_definition(json.dumps(self.store.definition("IE", "p", "weekender", DAY, area="urban")))
+        zone = ZoneInfo("Europe/Dublin")
+        holiday, working = SlotDay(date(2026, 10, 26), zone), SlotDay(date(2026, 10, 19), zone)
+        for day in (holiday, working):
+            day.flows["import"][:] = [0.5] * 48
+        is_holiday = self.store.is_holiday("IE")
+        # 08:00 to 23:00 is 30 half hours of 0.5 kWh. On the holiday it is the Weekend band.
+        self.assertEqual(import_by_band([holiday], definition, is_holiday),
+                         {"Night": Decimal("9.0"), "Weekend": Decimal("15.0")})
+        self.assertEqual(import_by_band([working], definition, is_holiday),
+                         {"Night": Decimal("9.0"), "Day": Decimal("15.0")})
+        # Without the store's holidays the same Monday is priced as a working day.
+        self.assertEqual(import_by_band([holiday], definition),
+                         {"Night": Decimal("9.0"), "Day": Decimal("15.0")})
+        # 15 kWh at the 0.20 weekend rate in place of the 0.30 day rate: 1.50 less on the day.
+        bill = {band: str(kwh) for band, kwh in import_by_band([holiday], definition, is_holiday).items()}
+        self.assertEqual(priced(self.store.definition("IE", "p", "weekender", DAY, area="urban"), 1, bill),
+                         Decimal("9.0") * Decimal("0.15") + Decimal("15.0") * Decimal("0.2") + 1)
 
 
 @unittest.skipUnless(LIB_OK, "needs Python 3.14 for lib/tariff")
