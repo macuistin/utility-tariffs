@@ -4,6 +4,8 @@
                                                     [--record DIR | --replay DIR]
     python3 -m scripts.sync all
 
+`all` is the scheduled sources. A source that is run by hand is only run when it is named.
+
 Each source is all or nothing: if it cannot be read, or what it wrote does not pass the check,
 tariffs/ is put back as it was before that source and the next source still runs. Exit 0 when
 every source finished, changed or not, and 1 when any failed. The report is Markdown: what
@@ -76,7 +78,8 @@ def run(name: str, today: str, fetch: Fetcher, tariffs: Path = TARIFFS) -> tuple
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Sync tariff sources into tariffs/.")
     parser.add_argument("sources", nargs="+", choices=(*sources.NAMES, "all"), metavar="source",
-                        help=f"all, or any of: {', '.join(sources.NAMES)}")
+                        help=f"all ({', '.join(sources.SCHEDULED)}), or any of those, or one run "
+                             f"by hand: {', '.join(sources.BY_HAND)}")
     parser.add_argument("--date", help="the day of the run, default today in UTC")
     parser.add_argument("--report", type=Path, help="also write the report to this file")
     parser.add_argument("--record", type=Path, help="save every response in this folder")
@@ -84,7 +87,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     today = args.date or datetime.now(timezone.utc).date().isoformat()
     date.fromisoformat(today)
-    names = sources.NAMES if "all" in args.sources else tuple(dict.fromkeys(args.sources))
+    named = [n for name in args.sources for n in (sources.SCHEDULED if name == "all" else (name,))]
+    names = tuple(dict.fromkeys(named))
     fetch = Fetcher(record=args.record, replay=args.replay)
     results = [run(name, today, fetch) for name in names]
     failed = [name for name, (code, _) in zip(names, results) if code]

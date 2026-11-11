@@ -123,14 +123,27 @@ class CommandLine(unittest.TestCase):
             name, today, fetch = run.call_args.args
             self.assertEqual((today, fetch.replay), ("2026-11-11", Path(tmp)))
 
-    def test_all_means_every_source_and_the_date_defaults_to_today(self) -> None:
+    def test_all_means_the_scheduled_sources_and_the_date_defaults_to_today(self) -> None:
         with mock.patch.object(runner, "run", return_value=(0, "x")) as run, \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(runner.main(["all"]), 0)
-            self.assertEqual(tuple(c.args[0] for c in run.call_args_list), sources.NAMES)
+            self.assertEqual(tuple(c.args[0] for c in run.call_args_list), sources.SCHEDULED)
             self.assertRegex(run.call_args.args[1], r"^\d{4}-\d{2}-\d{2}$")
             with self.assertRaises(ValueError):
                 runner.main(["fr_cre", "--date", "tomorrow"])
+
+    def test_a_source_run_by_hand_runs_only_when_it_is_named(self) -> None:
+        self.assertEqual(sorted(sources.NAMES), sorted({*sources.SCHEDULED, *sources.BY_HAND}))
+        self.assertFalse(set(sources.SCHEDULED) & set(sources.BY_HAND))
+        self.assertIn("za_eskom", sources.BY_HAND)  # its site refuses a GitHub runner
+        with mock.patch.object(runner, "run", return_value=(0, "x")) as run, \
+                contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(runner.main(["za_eskom"]), 0)
+            self.assertEqual([c.args[0] for c in run.call_args_list], ["za_eskom"])
+            run.reset_mock()
+            self.assertEqual(runner.main(["all", "za_eskom", "fr_cre"]), 0)
+            self.assertEqual(tuple(c.args[0] for c in run.call_args_list),
+                             (*sources.SCHEDULED, "za_eskom"))
 
     def test_every_listed_source_loads_and_says_what_it_is(self) -> None:
         for name in sources.NAMES:

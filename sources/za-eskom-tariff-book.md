@@ -10,6 +10,10 @@
 - Terms: not reviewed.
 - How it is read: `scripts/sync/sources/za_eskom.py`. The booklet link and start date are constants in
   that file. Edit both each April when the new booklet is published.
+- Run by hand: `python3 -m scripts.sync za_eskom`, then open a pull request with what it wrote.
+  It is not in the weekly run. Eskom's site answers a GitHub runner with HTTP 403, and the
+  link changes with each booklet, so an unattended run can only fail. Run it from a machine the
+  site answers, each April and when a correction is published.
 - Frequency: yearly (April), mid-year corrections possible.
 - Not covered: Homeflex (seasonal TOU, weekday split), Homepower Bulk (sectional title developments),
   municipal tariffs (about 160 municipalities, each its own PDF; NERSA approves them annually).

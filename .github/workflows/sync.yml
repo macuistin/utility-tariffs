@@ -1,6 +1,6 @@
 name: Sync tariffs
 
-# Reads every source, and opens a pull request when a price changed. No AI and no private
+# Reads every scheduled source, and opens a pull request when a price changed. No AI and no private
 # machine: plain Python on a GitHub runner. A person reviews and merges the pull request.
 on:
   schedule:
@@ -87,6 +87,6 @@ jobs:
           if [ -n "$open" ]; then
             gh issue comment "$open" --body-file "$RUNNER_TEMP/issue.md"
           else
-            gh issue create --label sync-failed --title "Tariff sync: a source failed" --body-file "$RUNNER_TEMP/issue.md"
+            gh issue create --label sync-failed --title "fix(sync): a source failed in the scheduled run" --body-file "$RUNNER_TEMP/issue.md"
           fi
           exit 1

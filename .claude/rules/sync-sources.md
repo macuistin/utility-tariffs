@@ -34,6 +34,8 @@ paths:
 
 - All requests go through `Fetcher` in `http.py`: one pause between requests, bounded retries,
   `--record` and `--replay`. Never call `urllib` from a source.
+- When a publisher refuses the runner, move the source to `BY_HAND` and say so in its note. Do
+  not disguise the client to get past a refusal.
 - Keep requests few. A scheduled run refetches what is stored and does not crawl for more.
 - A parser checks the shape it reads (the columns, the count of regions) and raises when it
   differs. A site that changed must fail loudly, not produce a plausible wrong price.
@@ -42,7 +44,9 @@ paths:
 
 1. Write or update `sources/<source-id>.md`: what it covers, the link, the format, units, tax,
    how often it changes, how it is read, what it skips.
-2. Add `scripts/sync/sources/<name>.py` and its name to `NAMES` in `sources/__init__.py`.
+2. Add `scripts/sync/sources/<name>.py` and its name to `SCHEDULED` in `sources/__init__.py`.
+   Use `BY_HAND` only when the weekly run cannot read it: the publisher refuses a GitHub runner,
+   or its link is edited by hand for each edition. `all` never runs a `BY_HAND` source.
 3. Add tests that feed it saved or synthetic responses. No test fetches from the network.
 4. Run it once by hand with `--record`, read every file it wrote, and say in the pull request
    what was checked against the published figures.

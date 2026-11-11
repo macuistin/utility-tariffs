@@ -5,7 +5,7 @@ Run every script from the repository root as a module. Standard library only.
 | Path | Job |
 | --- | --- |
 | `build.py` | Write the indexes from the tariff files. `--check` validates everything and compares the committed indexes with a fresh build. `--base REF` also refuses a change to a revision published at `REF` |
-| `sync/__main__.py` | `python3 -m scripts.sync <source>... \| all`. Runs each source, writes new revisions, rebuilds, prints a report |
+| `sync/__main__.py` | `python3 -m scripts.sync <source>... \| all`. Runs each named source, or the scheduled ones for `all`, writes new revisions, rebuilds, prints a report |
 | `sync/plan.py` | `Plan`, what a source returns, and `to_tariff`, the one place a plan becomes a validated file |
 | `sync/apply.py` | The revision rules: add, revise, leave unchanged, refuse, report missing |
 | `sync/http.py` | The fetcher: a pause between requests, retries, `--record` and `--replay` |
@@ -39,11 +39,17 @@ a pull request. `docs/design.md` has the reasons.
 | `selectra_ie` | `sources/selectra-ie.md` | Irish supplier pages |
 | `au_cdr` | `sources/au-cdr-energy.md` | Australian plan detail for the plans already stored |
 | `fr_cre` | `sources/fr-cre-trve.md` | The French regulated tariff file |
-| `za_eskom` | `sources/za-eskom-tariff-book.md` | Eskom's yearly booklet. Its link and start date are constants edited by hand each year |
+| `za_eskom` | `sources/za-eskom-tariff-book.md` | Eskom's yearly booklet. Run by hand, not by `all`. Its link and start date are constants edited by hand each year |
+
+`all` and the weekly run read the sources in `SCHEDULED` in `sync/sources/__init__.py`. A source
+in `BY_HAND` runs only when it is named, from a machine its publisher answers:
+
+    python3 -m scripts.sync za_eskom --record raw/
 
 ## Adding a source
 
 1. Write `sources/<source-id>.md`.
 2. Add `sync/sources/<name>.py` with `SOURCE_ID`, `COUNTRY` and `read(fetch, today, stored)`
-   returning a `Result`. Add the name to `NAMES` in `sync/sources/__init__.py`.
+   returning a `Result`. Add the name to `SCHEDULED` in `sync/sources/__init__.py`, or to `BY_HAND`
+   when the weekly run cannot read it.
 3. Add tests under `tests/` that feed it saved or synthetic responses. CI holds coverage at 98%.

@@ -11,7 +11,12 @@ from importlib import import_module
 
 from scripts.sync.plan import Plan
 
-NAMES = ("octopus_gb", "ofgem_gb", "selectra_ie", "au_cdr", "fr_cre", "za_eskom")
+# What `all` and the weekly run read. Each answers a GitHub runner and changes on its own.
+SCHEDULED = ("octopus_gb", "ofgem_gb", "selectra_ie", "au_cdr", "fr_cre")
+# Run by name, by a person. The publisher refuses a GitHub runner, or the link is edited by
+# hand for each edition, so an unattended run can only fail.
+BY_HAND = ("za_eskom",)
+NAMES = SCHEDULED + BY_HAND
 
 
 @dataclass

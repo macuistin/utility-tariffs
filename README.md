@@ -71,7 +71,7 @@ definition = store.custom_definition("IE", mine, date.today())
 
     python3 -m scripts.build             # rewrite the indexes after editing a tariff or a country block
     python3 -m scripts.build --check     # what CI runs
-    python3 -m scripts.sync all          # read every source and write new revisions
+    python3 -m scripts.sync all          # read every scheduled source and write new revisions
     python3 -m unittest discover tests   # Python 3.14 runs everything; older skips the engine tests
 
 ## Licence

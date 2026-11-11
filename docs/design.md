@@ -53,7 +53,7 @@ the period belongs to the country or the tariff is still an open decision.
 | What | Where | When | Needs |
 | --- | --- | --- | --- |
 | `ci.yml`: validate every file, rebuild and compare the indexes, refuse an edited revision, run the tests with a 98% coverage floor | GitHub Actions runner | Every pull request, every push to `main` | Nothing |
-| `sync.yml`: read every source, write new revisions, open one pull request | GitHub Actions runner | Mondays 05:17 UTC, or by hand | The repository setting "Allow GitHub Actions to create and approve pull requests" |
+| `sync.yml`: read every scheduled source, write new revisions, open one pull request | GitHub Actions runner | Mondays 05:17 UTC, or by hand | The repository setting "Allow GitHub Actions to create and approve pull requests" |
 | Review and merge | A person | When a sync pull request is open | A few minutes |
 | Client library | Wherever the caller runs, for example a Home Assistant integration | On demand | HTTPS to the raw files |
 
@@ -90,8 +90,10 @@ ours. A public repository gets Actions minutes free. A weekly run takes a few mi
   Actions tab.
 - `--record DIR` saves every response and `--replay DIR` runs from saved ones. Use them to debug
   a source without fetching again.
-- Two values are edited by hand once a year: the booklet link and start date in
-  `scripts/sync/sources/za_eskom.py`.
+- One source is run by hand, not by the schedule: `za_eskom`. Its publisher refuses a GitHub
+  runner (HTTP 403) and its booklet is yearly. Each April, edit the booklet link and start date
+  in `scripts/sync/sources/za_eskom.py`, run `python3 -m scripts.sync za_eskom` and open a pull
+  request. `all` reads the scheduled sources only.
 
 ## How a library uses the store
 
