@@ -6,12 +6,13 @@ paths:
 
 # Tests
 
-`tests/README.md` lists what each file proves. Run `python3 -m unittest discover tests` from the
-repository root.
+`tests/README.md` lists what each file proves. Run `python3 -m pytest tests -q` from the
+repository root. `pytest` is the runner and the one installed package the tests use. The store's
+own tests are `unittest` classes, and the engine's tests under `tests/tariff/` and
+`tests/timeutil/` are pytest functions.
 
-- Python 3.14 runs everything. An older Python skips the tests that need the bill engine. Run
-  3.14 before you say the suite passes, or say which Python you used.
-- CI holds branch coverage of `lib/tariffstore` and `scripts` at 98% (`.coveragerc`). New code
+- Python 3.14 runs the suite. The bill engine uses its syntax, so an older Python cannot.
+- CI holds branch coverage of `lib` and `scripts` at 98% (`.coveragerc`). New code
   arrives with its tests. Do not add a `pragma: no cover` to reach the floor.
 - No test fetches from the network. A source is tested on saved or synthetic responses through
   the replay fetcher.

@@ -15,7 +15,7 @@
 <!-- What you ran and on which Python, what the new tests cover, and what was not verified. -->
 
 - [ ] `python3 -m scripts.build --check --base origin/main` passes
-- [ ] `python3 -m unittest discover tests` passes on Python 3.14
+- [ ] `python3 -m pytest tests -q` passes on Python 3.14
 
 ## Impact
 
