@@ -168,6 +168,25 @@ class OctopusImport(unittest.TestCase):
         self.assertFalse(plan.dated)
         self.assertTrue(any("dual register" in s for s in skipped))
 
+    def test_monthly_direct_debit_is_the_price_held(self) -> None:
+        def methods(*names_and_rates) -> dict:
+            return {"_A": {name: {"standing_charge_inc_vat": 50.0, "standard_unit_rate_inc_vat": rate}
+                           for name, rate in names_and_rates}}
+        both = methods(("direct_debit_monthly", 25.0), ("direct_debit_quarterly", 25.0), ("varying", 27.5))
+        plan, skipped = octo.import_plan(product(single_register_electricity_tariffs=both), "2026-11-11")
+        self.assertEqual(plan.areas["a"].rates, {"Single rate": Decimal("0.25")})
+        self.assertIn("VAR-X: prices for varying differ and are not held", skipped)
+        listed_last = methods(("varying", 27.5), ("direct_debit_monthly", 25.0))
+        plan, _ = octo.import_plan(product(single_register_electricity_tariffs=listed_last), "2026-11-11")
+        self.assertEqual(plan.areas["a"].rates, {"Single rate": Decimal("0.25")})
+
+    def test_a_region_with_no_direct_debit_price_and_a_choice_is_skipped(self) -> None:
+        tariffs = {"_A": {"varying": {"standing_charge_inc_vat": 50.0, "standard_unit_rate_inc_vat": 27.5},
+                          "prepayment": {"standing_charge_inc_vat": 50.0, "standard_unit_rate_inc_vat": 26.0}}}
+        plan, skipped = octo.import_plan(product(single_register_electricity_tariffs=tariffs), "2026-11-11")
+        self.assertIsNone(plan)
+        self.assertIn("region A has no direct_debit_monthly price and lists prepayment, varying", skipped[-1])
+
     def test_the_run_date_stands_in_when_the_api_gives_none(self) -> None:
         plan, _ = octo.import_plan(product(tariffs_active_at=None), "2026-11-11")
         self.assertEqual(plan.effective_from, "2026-11-11")
