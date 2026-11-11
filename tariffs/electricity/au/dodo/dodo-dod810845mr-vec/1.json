@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Real Deal - Single Rate with Controlled Load (United Energy)",
+  "provider": "Dodo Power & Gas",
+  "effective_from": "2026-10-16",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/dodo/cds-au/v1/energy/plans/DOD810845MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.22811"
+      },
+      "standing": "0.478861"
+    }
+  }
+}

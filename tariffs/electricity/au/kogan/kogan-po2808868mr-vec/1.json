@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "name": "Kogan Shift (Jemena)",
+  "provider": "Kogan Energy",
+  "effective_from": "2026-09-30",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/kogan/cds-au/v1/energy/plans/PO2808868MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Tariff 2"
+    },
+    {
+      "hours": "16:00-21:00",
+      "name": "Tariff 1"
+    },
+    {
+      "hours": "21:00-00:00",
+      "name": "Tariff 2 2"
+    },
+    {
+      "hours": "11:00-14:00",
+      "name": "Tariff 3"
+    },
+    {
+      "hours": "14:00-16:00",
+      "name": "Tariff 4"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Tariff 1": "0.361363",
+        "Tariff 2": "0.217636",
+        "Tariff 2 2": "0.217636",
+        "Tariff 3": "0",
+        "Tariff 4": "0.180272"
+      },
+      "standing": "1.105822"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "Standard, 24hr Standard Green",
+  "provider": "Ecopower",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/ecopower"
+  },
+  "bands": [
+    {
+      "name": "24-Hour"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "24-Hour": "0.42183"
+      },
+      "standing": "0.915589"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "24-Hour": "0.42183"
+      },
+      "standing": "0.828411"
+    }
+  }
+}

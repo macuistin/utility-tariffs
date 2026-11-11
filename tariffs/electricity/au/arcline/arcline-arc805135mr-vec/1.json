@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Home Energy Plan (Citipower)",
+  "provider": "Arcline by RACV - Energy",
+  "effective_from": "2026-09-30",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/arcline/cds-au/v1/energy/plans/ARC805135MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.21948"
+      },
+      "standing": "1.02418"
+    }
+  }
+}

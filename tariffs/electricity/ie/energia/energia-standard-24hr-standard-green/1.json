@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "Standard, 24hr Standard Green",
+  "provider": "Energia",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/energia"
+  },
+  "bands": [
+    {
+      "name": "24-Hour"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "24-Hour": "0.321877"
+      },
+      "standing": "0.969507"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "24-Hour": "0.321877"
+      },
+      "standing": "0.762384"
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "name": "Octopus 18M Fixed November 2026",
+  "provider": "Octopus Energy",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "octopus-energy-gb",
+    "url": "https://api.octopus.energy/v1/products/OE-FIX-18M-26-11-09/"
+  },
+  "bands": [
+    {
+      "name": "Single rate"
+    }
+  ],
+  "areas": {
+    "a": {
+      "label": "Eastern England (A)",
+      "rates": {
+        "Single rate": "0.281626"
+      },
+      "region": "GSP-A",
+      "standing": "0.505464"
+    },
+    "b": {
+      "label": "East Midlands (B)",
+      "rates": {
+        "Single rate": "0.269729"
+      },
+      "region": "GSP-B",
+      "standing": "0.502041"
+    },
+    "c": {
+      "label": "London (C)",
+      "rates": {
+        "Single rate": "0.276564"
+      },
+      "region": "GSP-C",
+      "standing": "0.413869"
+    },
+    "d": {
+      "label": "Merseyside and North Wales (D)",
+      "rates": {
+        "Single rate": "0.294546"
+      },
+      "region": "GSP-D",
+      "standing": "0.672708"
+    },
+    "e": {
+      "label": "West Midlands (E)",
+      "rates": {
+        "Single rate": "0.272815"
+      },
+      "region": "GSP-E",
+      "standing": "0.562712"
+    },
+    "f": {
+      "label": "North East England (F)",
+      "rates": {
+        "Single rate": "0.272539"
+      },
+      "region": "GSP-F",
+      "standing": "0.608011"
+    },
+    "g": {
+      "label": "North West England (G)",
+      "rates": {
+        "Single rate": "0.290945"
+      },
+      "region": "GSP-G",
+      "standing": "0.442119"
+    },
+    "h": {
+      "label": "Southern England (H)",
+      "rates": {
+        "Single rate": "0.281489"
+      },
+      "region": "GSP-H",
+      "standing": "0.463033"
+    },
+    "j": {
+      "label": "South East England (J)",
+      "rates": {
+        "Single rate": "0.285033"
+      },
+      "region": "GSP-J",
+      "standing": "0.510499"
+    },
+    "k": {
+      "label": "South Wales (K)",
+      "rates": {
+        "Single rate": "0.284353"
+      },
+      "region": "GSP-K",
+      "standing": "0.544444"
+    },
+    "l": {
+      "label": "South Western England (L)",
+      "rates": {
+        "Single rate": "0.287883"
+      },
+      "region": "GSP-L",
+      "standing": "0.544933"
+    },
+    "m": {
+      "label": "Yorkshire (M)",
+      "rates": {
+        "Single rate": "0.272784"
+      },
+      "region": "GSP-M",
+      "standing": "0.608903"
+    },
+    "n": {
+      "label": "Southern Scotland (N)",
+      "rates": {
+        "Single rate": "0.279253"
+      },
+      "region": "GSP-N",
+      "standing": "0.60686"
+    },
+    "p": {
+      "label": "Northern Scotland (P)",
+      "rates": {
+        "Single rate": "0.285886"
+      },
+      "region": "GSP-P",
+      "standing": "0.541481"
+    }
+  }
+}

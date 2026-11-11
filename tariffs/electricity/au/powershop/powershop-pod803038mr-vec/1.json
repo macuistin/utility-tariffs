@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "name": "Switch Saver (Powercor)",
+  "provider": "Powershop",
+  "effective_from": "2026-09-30",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/powershop/cds-au/v1/energy/plans/POD803038MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Tariff 2"
+    },
+    {
+      "hours": "16:00-21:00",
+      "name": "Tariff 1"
+    },
+    {
+      "hours": "11:00-16:00",
+      "name": "Tariff 3"
+    },
+    {
+      "hours": "21:00-00:00",
+      "name": "Tariff 2 2"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Tariff 1": "0.361046",
+        "Tariff 2": "0.194862",
+        "Tariff 2 2": "0.194862",
+        "Tariff 3": "0.149547"
+      },
+      "standing": "1.196122"
+    }
+  }
+}

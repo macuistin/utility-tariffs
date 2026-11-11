@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "RACV Member Plan (Powercor)",
+  "provider": "Arcline by RACV - Energy",
+  "effective_from": "2026-09-30",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/arcline/cds-au/v1/energy/plans/ARC805142MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.23858"
+      },
+      "standing": "1.16715"
+    }
+  }
+}

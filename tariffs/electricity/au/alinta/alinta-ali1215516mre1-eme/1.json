@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "name": "SolarBalance Smart - Single Rate + CL (Essential Energy Standard + Essential Energy + Essential Energy Far West)",
+  "provider": "Alinta Energy",
+  "effective_from": "2026-11-06",
+  "effective_to": "2026-11-12",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/alinta/cds-au/v1/energy/plans/ALI1215516MRE1@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.2928"
+      },
+      "standing": "2.2767"
+    }
+  }
+}

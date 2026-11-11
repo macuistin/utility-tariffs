@@ -1,0 +1,130 @@
+{
+  "schema": 1,
+  "name": "Price cap, prepayment, single rate",
+  "provider": "Ofgem price cap",
+  "effective_from": "2026-10-01",
+  "effective_to": "2027-01-01",
+  "source": {
+    "id": "ofgem-price-cap",
+    "url": "https://www.ofgem.gov.uk/sites/default/files/2026-08/Annex-9-Levelisation-allowance-methodology-and-levelised-cap-levels-v1.11.xlsx"
+  },
+  "bands": [
+    {
+      "name": "Single rate"
+    }
+  ],
+  "areas": {
+    "east-midlands": {
+      "label": "East Midlands",
+      "rates": {
+        "Single rate": "0.245808"
+      },
+      "region": "OFGEM-EAST-MIDLANDS",
+      "standing": "0.514521"
+    },
+    "eastern": {
+      "label": "Eastern",
+      "rates": {
+        "Single rate": "0.258008"
+      },
+      "region": "OFGEM-EASTERN",
+      "standing": "0.518356"
+    },
+    "london": {
+      "label": "London",
+      "rates": {
+        "Single rate": "0.257836"
+      },
+      "region": "OFGEM-LONDON",
+      "standing": "0.429151"
+    },
+    "midlands": {
+      "label": "Midlands",
+      "rates": {
+        "Single rate": "0.248212"
+      },
+      "region": "OFGEM-MIDLANDS",
+      "standing": "0.572301"
+    },
+    "n-wales-and-mersey": {
+      "label": "N Wales and Mersey",
+      "rates": {
+        "Single rate": "0.270124"
+      },
+      "region": "OFGEM-N-WALES-AND-MERSEY",
+      "standing": "0.676575"
+    },
+    "north-west": {
+      "label": "North West",
+      "rates": {
+        "Single rate": "0.256804"
+      },
+      "region": "OFGEM-NORTH-WEST",
+      "standing": "0.456767"
+    },
+    "northern": {
+      "label": "Northern",
+      "rates": {
+        "Single rate": "0.24678"
+      },
+      "region": "OFGEM-NORTHERN",
+      "standing": "0.615836"
+    },
+    "northern-scotland": {
+      "label": "Northern Scotland",
+      "rates": {
+        "Single rate": "0.25542"
+      },
+      "region": "OFGEM-NORTHERN-SCOTLAND",
+      "standing": "0.55137"
+    },
+    "south-east": {
+      "label": "South East",
+      "rates": {
+        "Single rate": "0.260596"
+      },
+      "region": "OFGEM-SOUTH-EAST",
+      "standing": "0.523178"
+    },
+    "south-wales": {
+      "label": "South Wales",
+      "rates": {
+        "Single rate": "0.257436"
+      },
+      "region": "OFGEM-SOUTH-WALES",
+      "standing": "0.554082"
+    },
+    "southern": {
+      "label": "Southern",
+      "rates": {
+        "Single rate": "0.256584"
+      },
+      "region": "OFGEM-SOUTHERN",
+      "standing": "0.47811"
+    },
+    "southern-scotland": {
+      "label": "Southern Scotland",
+      "rates": {
+        "Single rate": "0.253096"
+      },
+      "region": "OFGEM-SOUTHERN-SCOTLAND",
+      "standing": "0.614082"
+    },
+    "southern-western": {
+      "label": "Southern Western",
+      "rates": {
+        "Single rate": "0.257704"
+      },
+      "region": "OFGEM-SOUTHERN-WESTERN",
+      "standing": "0.555808"
+    },
+    "yorkshire": {
+      "label": "Yorkshire",
+      "rates": {
+        "Single rate": "0.248216"
+      },
+      "region": "OFGEM-YORKSHIRE",
+      "standing": "0.616685"
+    }
+  }
+}

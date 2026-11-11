@@ -1,0 +1,11 @@
+[run]
+branch = True
+source =
+    lib/tariffstore
+    scripts
+
+[report]
+show_missing = True
+fail_under = 98
+exclude_also =
+    if __name__ == .__main__.:

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "name": "Freedom Switched On! Midday Power Controlled Load (Jemena)",
+  "provider": "Flipped Energy",
+  "effective_from": "2026-03-31",
+  "effective_to": "2027-06-29",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/flipped/cds-au/v1/energy/plans/FLI814556MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Overnight"
+    },
+    {
+      "hours": "17:00-21:00",
+      "name": "Evening"
+    },
+    {
+      "hours": "14:00-17:00",
+      "name": "Day"
+    },
+    {
+      "hours": "21:00-00:00",
+      "name": "Overnight 2"
+    },
+    {
+      "hours": "11:00-14:00",
+      "name": "Solar Soak"
+    },
+    {
+      "hours": "09:00-11:00",
+      "name": "Day 2"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Day": "0.177897",
+        "Day 2": "0.177897",
+        "Evening": "0.43519",
+        "Overnight": "0.169511",
+        "Overnight 2": "0.169511",
+        "Solar Soak": "0"
+      },
+      "standing": "0.727913"
+    }
+  }
+}

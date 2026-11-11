@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "country": "FR",
+  "currency": "EUR",
+  "timezone": "Europe/Paris",
+  "vat_percent": "20",
+  "availability": "partial",
+  "reason": "Regulated Tarif Bleu, Base option only. Off-peak (Heures Creuses) and Tempo options are skipped. Prices are all-taxes figures, and the real VAT is 5.5% on the subscription and 20% on energy.",
+  "inputs": {
+    "bill_start_day": {
+      "default": 1,
+      "max": 28,
+      "min": 1,
+      "type": "integer"
+    }
+  },
+  "bill": {
+    "period": {
+      "rule": "monthly",
+      "start_day": "$input.bill_start_day"
+    },
+    "total": {
+      "kind": "tax",
+      "mode": "included",
+      "name": "TVA",
+      "of": {
+        "kind": "sum",
+        "of": {
+          "energy": {
+            "kind": "energy_by_band",
+            "round_bands": true
+          },
+          "standing": {
+            "kind": "per_day"
+          }
+        }
+      },
+      "percent": "$country.vat_percent"
+    }
+  },
+  "providers": {
+    "edf": {
+      "name": "EDF (tarif réglementé Bleu)",
+      "tariffs": {
+        "edf-tarif-bleu-base-12kva": {
+          "name": "Tarif Bleu, option Base, 12 kVA",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:0bbb1373a2aa37e86399d9f9eb1f5810faff0ae71564ea039d17845b47fc53d2",
+              "effective_from": "2026-08-01",
+              "effective_to": null
+            }
+          }
+        },
+        "edf-tarif-bleu-base-15kva": {
+          "name": "Tarif Bleu, option Base, 15 kVA",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:5cb5b2fb7837981eb1366379553c1caede9f64124cdfeacbcbe56b80654bfafb",
+              "effective_from": "2026-08-01",
+              "effective_to": null
+            }
+          }
+        },
+        "edf-tarif-bleu-base-3kva": {
+          "name": "Tarif Bleu, option Base, 3 kVA",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:df48cab9bcfebba14f49d9d986f898997cd45afdee0b4d517c853aa1f07b8f19",
+              "effective_from": "2026-08-01",
+              "effective_to": null
+            }
+          }
+        },
+        "edf-tarif-bleu-base-6kva": {
+          "name": "Tarif Bleu, option Base, 6 kVA",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:f6e01c0021f0c511a9aa695b4f24b27ed45c926e8532c0184867ccc8259e4103",
+              "effective_from": "2026-08-01",
+              "effective_to": null
+            }
+          }
+        },
+        "edf-tarif-bleu-base-9kva": {
+          "name": "Tarif Bleu, option Base, 9 kVA",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:46e2af5775a2975e5eddba33b65181820ae3ccdda26ae6bd89e4a119f64523db",
+              "effective_from": "2026-08-01",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    }
+  }
+}

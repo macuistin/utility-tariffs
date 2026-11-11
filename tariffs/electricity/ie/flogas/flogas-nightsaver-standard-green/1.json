@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "name": "NightSaver Standard Green",
+  "provider": "Flogas",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/flogas"
+  },
+  "bands": [
+    {
+      "name": "Day"
+    },
+    {
+      "hours": "23:00-08:00",
+      "name": "Night"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "Day": "0.440796",
+        "Night": "0.21364"
+      },
+      "standing": "1.373945"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "Day": "0.440796",
+        "Night": "0.21364"
+      },
+      "standing": "1.078137"
+    }
+  }
+}

@@ -1,0 +1,913 @@
+{
+  "schema": 1,
+  "country": "AU",
+  "currency": "AUD",
+  "timezone": "Australia/Sydney",
+  "vat_percent": "10",
+  "availability": "partial",
+  "reason": "Retailer plans read from the Consumer Data Right endpoints, about 8 per retailer for 17 of 20 retailers. Plans with seasonal periods, volume tiers or weekday and weekend windows are skipped. Only New South Wales, Victoria, ACT and Tasmania are held, because the country block has one timezone and Queensland, South Australia, Western Australia and the Northern Territory use others.",
+  "inputs": {
+    "bill_start_day": {
+      "default": 1,
+      "max": 28,
+      "min": 1,
+      "type": "integer"
+    }
+  },
+  "bill": {
+    "period": {
+      "rule": "monthly",
+      "start_day": "$input.bill_start_day"
+    },
+    "total": {
+      "kind": "tax",
+      "mode": "added",
+      "name": "GST",
+      "of": {
+        "kind": "sum",
+        "of": {
+          "energy": {
+            "kind": "energy_by_band",
+            "round_bands": true
+          },
+          "standing": {
+            "kind": "per_day"
+          }
+        }
+      },
+      "percent": "$country.vat_percent"
+    }
+  },
+  "providers": {
+    "agl": {
+      "name": "AGL",
+      "tariffs": {
+        "agl-agd812606mr-vec": {
+          "name": "Residential Smart Saver (Westpac) - New To AGL (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:b7300c1642d95fa2ed379a484526493931080b11843878d908efc447b0575be4",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "agl-agd812608mr-vec": {
+          "name": "Residential Smart Saver (Westpac) - New To AGL (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:cabf0a10272f0828eaac6b0a5e7eabb32b9ac83afcb47c3c25b22f1a544a72b8",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "agl-agl1067215mre3-eme": {
+          "name": "Residential Smart Saver - BP Fuel New To AGL (Essential Energy Far West + Essential Energy Standard + Essential Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:cb4fe5d47dec6a787b94b5499b094e1dbdf7933d3ba07e78f4fd5e31c7a5e35c",
+              "effective_from": "2026-11-10",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "alinta": {
+      "name": "Alinta Energy",
+      "tariffs": {
+        "alinta-ali1215509mre1-eme": {
+          "name": "SolarBalance Smart - Single Rate + CL (Endeavour)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:0660992add3085a4a9a03b89e5a77e770b8c94b73b9e562a4a6661dbcbda63e2",
+              "effective_from": "2026-11-06",
+              "effective_to": "2026-11-12"
+            }
+          }
+        },
+        "alinta-ali1215516mre1-eme": {
+          "name": "SolarBalance Smart - Single Rate + CL (Essential Energy Standard + Essential Energy + Essential Energy Far West)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:54f8d2c0b29c752c2293a83046eb81251edb8c7c8d8e821553bad70568ff4c82",
+              "effective_from": "2026-11-06",
+              "effective_to": "2026-11-12"
+            }
+          }
+        },
+        "alinta-ali812751mr-vec": {
+          "name": "SolarBalance Ready - Single Rate (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:3a2054410e4d7e8a4dfbc0ef92d463d96f0eb3141cfc8b65bf782c8349110c53",
+              "effective_from": "2026-11-05",
+              "effective_to": null
+            }
+          }
+        },
+        "alinta-ali812757mr-vec": {
+          "name": "SolarBalance Ready - Single Rate (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e2780f75a6f3bf511c5b428865046e6894cd9ddfeacd6d2b3730b0457b1d8b8d",
+              "effective_from": "2026-11-05",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "amber": {
+      "name": "Amber Electric",
+      "tariffs": {
+        "amber-amb1202045mre1-eme": {
+          "name": "Solar Only: Variable Prices (estimate only) (Endeavour)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ead7c622f7aa2f5551b0ba32ce2fb758eac01762a10efa6fcbd1c3504ed61c78",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "amber-amb1202053mre1-eme": {
+          "name": "Solar Only + CBA Yello: Variable Prices (estimate only) (Essential Energy Standard)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:a5ec631cff0a130cba5237d8a93d84037c2c8ef996886ff24210ca5cbdcdfb4a",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "amber-amb1202054mre1-eme": {
+          "name": "Solar Only + CBA Yello: Variable Prices (estimate only) (Evoenergy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ebf3265aea9f57a0e4e565c59e3d546bbd27d6ea08f782abb75cee1f5a081193",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "amber-amb1202086mre1-eme": {
+          "name": "No Feed-In + CBA Yello Plus: Variable Prices (estimate) (Ausgrid)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:94d9830467bea9bd5ca1f3a1748fb18607787d076bf37692d109617b91cc57e4",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "amber-amb798793mr-vec": {
+          "name": "Amber Plan + CommBank Yello Diamond (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:f9f33bb93db76dd65f9121c0a6d44eea7136820e84694021dc5e7f56fffb6b2b",
+              "effective_from": "2026-09-30",
+              "effective_to": "2027-06-29"
+            }
+          }
+        },
+        "amber-amb798794mr-vec": {
+          "name": "Amber Plan + CommBank Yello Diamond (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:dc2413c0bd694ef76449c44c67fce8a5dadcc8ea9f8f33ca0e2b767e9595b6da",
+              "effective_from": "2026-09-30",
+              "effective_to": "2027-06-29"
+            }
+          }
+        }
+      }
+    },
+    "arcline": {
+      "name": "Arcline by RACV - Energy",
+      "tariffs": {
+        "arcline-arc805134mr-vec": {
+          "name": "Home Energy Plan (AusNet Services (electricity))",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:6487a64455b25952790c08de4535e32a5af4f762b4c5a150d2f9e592805a646c",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "arcline-arc805135mr-vec": {
+          "name": "Home Energy Plan (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:4e56b63d7c3aa5fd6a7e8d2429b513d0b8b85976207b0a00318456972dc9d35f",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "arcline-arc805137mr-vec": {
+          "name": "Home Energy Plan (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:53e2a13bf763ec613e02842e201a555978a916e7fa5db0293a761d1e1a2b0da2",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "arcline-arc805138mr-vec": {
+          "name": "Home Energy Plan (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:c8e8eaccabc2326259becf844be343dec61c63cea66d8e4f32f57a6dc261248e",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "arcline-arc805140mr-vec": {
+          "name": "RACV Member Plan (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d986e1992ff2b77e9a5095e1630d9b61074ae3a918f6bd1e56a0af795ed127a7",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "arcline-arc805141mr-vec": {
+          "name": "RACV Member Plan (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:b7e4ab2625b8a15bc3d5b8e1dfd946befe213606db6cca08494d72b59138ae6b",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "arcline-arc805142mr-vec": {
+          "name": "RACV Member Plan (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:c678e6deb2c38a9fc9c9f8fc0f130ab38bc5817c0daf091545e6cacf94d3c61d",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "arcline-arc805143mr-vec": {
+          "name": "RACV Member Plan (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:7caee7a2df4265a08655ae48aeccfbf1f555b3488aee4bfed61de53b3d838b77",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "covau": {
+      "name": "CovaU",
+      "tariffs": {
+        "covau-cov1122672mre2-eme": {
+          "name": "Freedom Residential Anytime + CL(41) & CL(61) (TasNetworks)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:90f8ecf3547ae06a8d18100d1f9d2dd268c0a61f29941891e3099b291d2cbabe",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "covau-cov1147465mre2-eme": {
+          "name": "Freedom Residential TOU + CL1 (Essential Energy Far West + Essential Energy Standard + Essential Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:a5219b60ac311bd9d55b7b90d5e66203b20c20d0de719cd7d9634c5b425e4116",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "dodo": {
+      "name": "Dodo Power & Gas",
+      "tariffs": {
+        "dodo-dod1042545mre2-eme": {
+          "name": "Real Deal (Essential Energy Far West + Essential Energy Standard + Essential Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:25fdd4db8f6a026858246aca6bb213d89d6b4e7378a44fd24493e8d476414641",
+              "effective_from": "2026-07-27",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod1209524mre1-eme": {
+          "name": "Real Deal (Endeavour)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:22fac0123720852f4f536ef5f4a2c8c8fd6c13cee5ef86e7c13f78e60942c2e8",
+              "effective_from": "2026-10-17",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod1209526mre1-eme": {
+          "name": "Real Deal (Ausgrid)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:30431457306362218f8b01d91c07336f430c377d2c8e53aa8f9f4637bcbed2d0",
+              "effective_from": "2026-10-17",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod771012mr-vec": {
+          "name": "Real Deal - Time of Use with Controlled Load (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:4fcd00dfe26a8142891eb1adccdfc9f7aa5ebcd67dbfd33caba7184ffccc0a36",
+              "effective_from": "2026-07-26",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod771014mr-vec": {
+          "name": "Real Deal - Time of Use with Controlled Load (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:6dca2f2680f53c7f9fdacb35fcfbafff6f9266620aaa25612936e5ac423afa6a",
+              "effective_from": "2026-07-26",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod810845mr-vec": {
+          "name": "Real Deal - Single Rate with Controlled Load (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:cbfd51af093de35f732b0194ab23c1f118fa23fedc42149a3b285997d5d2106e",
+              "effective_from": "2026-10-16",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "energyaustralia": {
+      "name": "EnergyAustralia",
+      "tariffs": {
+        "energyaustralia-ene932476mre11-eme": {
+          "name": "Balance Plan - Third Party Offer (Essential Energy Standard + Essential Energy Far West + Essential Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:6c28234c66ec683d95c743c516ef86469b198f300275392d4000914a2413c086",
+              "effective_from": "2026-10-15",
+              "effective_to": "2026-11-25"
+            }
+          }
+        },
+        "energyaustralia-ene932492mre11-eme": {
+          "name": "Balance Plan - Third Party Offer (Endeavour)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:08cb58460adc23c3b8da4585bee34d74030ddcdd62c23c29d7501fa539726ba1",
+              "effective_from": "2026-10-15",
+              "effective_to": "2026-11-25"
+            }
+          }
+        },
+        "energyaustralia-tru810616mr-vec": {
+          "name": "VIC Seniors Offer - Peak Only - $200 Credit (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:073f27af3be9ef7cb3dbb27752ed95ac78d97be3c3c3f6d857c20abdb5052114",
+              "effective_from": "2026-10-27",
+              "effective_to": null
+            }
+          }
+        },
+        "energyaustralia-tru810618mr-vec": {
+          "name": "VIC Seniors Offer - Peak Only - $200 Credit (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:af4bc048533345f65b7d1acfe5e933df47ce7f620b6403c628a68a6ca6f95114",
+              "effective_from": "2026-10-27",
+              "effective_to": null
+            }
+          }
+        },
+        "energyaustralia-tru810620mr-vec": {
+          "name": "VIC Seniors Offer - Peak Only - $200 Credit (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d5f056a9bc8e54b03d3e78587170a48c55511a8ea9fdf2e106d0087ab907fa60",
+              "effective_from": "2026-10-27",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "engie": {
+      "name": "ENGIE",
+      "tariffs": {
+        "engie-eng814230mr-vec": {
+          "name": "VIC-ENGIE Perks Plus Plus Elec (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:b66a1df32c9f031796951235d48df8e1c0114fcbc458cd956e4a5af0d89f310c",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "engie-eng814231mr-vec": {
+          "name": "VIC-ENGIE Perks Plus Plus Elec (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:274c47abe1605dd7b4bb6483949c92413da83c3b5a233f10647e00490b2be3c7",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "engie-eng814233mr-vec": {
+          "name": "VIC-ENGIE Perks Plus Plus Elec (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:3e108ef3fd6eb084f6540e7bfd3a0a9abb44c0e471588e8ddbe21ee064605afa",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "engie-eng814238mr-vec": {
+          "name": "VIC-ENGIE Perks Plus Plus Elec (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:90c5e24204a8d3f397241563c99438f945ad3da452e76bfc1b97bb1d5c0d6671",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "flipped": {
+      "name": "Flipped Energy",
+      "tariffs": {
+        "flipped-fea1159370mre2-eme": {
+          "name": "Anytime Switched On 2.2! (Essential Energy Standard)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:cf6eb3e6f0abfb4f469feb1866696e048d69b37c5c61a9bec8f09ca52c591fe7",
+              "effective_from": "2026-09-15",
+              "effective_to": null
+            }
+          }
+        },
+        "flipped-fea1174529mre1-eme": {
+          "name": "Freedom Switched On 2.3! Controlled Load (Ausgrid)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:02e288bcc40d29c19774b31cafae6f6bb517e88909a8d01928a89948a4880f6d",
+              "effective_from": "2026-09-22",
+              "effective_to": null
+            }
+          }
+        },
+        "flipped-fli814556mr-vec": {
+          "name": "Freedom Switched On! Midday Power Controlled Load (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:11ead0adcf77390be8f75e223a8b592f95a83c4fac4d02bc2ec04c5bec6f90b1",
+              "effective_from": "2026-03-31",
+              "effective_to": "2027-06-29"
+            }
+          }
+        },
+        "flipped-fli814560mr-vec": {
+          "name": "Freedom Switched On! Midday Power Controlled Load (AusNet Services (electricity))",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:101858643a79d86aba3d17948dc3e2ee4179645da71c8bb663b818df95c3117a",
+              "effective_from": "2026-03-31",
+              "effective_to": "2027-06-29"
+            }
+          }
+        },
+        "flipped-fli814566mr-vec": {
+          "name": "Freedom Switched On! Midday Power Controlled Load (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:3815d987d449f4d2222433934cc292a8b288562e9d0c2779cafca79002afa0a6",
+              "effective_from": "2026-05-31",
+              "effective_to": "2027-06-29"
+            }
+          }
+        },
+        "flipped-fli814568mr-vec": {
+          "name": "Freedom Switched On! Midday Power (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:47fbcef2d34836fd0feaf8a099e418a1c48908329e40fdc67028d1be6cfca861",
+              "effective_from": "2026-05-31",
+              "effective_to": "2027-06-29"
+            }
+          }
+        },
+        "flipped-fli814570mr-vec": {
+          "name": "Freedom Switched On! Midday Power (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:bfa710aaee886d84f0c179157f3e6522ea013ed13d6476e7548fcef7a2899760",
+              "effective_from": "2026-05-31",
+              "effective_to": "2027-06-29"
+            }
+          }
+        }
+      }
+    },
+    "kogan": {
+      "name": "Kogan Energy",
+      "tariffs": {
+        "kogan-kog1060532mre5-eme": {
+          "name": "Kogan Solar Sharer (Ausgrid)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:095e48bda786bd1bd2c41c4cf3ad37bde872044d51243e8b75bd587c25a0346a",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "kogan-po2808865mr-vec": {
+          "name": "Kogan Shift (AusNet Services (electricity))",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:42713416fb7f02d13f22419b6ce6a727948dd9f43fd90399596d754f46b1468d",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "kogan-po2808868mr-vec": {
+          "name": "Kogan Shift (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:580f067684778a68b342a43b744f7e483b35edb6541ad6e4cd5e5ccfca2c835e",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "kogan-po2808870mr-vec": {
+          "name": "Kogan Shift (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ca29014cab68f76aa97bb936e097891ec8d3078424c8902e35f39b2c99305dbc",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "kogan-po2808872mr-vec": {
+          "name": "Kogan Shift (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:7e29bf1a1260c18878d1cbdaf0b14b1896c18ecbcfdd36cd6ec9516f15889ff0",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "kogan-po2808874mr-vec": {
+          "name": "Kogan Shift (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:65eedc6fd53c60143ffe34a5df8d3fb9d2d5e047924e9119c6078bde97d61ea7",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "lumo": {
+      "name": "Lumo Energy",
+      "tariffs": {
+        "lumo-lu2809868mr-vec": {
+          "name": "Lumo Basic (AusNet Services (electricity))",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:925f777a230c1f257869da4d2ff5debf4681218b989cd4efb53bb466bbf8f743",
+              "effective_from": "2026-10-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809869mr-vec": {
+          "name": "Lumo Basic (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:fa2a359dcba34f6ea9d1e3c5133a76cfed855a217f4d1e90e8dd5b51f9b04992",
+              "effective_from": "2026-10-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809870mr-vec": {
+          "name": "Lumo Basic (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:a7e3a063dd69cf0a07f9befb6e011a22d683048d6ded459e2884efab3e2f69ad",
+              "effective_from": "2026-10-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809872mr-vec": {
+          "name": "Lumo Basic (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:9ce3732fb72c908bf601715a52ba98e6b8ad767a45f62fed6a380d6c09c09376",
+              "effective_from": "2026-10-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809874mr-vec": {
+          "name": "Lumo Basic (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:6a7efcc92f42269679e9211fedfab1be125b2ef69bf2683d0e4c035b6aac9cc4",
+              "effective_from": "2026-10-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809875mr-vec": {
+          "name": "Lumo Basic (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:664411c4a6922ac2269b53b1fb08d8902f524890daedc18c4e78bd474d411e20",
+              "effective_from": "2026-10-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809876mr-vec": {
+          "name": "Lumo Basic (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:826a03c268dbe5589954b8a9d9a0488938c1ee3efba02173739789bb3f2b6a33",
+              "effective_from": "2026-10-13",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "momentum": {
+      "name": "Momentum Energy",
+      "tariffs": {
+        "momentum-mom1162853mre2-eme": {
+          "name": "Bill Boss Electricity (Endeavour)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e95b2c71428e11625949731705f67bd0b5892020865d0c8d85c1110c39b4454a",
+              "effective_from": "2026-11-02",
+              "effective_to": null
+            }
+          }
+        },
+        "momentum-mom1162870mre2-eme": {
+          "name": "Bill Boss Electricity (Essential Energy + Essential Energy Standard + Essential Energy Far West)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ea5ae30f8b24532f98aa0585e407bb188055083332999839bc2d4b92a7fc57b6",
+              "effective_from": "2026-11-02",
+              "effective_to": null
+            }
+          }
+        },
+        "momentum-mom811849mr-vec": {
+          "name": "Bill Boss Electricity (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:92ddaaefccfb5e29d91248239dc181f1784a7143a49c606c2e70236714fbbf31",
+              "effective_from": "2026-11-01",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "nectr": {
+      "name": "Nectr",
+      "tariffs": {
+        "nectr-nec802183mr-vec": {
+          "name": "Nectr GreenPower TOU - Citipower - October 2026 (Citipower)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:7b03c8eb9fbb310f6b8c0682c7dcc2c1ffac4f44be95f389ff3bc631a8b07853",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-nec802185mr-vec": {
+          "name": "Nectr GreenPower TOU - Jemena - October 2026 (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:8a913686875d665e84746aeb1ec7076beecce29860b85515656df5a1ac3996b2",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-nec802188mr-vec": {
+          "name": "Nectr GreenPower TOU + CL - Powercor - October 2026 (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:312aa183ba782b7fbe161c898a554b647842f4502f0de43e1182578380f113aa",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-nec802189mr-vec": {
+          "name": "Nectr GreenPower TOU - United Energy - October 2026 (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:4031171a23305ebab826c14c51f9e22c0b58d59d47f28cb4d244e9f4a04a58f7",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-ntr1042706mre2-eme": {
+          "name": "Battery Evening Export TOU + CL 1 - November 2026 (Essential Energy + Essential Energy Standard + Essential Energy Far West)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:a97d9d80ad10b41d133972c654ebfa3c5737c8b3acc777d36bd71177899e0298",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "origin": {
+      "name": "Origin Energy",
+      "tariffs": {
+        "origin-or2811883mr-vec": {
+          "name": "Origin Night Shift - Oct'26 (Time of Use) (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:869a74ad1b71aefe9e3f3bad57385475c6062c2401c429807782b4ca39c34f10",
+              "effective_from": "2026-10-29",
+              "effective_to": null
+            }
+          }
+        },
+        "origin-or2811887mr-vec": {
+          "name": "Origin Night Shift - Oct'26 (Time of Use) (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:37a9feb69d24f2aa7917f0241290c983d3df93031db43a804ce613e6925ce272",
+              "effective_from": "2026-10-29",
+              "effective_to": null
+            }
+          }
+        },
+        "origin-ori1206293mre1-eme": {
+          "name": "Origin Battery Earner (Ausgrid)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d68c23009a022869cff717f8426693508bf6a080e7677abb4c411479979af260",
+              "effective_from": "2026-10-27",
+              "effective_to": null
+            }
+          }
+        },
+        "origin-ori1206306mre1-eme": {
+          "name": "Origin Battery Earner (Essential Energy + Essential Energy Standard + Essential Energy Far West)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:5bd411b279f6533bbbf46b46b8f4b67038b9b79ce4403a9cb78ae31664d3861f",
+              "effective_from": "2026-10-27",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "powershop": {
+      "name": "Powershop",
+      "tariffs": {
+        "powershop-pod803031mr-vec": {
+          "name": "Switch Saver (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:9422b2279aa203cff985c4a7a9b09d49f87480a92aa6d7cfce321f01812bebbc",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "powershop-pod803038mr-vec": {
+          "name": "Switch Saver (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:6416261a261a27e219e99e7d6708e25eb6d56ca9d62a66136f190526c3449347",
+              "effective_from": "2026-09-30",
+              "effective_to": null
+            }
+          }
+        },
+        "powershop-psh1060223mre3-eme": {
+          "name": "Power House (Essential Energy + Essential Energy Standard + Essential Energy Far West)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:676075fa577d86d0b9172b0c37d9e78c11f926310002bace4b848427766cc7f6",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "powershop-psh1060535mre4-eme": {
+          "name": "Solar Sharer (Ausgrid)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:164ac33141c3e8665e3fe0a110fae3d1be64c414775410eb7c439ca4b5893763",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "tango": {
+      "name": "Tango Energy",
+      "tariffs": {
+        "tango-tan804547mr-vec": {
+          "name": "Bonus Booster (Jemena)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:7e7c4e13822473ca5dd0e8491b561c73f36d8ba445dce6d0598ddfad1f5b2989",
+              "effective_from": "2026-09-28",
+              "effective_to": null
+            }
+          }
+        },
+        "tango-tan804558mr-vec": {
+          "name": "Bonus Booster (Powercor)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:3617667eba459b613cf5e5a6bf38839eae73bee300177e1b0e15d1906a30e117",
+              "effective_from": "2026-09-28",
+              "effective_to": null
+            }
+          }
+        },
+        "tango-tan804560mr-vec": {
+          "name": "Bonus Booster (United Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:8a3037e496448a76e4aac3f6c58f454dab2e97352b1f7c67fc6b16271b24f73c",
+              "effective_from": "2026-09-28",
+              "effective_to": null
+            }
+          }
+        },
+        "tango-tan919358mre3-eme": {
+          "name": "Home Select (Endeavour)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:b0d30f04a7b4608d3736a3e9e50bb904187dabc538fe39a0af3ddffb321a2d83",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "tango-tan919360mre3-eme": {
+          "name": "Home Select (Essential Energy Far West + Essential Energy Standard + Essential Energy)",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:c153ac8c4510ab7c98ec017220b5d6584f2db88996923f0887f97a649e0e626b",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    }
+  }
+}

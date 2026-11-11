@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Homepower 4",
+  "provider": "Eskom",
+  "effective_from": "2026-04-01",
+  "source": {
+    "id": "za-eskom-tariff-book",
+    "url": "https://www.eskom.co.za/distribution/wp-content/uploads/2026/07/Eskom-Tariff-booklet_Final.pdf"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Energy"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Energy": "3.0918"
+      },
+      "standing": "15.53"
+    }
+  }
+}

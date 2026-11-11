@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "Standard, 24hr Standard Green",
+  "provider": "Flogas",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/flogas"
+  },
+  "bands": [
+    {
+      "name": "24-Hour"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "24-Hour": "0.351961"
+      },
+      "standing": "1.016329"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "24-Hour": "0.351961"
+      },
+      "standing": "0.837479"
+    }
+  }
+}

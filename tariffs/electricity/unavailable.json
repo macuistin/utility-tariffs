@@ -1,0 +1,45 @@
+{
+  "countries": {
+    "AT": {
+      "checked": "2026-11-10",
+      "reason": "The E-Control tariff calculator API is available only on request, under written terms."
+    },
+    "BE": {
+      "checked": "2026-11-10",
+      "reason": "The VREG site timed out and no regulator tariff dataset was found for Brussels or Wallonia. Tariff cards are supplier PDFs."
+    },
+    "CA": {
+      "checked": "2026-11-10",
+      "reason": "The Ontario Energy Board site timed out from the sync machine, so nothing was read. The regulated time-of-use prices also use weekday, weekend and seasonal rules the format cannot express."
+    },
+    "DE": {
+      "checked": "2026-11-10",
+      "reason": "No regulator tariff register exists. The comparison sites hold the plans and their terms have not been checked."
+    },
+    "ES": {
+      "checked": "2026-11-10",
+      "reason": "The regulated PVPC tariff is indexed to the hourly wholesale price and has weekday periods, which the format cannot express. The ESIOS API needs a personal token."
+    },
+    "IT": {
+      "checked": "2026-11-10",
+      "reason": "The ARERA Portale Offerte site is reachable, but the open-data file was not found. Many offers are indexed to the wholesale price, and only fixed-price offers could be held."
+    },
+    "NL": {
+      "checked": "2026-11-10",
+      "reason": "No regulator plan list was found. Searched only briefly."
+    },
+    "PT": {
+      "checked": "2026-11-10",
+      "reason": "ERSE publishes tariff schedules as PDF and Excel annexes. No open data file was found and none has been parsed."
+    },
+    "SE": {
+      "checked": "2026-11-10",
+      "reason": "Elpriskollen is reachable but offers no public API. Many contracts are spot price plus a markup, which the format cannot express."
+    },
+    "US": {
+      "checked": "2026-11-10",
+      "reason": "OpenEI publishes thousands of utility rates, but the export has no state or timezone, and most rates use tiers, demand charges or seasons the format cannot express. A utility-to-state mapping (EIA-861) is needed first."
+    }
+  },
+  "schema": 1
+}

@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "country": "GB",
+  "currency": "GBP",
+  "timezone": "Europe/London",
+  "vat_percent": [
+    {
+      "percent": "5"
+    },
+    {
+      "effective_from": "2026-10-01",
+      "effective_to": "2027-04-01",
+      "percent": "0"
+    }
+  ],
+  "inputs": {
+    "bill_start_day": {
+      "default": 1,
+      "max": 28,
+      "min": 1,
+      "type": "integer"
+    }
+  },
+  "bill": {
+    "period": {
+      "rule": "monthly",
+      "start_day": "$input.bill_start_day"
+    },
+    "total": {
+      "kind": "tax",
+      "mode": "included",
+      "name": "VAT",
+      "of": {
+        "kind": "sum",
+        "of": {
+          "energy": {
+            "kind": "energy_by_band",
+            "round_bands": true
+          },
+          "standing": {
+            "kind": "per_day"
+          }
+        }
+      },
+      "percent": "$country.vat_percent"
+    }
+  },
+  "providers": {
+    "octopus-energy": {
+      "name": "Octopus Energy",
+      "tariffs": {
+        "octopus-oe-fix-12m-26-11-09": {
+          "name": "Octopus 12M Fixed November 2026 v2",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:872f3a174c963c671a1c8d0b5358e5e7ace507265cca886146ca9d95800c412d",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "octopus-oe-fix-18m-26-11-09": {
+          "name": "Octopus 18M Fixed November 2026",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e81a90b49b0bab696e293ade3fba9bc710cb61f51fb50c76a0ff2b96052667f1",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "octopus-outgoing-prime-fix-12m-26-06-23": {
+          "direction": "export",
+          "name": "Prime Outgoing Octopus 12M Fixed June 2026 v1",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:5b4a2da02b0833cf6b8960da7b5f675149d17004a8e70adcd681f8a7f07fe759",
+              "effective_from": "2026-06-23",
+              "effective_to": null
+            }
+          }
+        },
+        "octopus-outgoing-seg-fix-12m-20-07-07": {
+          "direction": "export",
+          "name": "Octopus Outgoing Smart Export Guarantee July 2020 v1",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:77be1aaf032e5bd21986e968aa644bf4091f8b7038c86505e9d298d4f629f836",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "octopus-outgoing-seg-fix-12m-26-10-21": {
+          "direction": "export",
+          "name": "Octopus Outgoing Smart Export Guarantee October 2026 v1",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:56e367d50586e7513d9b9c7043d3a5211056ceca55972c06020d844543b1fbe6",
+              "effective_from": "2026-10-21",
+              "effective_to": null
+            }
+          }
+        },
+        "octopus-outgoing-var-24-10-26": {
+          "direction": "export",
+          "name": "Outgoing Octopus",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:825a0cd7a21d61049172b134782bca3ad00a82e710ccdc199119bb41e8b539fd",
+              "effective_from": "2024-10-26",
+              "effective_to": "2026-03-01"
+            },
+            "2": {
+              "checksum": "sha256:37e0838045e4965ea83ef625643e22a56732824e42d11fc2e4388afe2ab3b893",
+              "effective_from": "2026-03-01",
+              "effective_to": null
+            }
+          }
+        },
+        "octopus-var-22-11-01": {
+          "name": "Flexible Octopus",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:a8f4bf99533d8d469b68c812ab8603723f11584a90a5d56045e07d765495cf73",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "ofgem-price-cap": {
+      "name": "Ofgem price cap",
+      "tariffs": {
+        "ofgem-cap-direct-debit-and-other": {
+          "name": "Price cap, direct debit and other, single rate",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:06cb4ee8e07bc0755adc3e598b586533a5694cba8aedfcf7ee278971f5d88bd1",
+              "effective_from": "2026-10-01",
+              "effective_to": "2027-01-01"
+            }
+          }
+        },
+        "ofgem-cap-prepayment": {
+          "name": "Price cap, prepayment, single rate",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:2b0bea76089abb059685850d004e3f038e610bff1f27ade49864b8b2f435c7c8",
+              "effective_from": "2026-10-01",
+              "effective_to": "2027-01-01"
+            }
+          }
+        },
+        "ofgem-cap-standard-credit": {
+          "name": "Price cap, standard credit, single rate",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e97ee9856783689423603cd3943cea325d077e70b88c7d69d50facff43c13647",
+              "effective_from": "2026-10-01",
+              "effective_to": "2027-01-01"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "name": "NightSaver Standard Green",
+  "provider": "Ecopower",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/ecopower"
+  },
+  "bands": [
+    {
+      "name": "Day"
+    },
+    {
+      "hours": "23:00-08:00",
+      "name": "Night"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "Day": "0.45453",
+        "Night": "0.2507"
+      },
+      "standing": "0.915589"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "Day": "0.45453",
+        "Night": "0.2507"
+      },
+      "standing": "0.828411"
+    }
+  }
+}

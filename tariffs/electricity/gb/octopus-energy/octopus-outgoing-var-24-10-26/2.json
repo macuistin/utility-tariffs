@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "Outgoing Octopus",
+  "provider": "Octopus Energy",
+  "direction": "export",
+  "effective_from": "2026-03-01",
+  "source": {
+    "id": "octopus-energy-gb",
+    "url": "https://api.octopus.energy/v1/products/OUTGOING-VAR-24-10-26/"
+  },
+  "bands": [
+    {
+      "name": "Flat"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Flat": "0.12"
+      }
+    }
+  }
+}

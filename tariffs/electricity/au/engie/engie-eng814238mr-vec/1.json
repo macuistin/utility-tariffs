@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "VIC-ENGIE Perks Plus Plus Elec (United Energy)",
+  "provider": "ENGIE",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/engie/cds-au/v1/energy/plans/ENG814238MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.2486"
+      },
+      "standing": "1.0829"
+    }
+  }
+}

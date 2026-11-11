@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "country": "ZA",
+  "currency": "ZAR",
+  "timezone": "Africa/Johannesburg",
+  "vat_percent": "15",
+  "availability": "partial",
+  "reason": "Eskom direct residential tariffs from the 2026/27 tariff booklet (Homelight and Homepower). Homeflex, bulk, generation-offset and municipal tariffs are not held.",
+  "inputs": {
+    "bill_start_day": {
+      "default": 1,
+      "max": 28,
+      "min": 1,
+      "type": "integer"
+    }
+  },
+  "bill": {
+    "period": {
+      "rule": "monthly",
+      "start_day": "$input.bill_start_day"
+    },
+    "total": {
+      "kind": "tax",
+      "mode": "added",
+      "name": "VAT",
+      "of": {
+        "kind": "sum",
+        "of": {
+          "energy": {
+            "kind": "energy_by_band",
+            "round_bands": true
+          },
+          "standing": {
+            "kind": "per_day"
+          }
+        }
+      },
+      "percent": "$country.vat_percent"
+    }
+  },
+  "providers": {
+    "eskom": {
+      "name": "Eskom",
+      "tariffs": {
+        "eskom-homelight-20a": {
+          "name": "Homelight 20A",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:955a636a7df68a921a28e7e65006c1388864b9318e0f3285333be42e68415021",
+              "effective_from": "2026-04-01",
+              "effective_to": null
+            }
+          }
+        },
+        "eskom-homelight-60a": {
+          "name": "Homelight 60A",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:b2768069a1135d39520c29a4f78fc62515e31be9895150ad374d03e2c0ba5663",
+              "effective_from": "2026-04-01",
+              "effective_to": null
+            }
+          }
+        },
+        "eskom-homepower-1": {
+          "name": "Homepower 1",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:28a99bf6a78321784494f02dbefe71ebbfdd25d5283019dee59e1908bd4749e9",
+              "effective_from": "2026-04-01",
+              "effective_to": null
+            }
+          }
+        },
+        "eskom-homepower-2": {
+          "name": "Homepower 2",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ae4c3d84e0a7a092e4a87552e063ecfc6eecf711968555bc9a7ab479077596a7",
+              "effective_from": "2026-04-01",
+              "effective_to": null
+            }
+          }
+        },
+        "eskom-homepower-3": {
+          "name": "Homepower 3",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:05edd7d93367077a2ea9de9d85a8af6a89d83ef5d6a89f36db0c68f0ce410cb7",
+              "effective_from": "2026-04-01",
+              "effective_to": null
+            }
+          }
+        },
+        "eskom-homepower-4": {
+          "name": "Homepower 4",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:3829a874035626a32043baf7f6daaa78e187d0cf867be5884e89569a6a32f02c",
+              "effective_from": "2026-04-01",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    }
+  }
+}

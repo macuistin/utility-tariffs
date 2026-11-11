@@ -1,0 +1,286 @@
+{
+  "schema": 1,
+  "country": "IE",
+  "currency": "EUR",
+  "timezone": "Europe/Dublin",
+  "vat_percent": "9",
+  "inputs": {
+    "bill_start_day": {
+      "default": 1,
+      "max": 28,
+      "min": 1,
+      "type": "integer"
+    }
+  },
+  "bill": {
+    "period": {
+      "rule": "monthly",
+      "start_day": "$input.bill_start_day"
+    },
+    "total": {
+      "kind": "tax",
+      "mode": "included",
+      "name": "VAT",
+      "of": {
+        "kind": "sum",
+        "of": {
+          "energy": {
+            "kind": "energy_by_band",
+            "round_bands": true
+          },
+          "standing": {
+            "kind": "per_day"
+          }
+        }
+      },
+      "percent": "$country.vat_percent"
+    }
+  },
+  "providers": {
+    "bord-gais-energy": {
+      "name": "Bord Gais Energy",
+      "tariffs": {
+        "bord-gais-energy-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:5c442c1953ee2d99395fcd19a8777ad14ac1907392a21bc05896c809707e47ef",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "bord-gais-energy-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:9f04787415eb2b21dc75fcd37df79a7ef3359a0f44f15ef3ebf6af0690099a0d",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "community-power": {
+      "name": "Community Power",
+      "tariffs": {
+        "community-power-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:cff311885798de49dd9b980390232ed5f156bf6e85ea1eeac141e4c9d06423d1",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "community-power-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e55e3c961639ce2a2fa0dcadcfb2343580cb5466c7673750bc645c413c6f86e2",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "ecopower": {
+      "name": "Ecopower",
+      "tariffs": {
+        "ecopower-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:f3efdbffec97e667c82b92d23313d484d170e3216e696c6a40a40a37f7e330fe",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "ecopower-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:c1524241ae1e70f3414be033e07c6dfb326602809603d6cbdbd666b18cf1b454",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "electric-ireland": {
+      "name": "Electric Ireland",
+      "tariffs": {
+        "electric-ireland-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:165aee423278f12923c96a8a5f806b8032bfab47ef25c93e6730da0dd9df6ebb",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "electric-ireland-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:68e621ce200e22194ba1010c8ed15acbc1849dc4b888a5e367ac4bb7a560aa10",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "energia": {
+      "name": "Energia",
+      "tariffs": {
+        "energia-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:2879aed8c6710c5c74b45df3bfb7760e7dadce4ab0de06b1939a746f39f17538",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "flogas": {
+      "name": "Flogas",
+      "tariffs": {
+        "flogas-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d35c5b2b4b4fd5a9e281f5a384ce5df9a24da731d930082a686cb93bc4d2924b",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "flogas-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:367cb93f26ec78d50f92e67d0e91ad12e9776002f0e272a8b292bec27fb15986",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "pinergy": {
+      "name": "Pinergy",
+      "tariffs": {
+        "pinergy-standard-24hr-pay-as-you-go-green": {
+          "name": "Standard, 24hr Pay-as-you-go Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:066fbda3526f085f9984337cbefceaca26badfcee7a0f178cb55d1f784202fc7",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "prepaypower": {
+      "name": "Prepaypower",
+      "tariffs": {
+        "prepaypower-standard-24hr-pay-as-you-go-green": {
+          "name": "Standard, 24hr Pay-as-you-go Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:3f908ef47d315ab39f8c2b40b50029cae2709d42d4024a7f836cd8638e64c160",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "sse-airtricity": {
+      "name": "Sse Airtricity",
+      "tariffs": {
+        "sse-airtricity-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e5fe4a59acc4a8f6eeca0bffcb84fe34d01f4fa85220ab8d7cd82eec3a844221",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "sse-airtricity-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:001129cefed58d731e0b996deda88457d9a7d9ae6c06bb8495c68d05e29b015d",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "waterpower": {
+      "name": "Waterpower",
+      "tariffs": {
+        "waterpower-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ee9be672b7b2a3910a6a695a409311aabf5552155305172d3e6eec14e0077f60",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "waterpower-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:92ab5d2fe9a34367de315fe7f64df6e6c886f39326dd9791aa3cf9b5ed48ed5c",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    },
+    "yuno-energy": {
+      "name": "Yuno Energy",
+      "tariffs": {
+        "yuno-energy-nightsaver-standard-green": {
+          "name": "NightSaver Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:8526461c2ff153752a3ac655e9fd69d5665ebca46cff25234e5933f23f12257d",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        },
+        "yuno-energy-standard-24hr-standard-green": {
+          "name": "Standard, 24hr Standard Green",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:cdbb5040a98ca5c097fe815cd7b9becc4968c6d51aab5c17622d77c2c524a3ee",
+              "effective_from": "2026-11-09",
+              "effective_to": null
+            }
+          }
+        }
+      }
+    }
+  }
+}

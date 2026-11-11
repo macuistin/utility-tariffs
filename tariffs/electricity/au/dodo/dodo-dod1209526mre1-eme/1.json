@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Real Deal (Ausgrid)",
+  "provider": "Dodo Power & Gas",
+  "effective_from": "2026-10-17",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/dodo/cds-au/v1/energy/plans/DOD1209526MRE1@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.276014"
+      },
+      "standing": "0.957173"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Home Energy Plan (United Energy)",
+  "provider": "Arcline by RACV - Energy",
+  "effective_from": "2026-09-30",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/arcline/cds-au/v1/energy/plans/ARC805138MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.23123"
+      },
+      "standing": "1.0071"
+    }
+  }
+}

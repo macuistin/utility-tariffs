@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "name": "Balance Plan - Third Party Offer (Endeavour)",
+  "provider": "EnergyAustralia",
+  "effective_from": "2026-10-15",
+  "effective_to": "2026-11-25",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/energyaustralia/cds-au/v1/energy/plans/ENE932492MRE11@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.306539"
+      },
+      "standing": "1.68304"
+    }
+  }
+}

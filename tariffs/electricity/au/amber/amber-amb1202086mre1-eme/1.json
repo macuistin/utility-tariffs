@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "No Feed-In + CBA Yello Plus: Variable Prices (estimate) (Ausgrid)",
+  "provider": "Amber Electric",
+  "effective_from": "2026-10-01",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/amber/cds-au/v1/energy/plans/AMB1202086MRE1@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.22012"
+      },
+      "standing": "1.061856"
+    }
+  }
+}

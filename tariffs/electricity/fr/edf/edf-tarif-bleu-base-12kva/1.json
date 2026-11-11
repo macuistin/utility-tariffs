@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "Tarif Bleu, option Base, 12 kVA",
+  "provider": "EDF (tarif réglementé Bleu)",
+  "effective_from": "2026-08-01",
+  "source": {
+    "id": "fr-cre-trve",
+    "url": "https://www.cre.fr/fileadmin/Documents/Open_data/Marches_de_detail/Option_Base.csv"
+  },
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.1985"
+      },
+      "standing": "0.785918"
+    }
+  }
+}

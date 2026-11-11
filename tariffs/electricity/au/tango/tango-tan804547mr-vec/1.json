@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "name": "Bonus Booster (Jemena)",
+  "provider": "Tango Energy",
+  "effective_from": "2026-09-28",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/tango/cds-au/v1/energy/plans/TAN804547MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Off Peak"
+    },
+    {
+      "hours": "16:00-21:00",
+      "name": "Peak"
+    },
+    {
+      "hours": "11:00-16:00",
+      "name": "Solar Soak"
+    },
+    {
+      "hours": "21:00-00:00",
+      "name": "Off Peak 2"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Off Peak": "0.187",
+        "Off Peak 2": "0.187",
+        "Peak": "0.341",
+        "Solar Soak": "0.142"
+      },
+      "standing": "1"
+    }
+  }
+}

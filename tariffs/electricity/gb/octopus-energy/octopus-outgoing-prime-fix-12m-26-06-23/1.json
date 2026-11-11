@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "name": "Prime Outgoing Octopus 12M Fixed June 2026 v1",
+  "provider": "Octopus Energy",
+  "direction": "export",
+  "effective_from": "2026-06-23",
+  "source": {
+    "id": "octopus-energy-gb",
+    "url": "https://api.octopus.energy/v1/products/OUTGOING-PRIME-FIX-12M-26-06-23/"
+  },
+  "bands": [
+    {
+      "name": "Off-peak"
+    },
+    {
+      "hours": "16:00-19:00",
+      "name": "Peak"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Off-peak": "0.09",
+        "Peak": "0.16"
+      }
+    }
+  }
+}

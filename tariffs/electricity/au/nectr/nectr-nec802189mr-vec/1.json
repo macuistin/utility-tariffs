@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "name": "Nectr GreenPower TOU - United Energy - October 2026 (United Energy)",
+  "provider": "Nectr",
+  "effective_from": "2026-09-30",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/nectr/cds-au/v1/energy/plans/NEC802189MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Tariff 2"
+    },
+    {
+      "hours": "16:00-21:00",
+      "name": "Tariff 1"
+    },
+    {
+      "hours": "11:00-16:00",
+      "name": "Tariff 3"
+    },
+    {
+      "hours": "21:00-00:00",
+      "name": "Tariff 2 2"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Tariff 1": "0.366545",
+        "Tariff 2": "0.201273",
+        "Tariff 2 2": "0.201273",
+        "Tariff 3": "0.156909"
+      },
+      "standing": "1.082909"
+    }
+  }
+}

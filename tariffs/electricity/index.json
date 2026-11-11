@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "countries": {
+    "AT": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "The E-Control tariff calculator API is available only on request, under written terms."
+    },
+    "AU": {
+      "availability": "partial",
+      "checksum": "sha256:b3136e02898a34dcc6a5e94ae962e6d43b6e6c49a1ee25ad608ab7d87b4b3398",
+      "path": "au/index.json",
+      "providers": 16,
+      "reason": "Retailer plans read from the Consumer Data Right endpoints, about 8 per retailer for 17 of 20 retailers. Plans with seasonal periods, volume tiers or weekday and weekend windows are skipped. Only New South Wales, Victoria, ACT and Tasmania are held, because the country block has one timezone and Queensland, South Australia, Western Australia and the Northern Territory use others.",
+      "tariffs": 79
+    },
+    "BE": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "The VREG site timed out and no regulator tariff dataset was found for Brussels or Wallonia. Tariff cards are supplier PDFs."
+    },
+    "CA": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "The Ontario Energy Board site timed out from the sync machine, so nothing was read. The regulated time-of-use prices also use weekday, weekend and seasonal rules the format cannot express."
+    },
+    "DE": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "No regulator tariff register exists. The comparison sites hold the plans and their terms have not been checked."
+    },
+    "ES": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "The regulated PVPC tariff is indexed to the hourly wholesale price and has weekday periods, which the format cannot express. The ESIOS API needs a personal token."
+    },
+    "FR": {
+      "availability": "partial",
+      "checksum": "sha256:b1568818814e25cd22505cc55c470a08fa3f5adca5c48df5284a693cd9da984e",
+      "path": "fr/index.json",
+      "providers": 1,
+      "reason": "Regulated Tarif Bleu, Base option only. Off-peak (Heures Creuses) and Tempo options are skipped. Prices are all-taxes figures, and the real VAT is 5.5% on the subscription and 20% on energy.",
+      "tariffs": 5
+    },
+    "GB": {
+      "availability": "available",
+      "checksum": "sha256:234fd5aa68934e5ae2e694288d2569d961d7feae4937a74222c8c07266bb1903",
+      "path": "gb/index.json",
+      "providers": 2,
+      "tariffs": 10
+    },
+    "IE": {
+      "availability": "available",
+      "checksum": "sha256:7b27b5d719646ca4116d440dc4c178cd476a36566336d8ef4811ec620ade6d98",
+      "path": "ie/index.json",
+      "providers": 11,
+      "tariffs": 19
+    },
+    "IT": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "The ARERA Portale Offerte site is reachable, but the open-data file was not found. Many offers are indexed to the wholesale price, and only fixed-price offers could be held."
+    },
+    "NL": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "No regulator plan list was found. Searched only briefly."
+    },
+    "PT": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "ERSE publishes tariff schedules as PDF and Excel annexes. No open data file was found and none has been parsed."
+    },
+    "SE": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "Elpriskollen is reachable but offers no public API. Many contracts are spot price plus a markup, which the format cannot express."
+    },
+    "US": {
+      "availability": "unavailable",
+      "checked": "2026-11-10",
+      "reason": "OpenEI publishes thousands of utility rates, but the export has no state or timezone, and most rates use tiers, demand charges or seasons the format cannot express. A utility-to-state mapping (EIA-861) is needed first."
+    },
+    "ZA": {
+      "availability": "partial",
+      "checksum": "sha256:ee1ba193216204ccb15e6f1b7809952d465d3448df570ebb783c457dbda751ae",
+      "path": "za/index.json",
+      "providers": 1,
+      "reason": "Eskom direct residential tariffs from the 2026/27 tariff booklet (Homelight and Homepower). Homeflex, bulk, generation-offset and municipal tariffs are not held.",
+      "tariffs": 6
+    }
+  }
+}

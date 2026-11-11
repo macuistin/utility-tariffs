@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Bill Boss Electricity (United Energy)",
+  "provider": "Momentum Energy",
+  "effective_from": "2026-11-01",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/momentum/cds-au/v1/energy/plans/MOM811849MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.249"
+      },
+      "standing": "1.082"
+    }
+  }
+}

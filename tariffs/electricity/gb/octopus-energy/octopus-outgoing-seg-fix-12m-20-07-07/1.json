@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "Octopus Outgoing Smart Export Guarantee July 2020 v1",
+  "provider": "Octopus Energy",
+  "direction": "export",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "octopus-energy-gb",
+    "url": "https://api.octopus.energy/v1/products/OUTGOING-SEG-FIX-12M-20-07-07/"
+  },
+  "bands": [
+    {
+      "name": "Flat"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Flat": "0.041"
+      }
+    }
+  }
+}

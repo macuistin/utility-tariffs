@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "name": "Standard, 24hr Standard Green",
+  "provider": "Bord Gais Energy",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/bord-gais-energy"
+  },
+  "bands": [
+    {
+      "name": "24-Hour"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "24-Hour": "0.327654"
+      },
+      "standing": "0.902521"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "24-Hour": "0.326673"
+      },
+      "standing": "0.718849"
+    }
+  }
+}

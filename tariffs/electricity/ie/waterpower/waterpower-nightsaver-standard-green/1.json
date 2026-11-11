@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "name": "NightSaver Standard Green",
+  "provider": "Waterpower",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/waterpower"
+  },
+  "bands": [
+    {
+      "name": "Day"
+    },
+    {
+      "hours": "23:00-08:00",
+      "name": "Night"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "Day": "0.382045",
+        "Night": "0.324057"
+      },
+      "standing": "0.882904"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "Day": "0.382045",
+        "Night": "0.324057"
+      },
+      "standing": "0.675808"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "name": "Bill Boss Electricity (Endeavour)",
+  "provider": "Momentum Energy",
+  "effective_from": "2026-11-02",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/momentum/cds-au/v1/energy/plans/MOM1162853MRE2@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Peak"
+    },
+    {
+      "hours": "10:00-14:00",
+      "name": "Off-Peak"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Off-Peak": "0.215",
+        "Peak": "0.284"
+      },
+      "standing": "1.935"
+    }
+  }
+}

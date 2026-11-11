@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Lumo Basic (Jemena)",
+  "provider": "Lumo Energy",
+  "effective_from": "2026-10-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/lumo/cds-au/v1/energy/plans/LU2809872MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.2295"
+      },
+      "standing": "0.9495"
+    }
+  }
+}
