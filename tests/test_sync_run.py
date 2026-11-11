@@ -132,6 +132,20 @@ class CommandLine(unittest.TestCase):
             with self.assertRaises(ValueError):
                 runner.main(["fr_cre", "--date", "tomorrow"])
 
+    def test_list_prints_the_sources_as_json_and_runs_nothing(self) -> None:
+        with mock.patch.object(runner, "run") as run, \
+                contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(runner.main(["fr_cre", "ofgem_gb", "fr_cre", "--list"]), 0)
+            self.assertEqual(json.loads(out.getvalue()), ["fr_cre", "ofgem_gb"])
+            self.assertEqual(runner.main(["all", "--list"]), 0)
+            run.assert_not_called()
+
+    def test_a_failed_run_of_one_source_does_not_speak_of_others(self) -> None:
+        with mock.patch.object(runner, "run", return_value=(1, "report")), \
+                contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(runner.main(["fr_cre"]), 1)
+            self.assertEqual(out.getvalue(), "**Failed: fr_cre.**\n\nreport\n")
+
     def test_every_listed_source_loads_and_says_what_it_is(self) -> None:
         for name in sources.NAMES:
             module = sources.load(name)

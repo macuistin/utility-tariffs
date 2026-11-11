@@ -1,7 +1,8 @@
 name: Sync tariffs
 
-# Reads every source, and opens a pull request when a price changed. No AI and no private
-# machine: plain Python on a GitHub runner. A person reviews and merges the pull request.
+# Reads every source, each in its own job, and opens one pull request when a price
+# changed. A source that fails gets its own issue and does not stop the others. No AI and no
+# private machine: plain Python on a GitHub runner. A person reviews and merges the pull request.
 on:
   schedule:
     - cron: "17 5 * * 1"   # Mondays 05:17 UTC
@@ -11,20 +12,94 @@ on:
         description: "Sources to run, space separated, or all"
         default: all
 
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-  actions: write
+permissions: {}
 
 concurrency:
   group: sync
   cancel-in-progress: false
 
 jobs:
-  sync:
+  plan:
+    name: List the sources
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      names: ${{ steps.list.outputs.names }}
+      sha: ${{ steps.list.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: List the sources and fix the commit every job reads
+        id: list
+        env:
+          SOURCES: ${{ github.event.inputs.sources || 'all' }}
+        run: |
+          echo "names=$(python -m scripts.sync $SOURCES --list)" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  source:
+    name: ${{ matrix.source }}
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        source: ${{ fromJSON(needs.plan.outputs.names) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Run the source
+        id: run
+        env:
+          SOURCE: ${{ matrix.source }}
+        run: |
+          set +e
+          mkdir -p "$RUNNER_TEMP/part"
+          python -m scripts.sync "$SOURCE" --report "$RUNNER_TEMP/part/report.md"
+          code=$?
+          echo "$code" > "$RUNNER_TEMP/part/exit"
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/part/report.md" >> "$GITHUB_STEP_SUMMARY"
+          # The tariff files this source wrote. The indexes are left out: the last job builds them
+          # once from every source's files.
+          git status --porcelain --untracked-files=all -- tariffs | cut -c4- | grep -v '/index\.json$' > "$RUNNER_TEMP/files.txt"
+          tar -cf "$RUNNER_TEMP/part/changes.tar" -T "$RUNNER_TEMP/files.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sync-${{ matrix.source }}
+          path: ${{ runner.temp }}/part
+          retention-days: 7
+
+      - name: Mark the job failed when the source failed
+        if: steps.run.outputs.exit != '0'
+        run: exit 1
+
+  gather:
+    name: Open the pull request and report failures
+    needs: [plan, source]
+    if: ${{ !cancelled() && needs.plan.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: write
     env:
       # A fine-grained token in the SYNC_TOKEN secret makes the pull request start CI on its
       # own. Without it the built-in token is used and CI is started by hand below.
@@ -32,31 +107,50 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ needs.plan.outputs.sha }}
           token: ${{ secrets.SYNC_TOKEN || github.token }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.14"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sync-*
+          path: ${{ runner.temp }}/parts
 
-      - name: Run the sources
-        id: run
+      - name: Gather what the sources wrote
+        id: gather
         env:
-          SOURCES: ${{ github.event.inputs.sources || 'all' }}
+          NAMES: ${{ needs.plan.outputs.names }}
         run: |
-          set +e
-          python -m scripts.sync $SOURCES --report "$RUNNER_TEMP/report.md"
-          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          failed=""
+          for name in $(echo "$NAMES" | tr -d '[]",'); do
+            part="$RUNNER_TEMP/parts/sync-$name"
+            if [ "$(cat "$part/exit" 2>/dev/null)" = "0" ]; then
+              tar -xf "$part/changes.tar"
+            else
+              failed="$failed $name"
+              # A job that was stopped before it could report leaves nothing behind.
+              if [ ! -f "$part/report.md" ]; then
+                mkdir -p "$part"
+                printf '## Tariff sync: %s\n\nThe job gave no result. See the run.\n' "$name" > "$part/report.md"
+              fi
+            fi
+            cat "$part/report.md" >> "$RUNNER_TEMP/report.md"
+            echo >> "$RUNNER_TEMP/report.md"
+          done
+          python -m scripts.build
           cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
+          echo "failed=${failed# }" >> "$GITHUB_OUTPUT"
           if [ -n "$(git status --porcelain tariffs)" ]; then echo "changed=true" >> "$GITHUB_OUTPUT"; fi
 
       - name: Check and test what will be proposed
-        if: steps.run.outputs.changed == 'true'
+        if: steps.gather.outputs.changed == 'true'
         run: |
-          python -m scripts.build --check --base origin/main
+          python -m scripts.build --check --base HEAD
           python -m unittest discover tests
 
       - name: Open the pull request
-        if: steps.run.outputs.changed == 'true'
+        if: steps.gather.outputs.changed == 'true'
         env:
           OWN_TOKEN: ${{ secrets.SYNC_TOKEN != '' }}
         run: |
@@ -77,16 +171,22 @@ jobs:
           done
           if [ "$OWN_TOKEN" != "true" ]; then gh workflow run ci.yml --ref "$branch"; fi
 
-      - name: Report a source that failed
-        if: steps.run.outputs.exit != '0'
+      - name: Open or update an issue for each source that failed
+        if: steps.gather.outputs.failed != ''
+        env:
+          FAILED: ${{ steps.gather.outputs.failed }}
         run: |
           gh label create sync-failed --color B60205 --description "A scheduled sync could not read a source" 2>/dev/null || true
           run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-          { echo "Run: $run_url"; echo; cat "$RUNNER_TEMP/report.md"; } > "$RUNNER_TEMP/issue.md"
-          open=$(gh issue list --label sync-failed --state open --json number --jq '.[0].number')
-          if [ -n "$open" ]; then
-            gh issue comment "$open" --body-file "$RUNNER_TEMP/issue.md"
-          else
-            gh issue create --label sync-failed --title "Tariff sync: a source failed" --body-file "$RUNNER_TEMP/issue.md"
-          fi
+          for name in $FAILED; do
+            title="fix(sync): $name failed in the scheduled run"
+            { echo "Run: $run_url"; echo; cat "$RUNNER_TEMP/parts/sync-$name/report.md"; } > "$RUNNER_TEMP/issue.md"
+            open=$(gh issue list --label sync-failed --state open --limit 100 --json number,title \
+                     --jq '.[] | "\(.number)\t\(.title)"' | awk -F'\t' -v t="$title" '$2 == t { print $1; exit }')
+            if [ -n "$open" ]; then
+              gh issue comment "$open" --body-file "$RUNNER_TEMP/issue.md"
+            else
+              gh issue create --label sync-failed --title "$title" --body-file "$RUNNER_TEMP/issue.md"
+            fi
+          done
           exit 1
