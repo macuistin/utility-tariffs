@@ -23,6 +23,18 @@ def imports(path: Path) -> set[str]:
     return found
 
 
+def lib_packages(path: Path) -> set[str]:
+    """The packages under lib/ a file reaches, by a relative or an absolute import."""
+    own = path.relative_to(ROOT / "lib").parts
+    found = {name.split(".")[1] for name in imports(path) if name.startswith("lib.")}
+    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        if isinstance(node, ast.ImportFrom) and node.level:
+            base = own[:len(own) - node.level]
+            target = [*base, *(node.module.split(".") if node.module else [])]
+            found.update(target[:1] or [alias.name for alias in node.names])
+    return found
+
+
 def third_party(names: set[str]) -> set[str]:
     tops = {name.split(".")[0] for name in names}
     return tops - LOCAL - set(sys.stdlib_module_names)
@@ -69,7 +81,7 @@ class Naming(unittest.TestCase):
 
 class Imports(unittest.TestCase):
     def test_the_store_library_and_the_scripts_use_the_standard_library_only(self) -> None:
-        for folder in ("lib/tariffstore", "scripts"):
+        for folder in ("lib", "scripts"):
             for path in sorted((ROOT / folder).rglob("*.py")):
                 with self.subTest(path.relative_to(ROOT).as_posix()):
                     self.assertEqual(third_party(imports(path)), set())
@@ -80,6 +92,14 @@ class Imports(unittest.TestCase):
                 with self.subTest(path.name, module=name):
                     self.assertFalse(name.startswith(("lib.tariff.", "lib.timeutil", "scripts"))
                                      or name == "lib.tariff")
+
+    def test_the_engine_reaches_only_its_clock_helpers(self) -> None:
+        allowed = {"tariff": {"tariff", "timeutil"}, "timeutil": {"timeutil"},
+                   "tariffstore": {"tariffstore"}}
+        for package, may in allowed.items():
+            for path in sorted((ROOT / "lib" / package).rglob("*.py")):
+                with self.subTest(path.relative_to(ROOT).as_posix()):
+                    self.assertLessEqual(lib_packages(path), may)
 
     def test_the_scripts_do_not_import_the_engine(self) -> None:
         for path in sorted((ROOT / "scripts").rglob("*.py")):

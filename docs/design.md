@@ -146,8 +146,10 @@ a stored tariff can say. Keeping the custom tariff is the caller's job: an integ
 with its own settings. A custom tariff that is right for other people is a pull request away
 from the store, because it is already in the store's format.
 
-`lib/tariffstore` uses only the standard library and has no Home Assistant import, so it can be
-copied into an integration's `lib/` beside `lib/tariff`, or published as a package later.
+Everything under `lib/` uses only the standard library and has no Home Assistant import. This
+repository is where the store client and the bill engine are written and tested. An integration
+copies the three folders into its own `lib/` and never edits them, or they are published as a
+package later.
 
 ## Other services, and combined tariffs
 
@@ -188,7 +190,7 @@ What the store and the engine both handle today:
 
 What is not handled, and where the work is:
 
-| Structure | Store | Engine (`lib/tariff`, in the integration repository) |
+| Structure | Store | Engine (`lib/tariff`) |
 | --- | --- | --- |
 | Bill periods other than monthly (quarterly, every N days, meter-read dates) | Needs a period rule | Needs the rule |
 | Volume tiers (first N kWh at one price) | Needs a `tiers` field on a rate | Needs tiered pricing |
@@ -218,8 +220,8 @@ weekly. The design keeps the two apart.
   no gap from the day before) and committed straight to a separate `prices` branch. No pull
   request, because nobody can review 48 numbers a day per region. `main` stays reviewed.
 - **The client** gains `prices(cc, feed, area, day)`, read from the `prices` branch.
-- **The engine** needs a way to price energy against a price series. That is work in the
-  integration repository and comes first.
+- **The engine** needs a way to price energy against a price series. That is work in
+  `lib/tariff` and comes first.
 
 Two kinds of feed exist. A supplier feed gives the price the customer pays (Octopus Agile in
 Great Britain is the open example). A wholesale feed gives the market price, and the retail price

@@ -1,11 +1,10 @@
-# Lint and type settings for lib/tariffstore, the part written to be copied into other projects.
+# Lint and type settings for lib/, which is written here and copied into other projects.
 # They match the limits of the Home Assistant integration that copies it, so a copy passes there
-# unchanged. lib/tariff and lib/timeutil are copies of that integration's code and are checked
-# in its repository.
+# unchanged.
 [tool.ruff]
 line-length = 100
 target-version = "py314"
-include = ["lib/tariffstore/*.py"]
+include = ["lib/**/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "B", "N", "C", "I", "C901", "PLR0912", "PLR0913", "PLR0915", "FBT001", "FBT002"]
@@ -22,5 +21,5 @@ max-branches = 10
 [tool.mypy]
 python_version = "3.14"
 strict = true
-files = ["lib/tariffstore"]
+files = ["lib"]
 follow_imports = "silent"

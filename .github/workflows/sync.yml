@@ -147,7 +147,8 @@ jobs:
         if: steps.gather.outputs.changed == 'true'
         run: |
           python -m scripts.build --check --base HEAD
-          python -m unittest discover tests
+          python -m pip install --quiet "pytest==9.*"
+          python -m pytest tests -q
 
       - name: Open the pull request
         if: steps.gather.outputs.changed == 'true'
