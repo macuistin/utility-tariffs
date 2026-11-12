@@ -49,8 +49,8 @@ in the country shares.
 | `currency` | ISO 4217 |
 | `timezone` | IANA zone the band hours are read in |
 | `vat_percent` | A decimal string, or a list where later entries win. An entry with no dates is the fallback and a dated entry after it is a temporary rate. A date no entry covers has no rate, and compiling stops rather than price at zero |
-| `bill` | The country's standard bill: a period and a tree of nodes (below) |
-| `inputs` | What the customer supplies, with type and range. Today only the bill start day |
+| `bill` | The country's standard bill: a period (below) and a tree of nodes (below) |
+| `inputs` | What the customer supplies, with type and range. An input can only set a value of the bill period |
 | `holidays` | The public holidays a band with `"holidays": "weekend"` is priced by. `source` is the https address the dates are published at. `years` holds one sorted list of dates for each year held: `{"2026": ["2026-01-01", "2026-12-25"]}`. `regions` is optional, keyed by ISO 3166-2 code, for a region that keeps different days. A region's list is its whole list, not an addition. A year that is not listed is not known, so a client refuses to price a holiday band in it. A tariff with a holiday band cannot be built until its country holds holidays |
 | `availability`, `reason` | `partial` needs a `reason` saying what is missing. Left out means `available` |
 | any other key | A decimal string a bill can use as `$country.<name>`, a levy say |
@@ -98,18 +98,36 @@ Optional, written only when they say something:
 | `prices_include_tax` | `false` when the source quotes prices without tax |
 | `timezone` | When the tariff's hours are in another zone than the country's |
 | `customer_class` | `"commercial"`. Residential is the default |
-| `bill`, `inputs` | A bill that replaces the country's standard one, with the same node kinds |
+| `bill`, `inputs` | `bill.total` replaces the country's bill tree, with the same node kinds. `bill.period` replaces the country's bill period. A tariff may give either or both |
 | `checks` | Worked bills the tariff must reproduce. A tariff with one is complete |
 
 Prices are decimal strings in the currency's major unit, with at most six decimal places and no
 trailing zeros.
 
+## The bill period
+
+`bill.period` says when a bill starts and how long it runs. The country block gives the usual
+period and a tariff may give its own, which replaces the country's whole period.
+
+| Key | Meaning |
+| --- | --- |
+| `rule` | `"monthly"`: a period is a whole number of calendar months. The only rule today |
+| `start_day` | The day of the month a period starts, 1 to 28 |
+| `months` | How many months a period runs: 1, 2, 3, 4, 6 or 12. Left out means 1 |
+| `start_month` | One month, 1 to 12, in which a period starts. It places a period of two months or more in the year. Left out means 1, so a two-month period starts in January, March and so on |
+
+Each value is a whole number or `$input.<name>`, for a value the customer knows and the supplier
+does not publish. A bill every two months from the 16th of February is
+`{ "rule": "monthly", "start_day": 16, "months": 2, "start_month": 2 }`.
+
 ## The bill tree
 
 Node kinds: `sum` (named children), `tax` (`included` or `added`), `adjust` (a named percentage
 added to what it wraps, negative for a discount), `energy_by_band`, `export_credit`, `per_day`,
-`per_period` (with a `share`). Nesting sets the order and the tax base. `$country.<name>` takes a
-value from the country block. `$input.<name>` is a customer input. An unknown kind, field or name
+`per_period` (with a `share`). A `per_period` amount is for the whole bill period, or for each
+month of it with `"per": "month"`, which keeps a monthly levy right when the period is longer.
+Nesting sets the order and the tax base. `$country.<name>` takes a
+value from the country block. `$input.<name>` is a customer input, allowed only in the bill period. An unknown kind, field or name
 is refused.
 
 ## Revisions

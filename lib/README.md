@@ -36,5 +36,5 @@ country block, and closes most gaps itself. What remains is work in `lib/tariff`
 3. The library requires an `export` price in every definition. With no export file paired, compile
    supplies 0 and adds no export line, so an unpaired tariff credits nothing. The library cannot say
    "unknown".
-4. The library has one bill period rule, `monthly`, and no volume tiers, demand charges or dynamic
-   prices. `docs/design.md` lists what each would need.
+4. A bill period is a whole number of calendar months. The library has no period of a fixed
+   number of days, and no volume tiers, demand charges or dynamic prices. `docs/design.md` lists what each would need.

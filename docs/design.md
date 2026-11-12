@@ -45,8 +45,8 @@ Decisions and the reason for each:
 - **Unknown is refused.** An unknown field, node kind or name fails validation. A source row the
   format cannot express is skipped and reported, never approximated.
 
-The bill period is part of the country's `bill` today and a tariff may replace the bill. Whether
-the period belongs to the country or the tariff is still an open decision.
+The country block gives the usual bill period and a tariff may give its own. How often a customer
+is billed is often the customer's choice, so each value of the period can be a customer input.
 
 ## What runs where
 
@@ -180,7 +180,8 @@ What the store and the engine both handle today:
 | Day and night, peak windows | Bands with `hours` |
 | Weekday, weekend, seasonal and public-holiday rates | Bands with `days`, `months`, `holidays` |
 | Daily standing charge | `per_day` |
-| Monthly or bill-period charges and levies | `per_period`, with a `share` for part periods |
+| Monthly or bill-period charges and levies | `per_period`, with a `share` for part periods and `per` for a monthly amount |
+| Bills every two, three, four, six or twelve months | `bill.period.months` and `start_month` |
 | Percentage discounts and surcharges | `adjust` |
 | Tax added or included, at any level, on any base | `tax`, nested |
 | VAT that changes on a date | Dated `vat` list in the country block |
@@ -192,7 +193,7 @@ What is not handled, and where the work is:
 
 | Structure | Store | Engine (`lib/tariff`) |
 | --- | --- | --- |
-| Bill periods other than monthly (quarterly, every N days, meter-read dates) | Needs a period rule | Needs the rule |
+| Bill periods of a fixed number of days, or set by meter-read dates | Needs a period rule | Needs the rule |
 | Volume tiers (first N kWh at one price) | Needs a `tiers` field on a rate | Needs tiered pricing |
 | Demand charges (per kW of peak) | Needs a node kind | Needs peak tracking |
 
