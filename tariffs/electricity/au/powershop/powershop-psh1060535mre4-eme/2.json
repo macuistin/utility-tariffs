@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "name": "Solar Sharer (Ausgrid)",
+  "provider": "Powershop",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/powershop/cds-au/v1/energy/plans/PSH1060535MRE4@EME"
+  },
+  "prices_include_tax": false,
+  "export": "powershop/powershop-psh1060535mre4-eme-export",
+  "bands": [
+    {
+      "name": "Off Peak"
+    },
+    {
+      "hours": "15:00-21:00",
+      "name": "Peak"
+    },
+    {
+      "hours": "21:00-00:00",
+      "name": "Off Peak 2"
+    },
+    {
+      "hours": "11:00-14:00",
+      "name": "Super Off Peak"
+    },
+    {
+      "hours": "14:00-15:00",
+      "name": "Off Peak 3"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Off Peak": "0.250543",
+        "Off Peak 2": "0.250543",
+        "Off Peak 3": "0.250543",
+        "Peak": "0.579251",
+        "Super Off Peak": "0"
+      },
+      "standing": "1.551914"
+    }
+  }
+}

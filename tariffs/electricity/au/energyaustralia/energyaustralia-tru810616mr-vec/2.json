@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "name": "VIC Seniors Offer - Peak Only - $200 Credit (Powercor)",
+  "provider": "EnergyAustralia",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/energyaustralia/cds-au/v1/energy/plans/TRU810616MR@VEC"
+  },
+  "prices_include_tax": false,
+  "export": "energyaustralia/energyaustralia-tru810616mr-vec-export",
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.256545"
+      },
+      "standing": "1.255"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "name": "Solar Only + CBA Yello: Variable Prices (estimate only) (Evoenergy)",
+  "provider": "Amber Electric",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/amber/cds-au/v1/energy/plans/AMB1202054MRE1@EME"
+  },
+  "prices_include_tax": false,
+  "export": "amber/amber-amb1202054mre1-eme-export",
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.24873"
+      },
+      "standing": "0.972368"
+    }
+  }
+}

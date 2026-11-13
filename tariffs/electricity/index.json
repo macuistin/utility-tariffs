@@ -8,11 +8,11 @@
     },
     "AU": {
       "availability": "partial",
-      "checksum": "sha256:b3136e02898a34dcc6a5e94ae962e6d43b6e6c49a1ee25ad608ab7d87b4b3398",
+      "checksum": "sha256:a38e7cfc1b3e6eddd32a1134df1d15bfc5a4c6f139bee0692b5ac1c96b864476",
       "path": "au/index.json",
       "providers": 16,
       "reason": "Retailer plans read from the Consumer Data Right endpoints, about 8 per retailer for 17 of 20 retailers. Plans with seasonal periods, volume tiers or weekday and weekend windows are skipped. Only New South Wales, Victoria, ACT and Tasmania are held, because the country block has one timezone and Queensland, South Australia, Western Australia and the Northern Territory use others.",
-      "tariffs": 79
+      "tariffs": 126
     },
     "BE": {
       "availability": "unavailable",

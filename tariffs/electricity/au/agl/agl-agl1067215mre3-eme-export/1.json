@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Residential Smart Saver - BP Fuel New To AGL (Essential Energy Far West + Essential Energy Standard + Essential Energy) export",
+  "provider": "AGL",
+  "direction": "export",
+  "effective_from": "2026-11-10",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans/AGL1067215MRE3@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "AGL Retailer Feed-in Tariff (exc GST if any)"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "AGL Retailer Feed-in Tariff (exc GST if any)": "0.03"
+      }
+    }
+  }
+}

@@ -144,7 +144,7 @@ class RealStore(unittest.TestCase):
         index = self.store.country("AU")["providers"][provider]["tariffs"][tariff_id]
         day = date.fromisoformat(index["revisions"][max(index["revisions"], key=int)]["effective_from"])
         definition = self.store.definition("AU", provider, tariff_id, day)
-        standing = Decimal(definition["bill"]["total"]["of"]["of"]["standing"]["amount"])
+        standing = Decimal(definition["bill"]["total"]["of"]["charges"]["of"]["of"]["standing"]["amount"])
         net = (standing * 10).quantize(Decimal("0.01"), "ROUND_HALF_UP")
         gst = (net * Decimal("0.10")).quantize(Decimal("0.01"), "ROUND_HALF_UP")
         self.assertEqual(priced(definition, 10, {}), net + gst)

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "name": "Origin Night Shift - Oct'26 (Time of Use) (United Energy)",
+  "provider": "Origin Energy",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/origin/cds-au/v1/energy/plans/OR2811887MR@VEC"
+  },
+  "prices_include_tax": false,
+  "export": "origin/origin-or2811887mr-vec-export",
+  "bands": [
+    {
+      "name": "Peak"
+    },
+    {
+      "hours": "00:00-06:00",
+      "name": "Off Peak"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Off Peak": "0.072727",
+        "Peak": "0.28"
+      },
+      "standing": "1.007"
+    }
+  }
+}

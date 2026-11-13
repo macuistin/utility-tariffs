@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Anytime Switched On 2.2! (Essential Energy Standard) export",
+  "provider": "Flipped Energy",
+  "direction": "export",
+  "effective_from": "2026-09-15",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/flipped/cds-au/v1/energy/plans/FEA1159370MRE2@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Solar Feed In Tariff"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Solar Feed In Tariff": "0.02"
+      }
+    }
+  }
+}

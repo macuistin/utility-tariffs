@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "name": "Battery Evening Export TOU + CL 1 - November 2026 (Essential Energy + Essential Energy Standard + Essential Energy Far West) export",
+  "provider": "Nectr",
+  "direction": "export",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/nectr/cds-au/v1/energy/plans/NTR1042706MRE2@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "off-peak"
+    },
+    {
+      "hours": "18:00-20:00",
+      "name": "Evening FiT"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Evening FiT": "0.14",
+        "off-peak": "0.03"
+      }
+    }
+  }
+}

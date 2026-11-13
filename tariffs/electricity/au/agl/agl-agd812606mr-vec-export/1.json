@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Residential Smart Saver (Westpac) - New To AGL (Powercor) export",
+  "provider": "AGL",
+  "direction": "export",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans/AGD812606MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Current FIT policy"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Current FIT policy": "0.005"
+      }
+    }
+  }
+}

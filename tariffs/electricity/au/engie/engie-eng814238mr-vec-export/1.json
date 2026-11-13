@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "VIC-ENGIE Perks Plus Plus Elec (United Energy) export",
+  "provider": "ENGIE",
+  "direction": "export",
+  "effective_from": "2026-11-09",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/engie/cds-au/v1/energy/plans/ENG814238MR@VEC"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Current FIT policy"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Current FIT policy": "0.01"
+      }
+    }
+  }
+}

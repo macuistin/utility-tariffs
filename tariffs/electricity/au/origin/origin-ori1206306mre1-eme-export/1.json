@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "name": "Origin Battery Earner (Essential Energy + Essential Energy Standard + Essential Energy Far West) export",
+  "provider": "Origin Energy",
+  "direction": "export",
+  "effective_from": "2026-10-27",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/origin/cds-au/v1/energy/plans/ORI1206306MRE1@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "OFF PEAK"
+    },
+    {
+      "hours": "17:00-21:00",
+      "name": "PEAK"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "OFF PEAK": "0.03",
+        "PEAK": "0.29"
+      }
+    }
+  }
+}

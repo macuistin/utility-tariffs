@@ -364,8 +364,8 @@ class Export(unittest.TestCase):
         octopus = {"octopus-outgoing-var-24-10-26", "octopus-outgoing-seg-fix-12m-20-07-07",
                    "octopus-outgoing-seg-fix-12m-26-10-21", "octopus-outgoing-prime-fix-12m-26-06-23"}
         self.assertEqual({i for i in ids if i.startswith("octopus")}, octopus)
-        # Each Irish supplier's export is one flat microgeneration rate.
-        self.assertTrue(all(i.endswith("-microgen-export") for i in ids - octopus))
+        # The other exports are a supplier's microgeneration rate or a plan's feed-in tariff.
+        self.assertTrue(all(i.endswith("-export") for i in ids - octopus))
         self.assertIn("electric-ireland-microgen-export", ids)
 
     def test_flat_exports_price_through_lib(self) -> None:
@@ -400,6 +400,23 @@ class Export(unittest.TestCase):
             self.assertEqual(cents(bill.total), Decimal("0.93") - Decimal("19.50"))
             return
         self.fail("no Night Boost revision names an export")
+
+    def test_an_australian_feed_in_is_paid_without_gst(self) -> None:
+        # PAGE (a retailer's plan detail): a flat feed-in rate of 0.5c per kWh, paired by the sync.
+        # ASSUMPTION: one day, no import, 100 kWh exported. The credit is 100 x 0.005 = 0.50 and
+        # GST is not added to it, so the bill is the day's charges less 0.50.
+        exports = {d["_meta"]["id"]: d for d in export_documents()}
+        for tariff, meta, block in stored():
+            export = exports.get(str(tariff.get("export", "")).partition("/")[2])
+            if meta["country"] != "AU" or export is None or len(export["bands"]) > 1:
+                continue
+            with self.subTest(meta["tariff"]):
+                args = {"block": block, "meta": meta, "on": tariff["effective_from"]}
+                zero = {b["name"]: Decimal(0) for b in tariff["bands"]}
+                bare = price_bill(load(compile_area(tariff, "all", **args)), BillInputs(1, 1, zero, Decimal(0)))
+                paid = price_bill(load(compile_area(tariff, "all", **args, export_file=export)),
+                                  BillInputs(1, 1, zero, Decimal(100)))
+                self.assertEqual(bare.total - paid.total, cents(Decimal(100) * flat_price(export)))
 
     def test_without_a_paired_export_nothing_is_credited(self) -> None:
         host = by_id(documents(), self.HOST)

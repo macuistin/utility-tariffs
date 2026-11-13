@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "name": "Bonus Booster (United Energy)",
+  "provider": "Tango Energy",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/tango/cds-au/v1/energy/plans/TAN804560MR@VEC"
+  },
+  "prices_include_tax": false,
+  "export": "tango/tango-tan804560mr-vec-export",
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.243"
+      },
+      "standing": "0.93"
+    }
+  }
+}
