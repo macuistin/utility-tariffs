@@ -104,6 +104,85 @@ class AustraliaExpress(unittest.TestCase):
         self.assertEqual(au_cdr.clock(905), "15:05")
 
 
+def fit(rate="0.03", kind="singleTariff", payer="RETAILER", **body) -> dict:
+    return {"scheme": "OTHER", "payerType": payer, "displayName": "Solar FIT", "tariffUType": kind,
+            kind: {"rates": [{"unitPrice": rate, "measureUnit": "KWH"}], **body}}
+
+
+def timed(name, rate, start, end) -> dict:
+    window = {"displayName": name, "type": "PEAK", "rates": [{"unitPrice": rate, "measureUnit": "KWH"}],
+              "period": "P1Y", "timeVariations": [{"days": EVERY_DAY, "startTime": start, "endTime": end}]}
+    return {"scheme": "OTHER", "payerType": "RETAILER", "displayName": "Solar FIT",
+            "tariffUType": "timeVaryingTariffs", "timeVaryingTariffs": [window]}
+
+
+class AustraliaFeedIn(unittest.TestCase):
+    def feed(self, *tariffs):
+        return au_cdr.feed_in({"solarFeedInTariff": list(tariffs)})
+
+    def test_a_flat_rate_is_one_export_price(self) -> None:
+        self.assertEqual(self.feed(fit(period="P1Y")),
+                         ({"base_name": "Solar FIT", "base_price": "0.03", "zones": []}, None))
+        self.assertEqual(self.feed(fit())[0]["base_price"], "0.03")  # no period given
+
+    def test_rates_by_time_of_day_that_cover_the_day_once_are_zones(self) -> None:
+        priced, why = self.feed(timed("PEAK", "0.29", "17:00", "20:59"),
+                                timed("OFF PEAK", "0.03", "21:00", "16:59"))
+        self.assertEqual((why, priced["base_name"], priced["base_price"]), (None, "OFF PEAK", "0.03"))
+        self.assertEqual(priced["zones"], [("PEAK", "17:00-21:00", "0.29")])
+
+    def test_what_is_not_published_or_not_held_is_told_apart(self) -> None:
+        self.assertEqual(au_cdr.feed_in({}), (None, None))
+        self.assertEqual(self.feed(fit("0.44", payer="GOVERNMENT")), (None, None))
+        for tariffs, why in (
+                ((timed("PEAK", "0.14", "18:00", "19:59"),), "overlap or leave gaps"),
+                ((fit(), timed("PEAK", "0.14", "18:00", "19:59")), "overlap or leave gaps"),
+                ((fit(period="day"),), "the period day"),
+                (({**fit(), "singleTariff": {"rates": [{"unitPrice": "0.03", "measureUnit": "KWH"},
+                                                       {"unitPrice": "0.02", "measureUnit": "KWH"}]}},), "tiers"),
+                ((fit(), {"tariffUType": "oddTariff"}), "oddTariff"),
+                ((timed("PEAK", "0.14", "18:00", "19:59") | {"timeVaryingTariffs": [
+                    {"rates": [{"unitPrice": "0.14"}], "timeVariations": [
+                        {"days": ["MON"], "startTime": "00:00", "endTime": "00:00"}]}]},), "not every day")):
+            with self.subTest(why):
+                self.assertIn(why, self.feed(*tariffs)[1])
+
+
+class AustraliaExport(unittest.TestCase):
+    def fetch_for(self, **contract_more):
+        url = au_cdr.detail_url("example", "EX1")
+        return url, Fetch({url: detail({**contract(), **contract_more})})
+
+    def test_a_plan_with_a_feed_in_names_an_export_beside_it(self) -> None:
+        url, fetch = self.fetch_for(solarFeedInTariff=[timed("PEAK", "0.29", "17:00", "20:59"),
+                                                       timed("OFF PEAK", "0.03", "21:00", "16:59")])
+        (plan, export), reasons = au_cdr.fetch_plan(fetch, url)
+        self.assertEqual(reasons, [])
+        self.assertEqual(plan.extra["export"], "example/example-ex1-export")
+        tariff = to_tariff(export, au_cdr.SOURCE_ID)
+        self.assertEqual((tariff["direction"], tariff["prices_include_tax"]), ("export", False))
+        self.assertEqual(tariff["bands"], [{"name": "OFF PEAK"}, {"name": "PEAK", "hours": "17:00-21:00"}])
+        self.assertEqual(tariff["areas"]["all"]["rates"], {"OFF PEAK": "0.03", "PEAK": "0.29"})
+        self.assertEqual((export.effective_from, export.source_url), (plan.effective_from, plan.source_url))
+
+    def test_a_plan_with_no_feed_in_stays_alone(self) -> None:
+        url, fetch = self.fetch_for()
+        plans, reasons = au_cdr.fetch_plan(fetch, url)
+        self.assertEqual(([p.direction for p in plans], reasons), (["import"], []))
+
+    def test_a_feed_in_the_format_cannot_hold_leaves_the_plan_unpaired_and_says_why(self) -> None:
+        url, fetch = self.fetch_for(solarFeedInTariff=[fit(period="day")])
+        plans, reasons = au_cdr.fetch_plan(fetch, url)
+        self.assertEqual(len(plans), 1)
+        self.assertNotIn("export", plans[0].extra)
+        self.assertEqual(reasons, ["no export paired: feed-in rate for the period day"])
+
+    def test_a_plan_the_format_cannot_hold_gives_its_reason_alone(self) -> None:
+        url, fetch = self.fetch_for(solarFeedInTariff=[fit()], tariffPeriod=[])
+        self.assertEqual(au_cdr.fetch_plan(fetch, url), ([], ["seasonal or multiple tariff periods"]))
+        self.assertEqual(au_cdr.fetch_plan(fetch, "https://elsewhere.test/p"), ([], ["not a plan detail link"]))
+
+
 class AustraliaPlans(unittest.TestCase):
     def test_a_plan_is_priced_without_tax_and_named_with_its_network(self) -> None:
         plan, why = au_cdr.plan_from_detail("example", "EX123@EME", detail()["data"])

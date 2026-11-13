@@ -40,12 +40,28 @@
     "bord-gais-energy": {
       "name": "Bord Gais Energy",
       "tariffs": {
+        "bord-gais-energy-microgen-export": {
+          "direction": "export",
+          "name": "Bord Gais Energy Microgen Export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:c6be2f0df96ce3e8bb00cef7fcdce4096e7d7b30f5e7d249eaa75ecb7df14d3f",
+              "effective_from": "2026-11-01",
+              "effective_to": null
+            }
+          }
+        },
         "bord-gais-energy-nightsaver-standard-green": {
           "name": "NightSaver Standard Green",
           "revisions": {
             "1": {
               "checksum": "sha256:5c442c1953ee2d99395fcd19a8777ad14ac1907392a21bc05896c809707e47ef",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:d3379c5b3cb7682487b03ccbc78aed0990a415e102f4d0f4f60509fd5fad2b20",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -56,6 +72,11 @@
             "1": {
               "checksum": "sha256:9f04787415eb2b21dc75fcd37df79a7ef3359a0f44f15ef3ebf6af0690099a0d",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:062a121fcf43d0754ad828f5c7655dd580cf09c7bf31811df9429af854b149d6",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -256,12 +277,28 @@
     "energia": {
       "name": "Energia",
       "tariffs": {
+        "energia-microgen-export": {
+          "direction": "export",
+          "name": "Energia Microgen Export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ca430ea5a4958f3e12b21be48aa73d34a6fdd204f27c8e44b827798485a513be",
+              "effective_from": "2026-11-01",
+              "effective_to": null
+            }
+          }
+        },
         "energia-standard-24hr-standard-green": {
           "name": "Standard, 24hr Standard Green",
           "revisions": {
             "1": {
               "checksum": "sha256:2879aed8c6710c5c74b45df3bfb7760e7dadce4ab0de06b1939a746f39f17538",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:126aa02c47f5770cfe386e08a0745b8221dea908d44c0718af9e6103d815d19d",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -271,12 +308,28 @@
     "flogas": {
       "name": "Flogas",
       "tariffs": {
+        "flogas-microgen-export": {
+          "direction": "export",
+          "name": "Flogas Microgen Export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:10c86531e83ff434c1e9e8cd5fcbf2631c884d2733663b5325d2d89016d549af",
+              "effective_from": "2026-11-01",
+              "effective_to": null
+            }
+          }
+        },
         "flogas-nightsaver-standard-green": {
           "name": "NightSaver Standard Green",
           "revisions": {
             "1": {
               "checksum": "sha256:d35c5b2b4b4fd5a9e281f5a384ce5df9a24da731d930082a686cb93bc4d2924b",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:6f975956d2ce4e8c713f09a8d892ac9ad9fc3aab5073d3d98eb746cc151b9a67",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -287,6 +340,11 @@
             "1": {
               "checksum": "sha256:367cb93f26ec78d50f92e67d0e91ad12e9776002f0e272a8b292bec27fb15986",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:9ef3d1c3507a85cd7c1d690f2d51caccb289d3cdbdccffb0af4ce5e0455819f2",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -296,12 +354,28 @@
     "pinergy": {
       "name": "Pinergy",
       "tariffs": {
+        "pinergy-microgen-export": {
+          "direction": "export",
+          "name": "Pinergy Microgen Export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e373bc848f38910af85bcf9d7ebbbeb94b15f5075a84052854b5fac3ccae3158",
+              "effective_from": "2026-11-01",
+              "effective_to": null
+            }
+          }
+        },
         "pinergy-standard-24hr-pay-as-you-go-green": {
           "name": "Standard, 24hr Pay-as-you-go Green",
           "revisions": {
             "1": {
               "checksum": "sha256:066fbda3526f085f9984337cbefceaca26badfcee7a0f178cb55d1f784202fc7",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:723405ce6c34466dca4e37afea7241066bb42e99d1bc35ddcc074a2480fc7033",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -326,12 +400,28 @@
     "sse-airtricity": {
       "name": "Sse Airtricity",
       "tariffs": {
+        "sse-airtricity-microgen-export": {
+          "direction": "export",
+          "name": "Sse Airtricity Microgen Export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:83096626b59659c4edee110af25cf2ed6bc54ce04fd32514ec3957e864747a74",
+              "effective_from": "2026-11-01",
+              "effective_to": null
+            }
+          }
+        },
         "sse-airtricity-nightsaver-standard-green": {
           "name": "NightSaver Standard Green",
           "revisions": {
             "1": {
               "checksum": "sha256:e5fe4a59acc4a8f6eeca0bffcb84fe34d01f4fa85220ab8d7cd82eec3a844221",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:7f7aa13133e7e6ccca9e24c9328d7d44a20a8181b9713e1b923a1ac09e8584af",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -342,6 +432,11 @@
             "1": {
               "checksum": "sha256:001129cefed58d731e0b996deda88457d9a7d9ae6c06bb8495c68d05e29b015d",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:bf8c2206654b20bd7f502f66a2175ce9200111e719575a0e2a761c71df7ea209",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -376,12 +471,28 @@
     "yuno-energy": {
       "name": "Yuno Energy",
       "tariffs": {
+        "yuno-energy-microgen-export": {
+          "direction": "export",
+          "name": "Yuno Energy Microgen Export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:a8461637d35bd5cedee6002f19afcdfd13c2644b807fd81cd5156cf049be170c",
+              "effective_from": "2026-11-01",
+              "effective_to": null
+            }
+          }
+        },
         "yuno-energy-nightsaver-standard-green": {
           "name": "NightSaver Standard Green",
           "revisions": {
             "1": {
               "checksum": "sha256:8526461c2ff153752a3ac655e9fd69d5665ebca46cff25234e5933f23f12257d",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:a8e66e1f354e979dabd1b38d51ef42192b2b4227d02257a4d06969d2bb93e1f7",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -392,6 +503,11 @@
             "1": {
               "checksum": "sha256:cdbb5040a98ca5c097fe815cd7b9becc4968c6d51aab5c17622d77c2c524a3ee",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:3970f9e4fcbccedf44903143f1995a6af50dcf40ccd5207877a9211d2e15aa39",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }

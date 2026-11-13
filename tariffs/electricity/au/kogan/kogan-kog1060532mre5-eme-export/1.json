@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Kogan Solar Sharer (Ausgrid) export",
+  "provider": "Kogan Energy",
+  "direction": "export",
+  "effective_from": "2026-10-01",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/kogan/cds-au/v1/energy/plans/KOG1060532MRE5@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Voluntary FIT"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Voluntary FIT": "0.01"
+      }
+    }
+  }
+}

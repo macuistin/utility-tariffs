@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "name": "Residential Smart Saver - BP Fuel New To AGL (Essential Energy Far West + Essential Energy Standard + Essential Energy)",
+  "provider": "AGL",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans/AGL1067215MRE3@EME"
+  },
+  "prices_include_tax": false,
+  "export": "agl/agl-agl1067215mre3-eme-export",
+  "bands": [
+    {
+      "name": "Time of Use Off Peak"
+    },
+    {
+      "hours": "15:00-22:00",
+      "name": "Time of Use Peak"
+    },
+    {
+      "hours": "10:00-15:00",
+      "name": "Time of Use Off Peak 2"
+    },
+    {
+      "hours": "07:00-10:00",
+      "name": "Time of Use Peak 2"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Time of Use Off Peak": "0.2063",
+        "Time of Use Off Peak 2": "0.2063",
+        "Time of Use Peak": "0.3599",
+        "Time of Use Peak 2": "0.3599"
+      },
+      "standing": "2.3262"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "Bill Boss Electricity (Essential Energy + Essential Energy Standard + Essential Energy Far West) export",
+  "provider": "Momentum Energy",
+  "direction": "export",
+  "effective_from": "2026-11-02",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/momentum/cds-au/v1/energy/plans/MOM1162870MRE2@EME"
+  },
+  "prices_include_tax": false,
+  "bands": [
+    {
+      "name": "Single Rate Solar FiT"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Single Rate Solar FiT": "0.03"
+      }
+    }
+  }
+}

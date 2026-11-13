@@ -20,22 +20,27 @@
       "start_day": "$input.bill_start_day"
     },
     "total": {
-      "kind": "tax",
-      "mode": "added",
-      "name": "GST",
+      "kind": "sum",
       "of": {
-        "kind": "sum",
-        "of": {
-          "energy": {
-            "kind": "energy_by_band",
-            "round_bands": true
+        "charges": {
+          "kind": "tax",
+          "mode": "added",
+          "name": "GST",
+          "of": {
+            "kind": "sum",
+            "of": {
+              "energy": {
+                "kind": "energy_by_band",
+                "round_bands": true
+              },
+              "standing": {
+                "kind": "per_day"
+              }
+            }
           },
-          "standing": {
-            "kind": "per_day"
-          }
+          "percent": "$country.vat_percent"
         }
-      },
-      "percent": "$country.vat_percent"
+      }
     }
   },
   "providers": {
@@ -48,6 +53,22 @@
             "1": {
               "checksum": "sha256:b7300c1642d95fa2ed379a484526493931080b11843878d908efc447b0575be4",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:3f04de5a0fa7737576519ce47db7094acebaacad82ac08fa4ee2c2a0d4d37532",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "agl-agd812606mr-vec-export": {
+          "direction": "export",
+          "name": "Residential Smart Saver (Westpac) - New To AGL (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:9ffbcbfae8772647cfdcbc68bf94ba64447f4857ba669052ea9ffc77d486ba98",
+              "effective_from": "2026-11-09",
               "effective_to": null
             }
           }
@@ -58,6 +79,22 @@
             "1": {
               "checksum": "sha256:cabf0a10272f0828eaac6b0a5e7eabb32b9ac83afcb47c3c25b22f1a544a72b8",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:df2ad20e37dd2159f151520d8d5474138b4d2b05f437053f49951007ab06fbd1",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "agl-agd812608mr-vec-export": {
+          "direction": "export",
+          "name": "Residential Smart Saver (Westpac) - New To AGL (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:2669eb05846c5fddaa08271269290554e32c8f1df91740bb1b2d84de96eb1812",
+              "effective_from": "2026-11-09",
               "effective_to": null
             }
           }
@@ -67,6 +104,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:cb4fe5d47dec6a787b94b5499b094e1dbdf7933d3ba07e78f4fd5e31c7a5e35c",
+              "effective_from": "2026-11-10",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:952cb976c05887be98725143ded7bb8b98b871a2662c65dd14275e9e4e4d4101",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "agl-agl1067215mre3-eme-export": {
+          "direction": "export",
+          "name": "Residential Smart Saver - BP Fuel New To AGL (Essential Energy Far West + Essential Energy Standard + Essential Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e3e27b7cac86f4abcf7805c6042fd890d2834b0a5bae73b859d97c2630627509",
               "effective_from": "2026-11-10",
               "effective_to": null
             }
@@ -128,6 +181,22 @@
             "1": {
               "checksum": "sha256:ead7c622f7aa2f5551b0ba32ce2fb758eac01762a10efa6fcbd1c3504ed61c78",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:f6ead3283b353b145417d83a48276391b3c63a12cbe5bb2fed1433ec1e7f3fdd",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "amber-amb1202045mre1-eme-export": {
+          "direction": "export",
+          "name": "Solar Only: Variable Prices (estimate only) (Endeavour) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d8349fb3f79af5d5981839f06d3484beca4ac9ae2728ba3db229489e5a9bd1a6",
+              "effective_from": "2026-10-01",
               "effective_to": null
             }
           }
@@ -138,6 +207,22 @@
             "1": {
               "checksum": "sha256:a5ec631cff0a130cba5237d8a93d84037c2c8ef996886ff24210ca5cbdcdfb4a",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:69d886aa0d3221706363381ef93c3aa66ea91bf198a5f58dcfbbfac3a6e2b6cf",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "amber-amb1202053mre1-eme-export": {
+          "direction": "export",
+          "name": "Solar Only + CBA Yello: Variable Prices (estimate only) (Essential Energy Standard) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:10fdef0aecd2f47a25e47b5e09293df4e52761d3268cbb66d32a3a1a2a38895d",
+              "effective_from": "2026-10-01",
               "effective_to": null
             }
           }
@@ -147,6 +232,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:ebf3265aea9f57a0e4e565c59e3d546bbd27d6ea08f782abb75cee1f5a081193",
+              "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:7e968d526e65e9e5b0aec37d1e081c92f4664d146f8ced28ac64534b3950012d",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "amber-amb1202054mre1-eme-export": {
+          "direction": "export",
+          "name": "Solar Only + CBA Yello: Variable Prices (estimate only) (Evoenergy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:16989b30275debf3262f2b656c7f9730dcecf4e05bdae7c7f7a912001b5c1754",
               "effective_from": "2026-10-01",
               "effective_to": null
             }
@@ -303,6 +404,22 @@
             "1": {
               "checksum": "sha256:25fdd4db8f6a026858246aca6bb213d89d6b4e7378a44fd24493e8d476414641",
               "effective_from": "2026-07-27",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:fb3a80841779c2a14376c1b9a27e9c4d0e1a4286096dcde38d88db3ab9aaf852",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod1042545mre2-eme-export": {
+          "direction": "export",
+          "name": "Real Deal (Essential Energy Far West + Essential Energy Standard + Essential Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:df9279e7821e38a66c0e2f0e7bd5c618b116846989df3256f35e36f488620e2b",
+              "effective_from": "2026-07-27",
               "effective_to": null
             }
           }
@@ -312,6 +429,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:22fac0123720852f4f536ef5f4a2c8c8fd6c13cee5ef86e7c13f78e60942c2e8",
+              "effective_from": "2026-10-17",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:5c8acb218bc9e84db4b2f38d99e421b717998b78f8ba090662c202fc24b05008",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod1209524mre1-eme-export": {
+          "direction": "export",
+          "name": "Real Deal (Endeavour) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:43266b68c7cfffa00d5bd8cb7b360d07f7a34c65d19c4e3dae734604448b7ef6",
               "effective_from": "2026-10-17",
               "effective_to": null
             }
@@ -323,6 +456,22 @@
             "1": {
               "checksum": "sha256:30431457306362218f8b01d91c07336f430c377d2c8e53aa8f9f4637bcbed2d0",
               "effective_from": "2026-10-17",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:553aa95e3ff0b479fc8608c81b6789e09dfb5932a8f5df4d49d31fdc518078aa",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod1209526mre1-eme-export": {
+          "direction": "export",
+          "name": "Real Deal (Ausgrid) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ecbad74dd29c8a452d2dd5370d9fbf02628416255a5cbd5d43534e967321bcbc",
+              "effective_from": "2026-10-17",
               "effective_to": null
             }
           }
@@ -333,6 +482,22 @@
             "1": {
               "checksum": "sha256:4fcd00dfe26a8142891eb1adccdfc9f7aa5ebcd67dbfd33caba7184ffccc0a36",
               "effective_from": "2026-07-26",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:75cc72802e732ffc10bf9580125ec1b058c8b9f5a850940a2c4c113e7b07aac5",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod771012mr-vec-export": {
+          "direction": "export",
+          "name": "Real Deal - Time of Use with Controlled Load (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:04872565220dae6acadfef75d3f9befc680f6ab68cf947bfc2ccd83251308ab9",
+              "effective_from": "2026-07-26",
               "effective_to": null
             }
           }
@@ -342,6 +507,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:6dca2f2680f53c7f9fdacb35fcfbafff6f9266620aaa25612936e5ac423afa6a",
+              "effective_from": "2026-07-26",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:3bc644fd11ae99254623b955bd2253cde3bf99cd35d5117ad15cfee42b497dc6",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "dodo-dod771014mr-vec-export": {
+          "direction": "export",
+          "name": "Real Deal - Time of Use with Controlled Load (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:894fbe3ff6ab117618276395426d5e3b748d0b08010179fe9bb78e8020e20008",
               "effective_from": "2026-07-26",
               "effective_to": null
             }
@@ -388,6 +569,22 @@
             "1": {
               "checksum": "sha256:073f27af3be9ef7cb3dbb27752ed95ac78d97be3c3c3f6d857c20abdb5052114",
               "effective_from": "2026-10-27",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:60ae2afbdfa937d0ea704c0a6b3eae5098c2bac647ad8e4e51ce9b43e3261a6c",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "energyaustralia-tru810616mr-vec-export": {
+          "direction": "export",
+          "name": "VIC Seniors Offer - Peak Only - $200 Credit (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:f94d7f79d64931463054b781fddf1c3a5b0ed226b79db8dbe77e5f5d91d5fc7a",
+              "effective_from": "2026-10-27",
               "effective_to": null
             }
           }
@@ -398,6 +595,22 @@
             "1": {
               "checksum": "sha256:af4bc048533345f65b7d1acfe5e933df47ce7f620b6403c628a68a6ca6f95114",
               "effective_from": "2026-10-27",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:0e7fc6dd2e0e61b44b97abafb1f0343c76d155910bba2adac6eec9789775b4a9",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "energyaustralia-tru810618mr-vec-export": {
+          "direction": "export",
+          "name": "VIC Seniors Offer - Peak Only - $200 Credit (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:ef0ce07d825ff922af05f4b8a54a2bdde755f6a4b348bae4435add012cb86705",
+              "effective_from": "2026-10-27",
               "effective_to": null
             }
           }
@@ -407,6 +620,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:d5f056a9bc8e54b03d3e78587170a48c55511a8ea9fdf2e106d0087ab907fa60",
+              "effective_from": "2026-10-27",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:f67f9c894170368004bddd69c3c26b90727a2548a251df5d38239f1b91a0c9c2",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "energyaustralia-tru810620mr-vec-export": {
+          "direction": "export",
+          "name": "VIC Seniors Offer - Peak Only - $200 Credit (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:8524376cc4d9a4997a0bea08cce188f362155f6269d1e54b39db51e7483c42d2",
               "effective_from": "2026-10-27",
               "effective_to": null
             }
@@ -423,6 +652,22 @@
             "1": {
               "checksum": "sha256:b66a1df32c9f031796951235d48df8e1c0114fcbc458cd956e4a5af0d89f310c",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:31e932e3158cec9aac5323d3a5d1b5f7f9031cd51760715adfc628dd8cc3ed7a",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "engie-eng814230mr-vec-export": {
+          "direction": "export",
+          "name": "VIC-ENGIE Perks Plus Plus Elec (Citipower) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:7750d22738894bac9578a0ccb539e1f2475a2e9caabc40be045552b005cb0861",
+              "effective_from": "2026-11-09",
               "effective_to": null
             }
           }
@@ -432,6 +677,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:274c47abe1605dd7b4bb6483949c92413da83c3b5a233f10647e00490b2be3c7",
+              "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:cf93a6230854850b1bc346d362fba45fa26e66831956f1a0bb117f84008d5359",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "engie-eng814231mr-vec-export": {
+          "direction": "export",
+          "name": "VIC-ENGIE Perks Plus Plus Elec (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d9b0b15f8a949130098d58597dcaf4a3cce414372a379138d1e5a9f2545fc773",
               "effective_from": "2026-11-09",
               "effective_to": null
             }
@@ -443,6 +704,22 @@
             "1": {
               "checksum": "sha256:3e108ef3fd6eb084f6540e7bfd3a0a9abb44c0e471588e8ddbe21ee064605afa",
               "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:0357437517a935af3db1197b0afe7f3519ad55bc43a73b494871cdff31ad6af8",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "engie-eng814233mr-vec-export": {
+          "direction": "export",
+          "name": "VIC-ENGIE Perks Plus Plus Elec (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:38ef911be81bc63e2ac0ecf880cd4dab02c4f67fc52130602bfaf5e2b3648b64",
+              "effective_from": "2026-11-09",
               "effective_to": null
             }
           }
@@ -452,6 +729,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:90c5e24204a8d3f397241563c99438f945ad3da452e76bfc1b97bb1d5c0d6671",
+              "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:9e5ac35d117ee9a3c09608b01d54c5ff3796bd7347c1bf9ce8fbc22ffbb29312",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "engie-eng814238mr-vec-export": {
+          "direction": "export",
+          "name": "VIC-ENGIE Perks Plus Plus Elec (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:032caddf4ce0003d250f62f62c76ef2b003a4f9c157391e7a0efec11198800b7",
               "effective_from": "2026-11-09",
               "effective_to": null
             }
@@ -468,6 +761,22 @@
             "1": {
               "checksum": "sha256:cf6eb3e6f0abfb4f469feb1866696e048d69b37c5c61a9bec8f09ca52c591fe7",
               "effective_from": "2026-09-15",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:ff4e9aa4b309f8b983d96996beafbe4c5d4801b796ef6e215a27beac4d430f06",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "flipped-fea1159370mre2-eme-export": {
+          "direction": "export",
+          "name": "Anytime Switched On 2.2! (Essential Energy Standard) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:223d3436de08f78d690e572f396526bb1fb126883a912dee5a99f59b87d6e9ef",
+              "effective_from": "2026-09-15",
               "effective_to": null
             }
           }
@@ -477,6 +786,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:02e288bcc40d29c19774b31cafae6f6bb517e88909a8d01928a89948a4880f6d",
+              "effective_from": "2026-09-22",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:a5116915ea0feb569c656243a1cfba9540f18077ad0622b72fdee4a92e9ef5d5",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "flipped-fea1174529mre1-eme-export": {
+          "direction": "export",
+          "name": "Freedom Switched On 2.3! Controlled Load (Ausgrid) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:3cd0b148282de56d1334c3ed9d702b8adf5b61f8b92ffa8271e6a5b9532ed589",
               "effective_from": "2026-09-22",
               "effective_to": null
             }
@@ -543,6 +868,22 @@
             "1": {
               "checksum": "sha256:095e48bda786bd1bd2c41c4cf3ad37bde872044d51243e8b75bd587c25a0346a",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:07cd6c1ce7ff4681644c3655d4f1a80a16625eeb46682b9e93be4a90b4c40043",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "kogan-kog1060532mre5-eme-export": {
+          "direction": "export",
+          "name": "Kogan Solar Sharer (Ausgrid) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:435f670512fb38f58bf6302c4ddc43710093aa41f36efa67f69a67bee04c5283",
+              "effective_from": "2026-10-01",
               "effective_to": null
             }
           }
@@ -608,6 +949,22 @@
             "1": {
               "checksum": "sha256:925f777a230c1f257869da4d2ff5debf4681218b989cd4efb53bb466bbf8f743",
               "effective_from": "2026-10-13",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:c357ddb8c8017276b480cecd9bef7859ee477e8edecf7483e1e99b2ce8a72b54",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809868mr-vec-export": {
+          "direction": "export",
+          "name": "Lumo Basic (AusNet Services (electricity)) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:5b6d0d0d804820f894cbaa696f3276f9bbaa83b4ef350766c5888d4b1747cc92",
+              "effective_from": "2026-10-13",
               "effective_to": null
             }
           }
@@ -617,6 +974,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:fa2a359dcba34f6ea9d1e3c5133a76cfed855a217f4d1e90e8dd5b51f9b04992",
+              "effective_from": "2026-10-13",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:94b6b6ac188853ff515f76079350177cba5694ddd378b14be04f416995e71dc5",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809869mr-vec-export": {
+          "direction": "export",
+          "name": "Lumo Basic (Citipower) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:64f02c70f2fba17e4b2eb84b4351ae068cc4d09cbd8d048e32dff5454be36183",
               "effective_from": "2026-10-13",
               "effective_to": null
             }
@@ -628,6 +1001,22 @@
             "1": {
               "checksum": "sha256:a7e3a063dd69cf0a07f9befb6e011a22d683048d6ded459e2884efab3e2f69ad",
               "effective_from": "2026-10-13",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:141255de1c391df62cbe2d1cc89ef4a9cb89ca943415b26a9e7f314f15ddfec3",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809870mr-vec-export": {
+          "direction": "export",
+          "name": "Lumo Basic (Citipower) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:043b69e32b39ce5d194c1536e145b396e0da78db347796f3c889cafef950382b",
+              "effective_from": "2026-10-13",
               "effective_to": null
             }
           }
@@ -637,6 +1026,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:9ce3732fb72c908bf601715a52ba98e6b8ad767a45f62fed6a380d6c09c09376",
+              "effective_from": "2026-10-13",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:bf0d7ce7f0c1e77da64182968802e111dc27132e52a06dbfdcb89f025e74b317",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809872mr-vec-export": {
+          "direction": "export",
+          "name": "Lumo Basic (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:4ac12e4ce54450bd1554845fa5e41e7daf2b99957a2f71b22c824eb7494d47af",
               "effective_from": "2026-10-13",
               "effective_to": null
             }
@@ -648,6 +1053,22 @@
             "1": {
               "checksum": "sha256:6a7efcc92f42269679e9211fedfab1be125b2ef69bf2683d0e4c035b6aac9cc4",
               "effective_from": "2026-10-13",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:2765b8533cdb4d9ac6c521989300eb6b7d3da4652717f27a9eadf5ebf6e7227c",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809874mr-vec-export": {
+          "direction": "export",
+          "name": "Lumo Basic (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:36dd7be16149fa02f9db473f8cfafa0b91862f9688d4bbb7bcd345946960cc91",
+              "effective_from": "2026-10-13",
               "effective_to": null
             }
           }
@@ -658,6 +1079,22 @@
             "1": {
               "checksum": "sha256:664411c4a6922ac2269b53b1fb08d8902f524890daedc18c4e78bd474d411e20",
               "effective_from": "2026-10-13",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:1d18f730816d68ab609d902804e1f00bb507eac4405f6a97020c2f13b0727d61",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809875mr-vec-export": {
+          "direction": "export",
+          "name": "Lumo Basic (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:c29cd47c3e8d766cbd18f9bbd4a54eec4cfcdbf8cedb1b21491dcce097595211",
+              "effective_from": "2026-10-13",
               "effective_to": null
             }
           }
@@ -667,6 +1104,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:826a03c268dbe5589954b8a9d9a0488938c1ee3efba02173739789bb3f2b6a33",
+              "effective_from": "2026-10-13",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:b84009b33a067115dd22cf86920ed4cf0533740a423a2abe3bc8ca4429d1a306",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "lumo-lu2809876mr-vec-export": {
+          "direction": "export",
+          "name": "Lumo Basic (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:c7a2e776799ff534aba67f9b885ede3d1520d03e50281b1d318f3b73734e4631",
               "effective_from": "2026-10-13",
               "effective_to": null
             }
@@ -683,6 +1136,22 @@
             "1": {
               "checksum": "sha256:e95b2c71428e11625949731705f67bd0b5892020865d0c8d85c1110c39b4454a",
               "effective_from": "2026-11-02",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:182f648418d7d47f3c415fcff26a2884f65b390ee022ff3851ead724d1a013d1",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "momentum-mom1162853mre2-eme-export": {
+          "direction": "export",
+          "name": "Bill Boss Electricity (Endeavour) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:be276a3b12cb85c7f264715c51bc6885d041805f66531e042ead77a40ed794a0",
+              "effective_from": "2026-11-02",
               "effective_to": null
             }
           }
@@ -693,6 +1162,22 @@
             "1": {
               "checksum": "sha256:ea5ae30f8b24532f98aa0585e407bb188055083332999839bc2d4b92a7fc57b6",
               "effective_from": "2026-11-02",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:79935dc3ae91289a0dd357155e5423a21b97fca5f4a258a763790abbca0796fa",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "momentum-mom1162870mre2-eme-export": {
+          "direction": "export",
+          "name": "Bill Boss Electricity (Essential Energy + Essential Energy Standard + Essential Energy Far West) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:5917aaf75c6adef67ec5f89410d3699cffbfff1d4545aeced693748ba54f4207",
+              "effective_from": "2026-11-02",
               "effective_to": null
             }
           }
@@ -702,6 +1187,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:92ddaaefccfb5e29d91248239dc181f1784a7143a49c606c2e70236714fbbf31",
+              "effective_from": "2026-11-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:a650597b1bfd8fbfc44d3e97598e0f8f797e771c2f51dac609cbd6f9cc65eaf3",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "momentum-mom811849mr-vec-export": {
+          "direction": "export",
+          "name": "Bill Boss Electricity (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:e737876be01dbffbf9d579ad24b50cd870d2942870a51a3ee9b45023c80f9d39",
               "effective_from": "2026-11-01",
               "effective_to": null
             }
@@ -718,6 +1219,22 @@
             "1": {
               "checksum": "sha256:7b03c8eb9fbb310f6b8c0682c7dcc2c1ffac4f44be95f389ff3bc631a8b07853",
               "effective_from": "2026-09-30",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:8a99be5334e8cc769e3cfa28908492d0b92c5d145297cec6a3a479c68e0bc31a",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-nec802183mr-vec-export": {
+          "direction": "export",
+          "name": "Nectr GreenPower TOU - Citipower - October 2026 (Citipower) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:1b92478bf161eaab74e6a2782a6ffbbd0d45903f8f5532913ff82aae81b507fc",
+              "effective_from": "2026-09-30",
               "effective_to": null
             }
           }
@@ -727,6 +1244,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:8a913686875d665e84746aeb1ec7076beecce29860b85515656df5a1ac3996b2",
+              "effective_from": "2026-09-30",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:9a84fbad5a19d65227f866db609ccf480ec57e8262592369a407a4b588b4768a",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-nec802185mr-vec-export": {
+          "direction": "export",
+          "name": "Nectr GreenPower TOU - Jemena - October 2026 (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:6c74eaf3abe68771706160618008defdef6f93d96d9ec034dff03ebfad387761",
               "effective_from": "2026-09-30",
               "effective_to": null
             }
@@ -738,6 +1271,22 @@
             "1": {
               "checksum": "sha256:312aa183ba782b7fbe161c898a554b647842f4502f0de43e1182578380f113aa",
               "effective_from": "2026-09-30",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:50c91f96351611430fa6fd20cec91483c8f828b0eb6f0bfb141fc080cc9c1c64",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-nec802188mr-vec-export": {
+          "direction": "export",
+          "name": "Nectr GreenPower TOU + CL - Powercor - October 2026 (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:97464184c2af91bc13e5c745407e8f756b36521700ba44a0319f680b56a67d80",
+              "effective_from": "2026-09-30",
               "effective_to": null
             }
           }
@@ -748,6 +1297,22 @@
             "1": {
               "checksum": "sha256:4031171a23305ebab826c14c51f9e22c0b58d59d47f28cb4d244e9f4a04a58f7",
               "effective_from": "2026-09-30",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:6dfb21e962eb3d80d009008767dc40d3eb6eb93777ccc991871ad158a7398914",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-nec802189mr-vec-export": {
+          "direction": "export",
+          "name": "Nectr GreenPower TOU - United Energy - October 2026 (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:f5d0748b11bbc97a3e9ca6f69f5eb4188d1478d3319cc055c8d063b3406e1ad3",
+              "effective_from": "2026-09-30",
               "effective_to": null
             }
           }
@@ -757,6 +1322,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:a97d9d80ad10b41d133972c654ebfa3c5737c8b3acc777d36bd71177899e0298",
+              "effective_from": "2026-11-09",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:1396e07ed484f0f0557a137a16d91d919b5a124188e635854eb76065b9d08788",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "nectr-ntr1042706mre2-eme-export": {
+          "direction": "export",
+          "name": "Battery Evening Export TOU + CL 1 - November 2026 (Essential Energy + Essential Energy Standard + Essential Energy Far West) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d71f71ecd679a25b22a8d43b88dc3d5bbd99370d50691273ba243a515a267a07",
               "effective_from": "2026-11-09",
               "effective_to": null
             }
@@ -773,6 +1354,22 @@
             "1": {
               "checksum": "sha256:869a74ad1b71aefe9e3f3bad57385475c6062c2401c429807782b4ca39c34f10",
               "effective_from": "2026-10-29",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:d4c5cc1e112a4ec18b9ea35c6e6cb86d345ede9dbbc08ce9b6132689e9a4c097",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "origin-or2811883mr-vec-export": {
+          "direction": "export",
+          "name": "Origin Night Shift - Oct'26 (Time of Use) (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d6b5741ea59f55743b587239abb3332a5a9a4ee85dbedc23eb7a175404885ff1",
+              "effective_from": "2026-10-29",
               "effective_to": null
             }
           }
@@ -782,6 +1379,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:37a9feb69d24f2aa7917f0241290c983d3df93031db43a804ce613e6925ce272",
+              "effective_from": "2026-10-29",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:e5b42221ab1a4674486cbcdd61239461b83d5e90cd1681786b6b6b90dccfd49e",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "origin-or2811887mr-vec-export": {
+          "direction": "export",
+          "name": "Origin Night Shift - Oct'26 (Time of Use) (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:0ddc445899ac34fd689bd717e1e1588410829f0581f9d8c144478e14b55c8d94",
               "effective_from": "2026-10-29",
               "effective_to": null
             }
@@ -793,6 +1406,22 @@
             "1": {
               "checksum": "sha256:d68c23009a022869cff717f8426693508bf6a080e7677abb4c411479979af260",
               "effective_from": "2026-10-27",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:81eeaaa788ee6bd4b347d5036f12f3bebf0d3a88d334b22fda16bc0b039acfe5",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "origin-ori1206293mre1-eme-export": {
+          "direction": "export",
+          "name": "Origin Battery Earner (Ausgrid) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:147f73d2d157d018d8d90af11cfd649531751c3dc18b333a94c01a9103847646",
+              "effective_from": "2026-10-27",
               "effective_to": null
             }
           }
@@ -802,6 +1431,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:5bd411b279f6533bbbf46b46b8f4b67038b9b79ce4403a9cb78ae31664d3861f",
+              "effective_from": "2026-10-27",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:66cbd8847df0aab6ac6f63879952b8f0da6ab221120cf2b39aac47ea3c206392",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "origin-ori1206306mre1-eme-export": {
+          "direction": "export",
+          "name": "Origin Battery Earner (Essential Energy + Essential Energy Standard + Essential Energy Far West) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:525d7144c706fae17a1967b16880aa26b2a93206891f14a64d77edb8f3f73e8f",
               "effective_from": "2026-10-27",
               "effective_to": null
             }
@@ -818,6 +1463,22 @@
             "1": {
               "checksum": "sha256:9422b2279aa203cff985c4a7a9b09d49f87480a92aa6d7cfce321f01812bebbc",
               "effective_from": "2026-09-30",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:fede87c5ec9f45f51d3723ee6f4151f6a4d32908624618419c5898980f13cb70",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "powershop-pod803031mr-vec-export": {
+          "direction": "export",
+          "name": "Switch Saver (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:7eb2a91c6ee199cdee4eefc55b2b340203b149a9a436c342ba80f5fb1d3c0630",
+              "effective_from": "2026-09-30",
               "effective_to": null
             }
           }
@@ -827,6 +1488,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:6416261a261a27e219e99e7d6708e25eb6d56ca9d62a66136f190526c3449347",
+              "effective_from": "2026-09-30",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:6ae116d778e9fbc16f6fd90a1a77645662258f7f8f61e74a80c17d6cbfcd5bdb",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "powershop-pod803038mr-vec-export": {
+          "direction": "export",
+          "name": "Switch Saver (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:09a775b46c3d7c13724c806ef1e7cd24250c3d1554284b3cc48c6a27bead1b5c",
               "effective_from": "2026-09-30",
               "effective_to": null
             }
@@ -838,6 +1515,22 @@
             "1": {
               "checksum": "sha256:676075fa577d86d0b9172b0c37d9e78c11f926310002bace4b848427766cc7f6",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:b4c2b866fbc84ae33b7226a0aa941cde25b4285dad50b283b2880c3947fa59c3",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "powershop-psh1060223mre3-eme-export": {
+          "direction": "export",
+          "name": "Power House (Essential Energy + Essential Energy Standard + Essential Energy Far West) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:98a8fd05bab4be8189342205bf465516e4fb27d9d6e5a3b4766050899f292ed8",
+              "effective_from": "2026-10-01",
               "effective_to": null
             }
           }
@@ -847,6 +1540,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:164ac33141c3e8665e3fe0a110fae3d1be64c414775410eb7c439ca4b5893763",
+              "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:3119dd9a972490a1f61929245df4023fcbd3616cd026dbd900eb2a0af8e6d93a",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "powershop-psh1060535mre4-eme-export": {
+          "direction": "export",
+          "name": "Solar Sharer (Ausgrid) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:918a76d5f76498ed510b9847840cdfc1bceef83603361c35f73b7b7129e48ceb",
               "effective_from": "2026-10-01",
               "effective_to": null
             }
@@ -863,6 +1572,22 @@
             "1": {
               "checksum": "sha256:7e7c4e13822473ca5dd0e8491b561c73f36d8ba445dce6d0598ddfad1f5b2989",
               "effective_from": "2026-09-28",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:f87ff4cea05c7db26c09a898dfcf8a00e8f6ae948fe44839f3f9261e770f8d12",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "tango-tan804547mr-vec-export": {
+          "direction": "export",
+          "name": "Bonus Booster (Jemena) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:db7693fd7be56dca7cba3cc30d627240462cc8e00558fc0f2e1691cee5f9f7c7",
+              "effective_from": "2026-09-28",
               "effective_to": null
             }
           }
@@ -873,6 +1598,22 @@
             "1": {
               "checksum": "sha256:3617667eba459b613cf5e5a6bf38839eae73bee300177e1b0e15d1906a30e117",
               "effective_from": "2026-09-28",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:5efba6c93674ec5bc34cac770fbd6c1fabe1d1755d2743874c0616939855ed56",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "tango-tan804558mr-vec-export": {
+          "direction": "export",
+          "name": "Bonus Booster (Powercor) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d401b23f35bc0c03dd23da2d1f59ac17e2192934a6fe6d65bbc0c5e0abd09f5a",
+              "effective_from": "2026-09-28",
               "effective_to": null
             }
           }
@@ -882,6 +1623,22 @@
           "revisions": {
             "1": {
               "checksum": "sha256:8a3037e496448a76e4aac3f6c58f454dab2e97352b1f7c67fc6b16271b24f73c",
+              "effective_from": "2026-09-28",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:3a51c5883a5814208aeb9ef6f3a1c9c977ff5e3ed3b8e7b5c73b537ff2a8140c",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "tango-tan804560mr-vec-export": {
+          "direction": "export",
+          "name": "Bonus Booster (United Energy) export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:6f3e0bd9ee3f6be462d0eb689ee73cfadf4e6690b2f87086f9449c1386234247",
               "effective_from": "2026-09-28",
               "effective_to": null
             }

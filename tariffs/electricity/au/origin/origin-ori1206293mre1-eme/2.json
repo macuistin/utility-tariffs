@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "name": "Origin Battery Earner (Ausgrid)",
+  "provider": "Origin Energy",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/origin/cds-au/v1/energy/plans/ORI1206293MRE1@EME"
+  },
+  "prices_include_tax": false,
+  "export": "origin/origin-ori1206293mre1-eme-export",
+  "bands": [
+    {
+      "name": "Off peak"
+    },
+    {
+      "hours": "17:00-21:00",
+      "name": "Peak"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Off peak": "0.271",
+        "Peak": "0.491"
+      },
+      "standing": "1.264"
+    }
+  }
+}

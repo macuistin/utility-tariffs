@@ -81,6 +81,47 @@ class Parse(unittest.TestCase):
         self.assertEqual(sync.provider_slugs(DIRECTORY), ["broken", "example-energy"])
 
 
+def _guide(rows: list[tuple[str, str]], header: str = "Supplier</th><th>Microgeneration Rate</th>"
+           "<th>Payment") -> str:
+    body = "".join(f"<tr><td>{name}</td><td>{rate}</td><td>Quarterly credit</td></tr>"
+                   for name, rate in rows)
+    return ("<h1>Best rates</h1><p>By A Writer | Updated 1 November 2026 | 14 min read</p>"
+            f"<table><tr><th>Technology</th><th>Description</th></tr></table>"
+            f"<table><tr><th>{header}</th></tr>{body}</table>")
+
+
+GUIDE = _guide([("Example Energy", "€0.185 per kWh"), ("Bord Gáis Energy", "€0.185 per kWh"),
+                ("PrepayPower", "€0.1589 per kWh"), ("Electric Ireland", "€0.195 per kWh"),
+                ("Elsewhere Power", "€0.2 per kWh")])
+
+
+class ExportGuide(unittest.TestCase):
+    def test_the_table_gives_a_rate_in_euro_for_each_supplier_slug(self) -> None:
+        updated, rates = sync.parse_export_guide(GUIDE)
+        self.assertEqual(updated, "2026-11-01")
+        self.assertEqual(rates, {"example-energy": sync.Decimal("0.185"),
+                                 "bord-gais-energy": sync.Decimal("0.185"),
+                                 "prepaypower": sync.Decimal("0.1589"),
+                                 "electric-ireland": sync.Decimal("0.195"),
+                                 "elsewhere-power": sync.Decimal("0.2")})
+
+    def test_a_guide_that_changed_is_refused(self) -> None:
+        for page, why in ((GUIDE.replace("Microgeneration Rate", "Rate"), "no table headed"),
+                          (GUIDE.replace("€0.185 per kWh", "18.5c", 1), "no export rate"),
+                          ("<p>Updated 1 November 2026</p>", "no table headed")):
+            with self.subTest(why), self.assertRaisesRegex(ValueError, why):
+                sync.parse_export_guide(page)
+
+    def test_an_export_is_a_flat_export_tariff_dated_by_the_guide(self) -> None:
+        plan = sync.export_plan("example-energy", sync.Decimal("0.185"), "2026-11-01")
+        tariff = to_tariff(plan, sync.SOURCE_ID)
+        self.assertEqual((tariff["direction"], tariff["effective_from"], tariff["name"]),
+                         ("export", "2026-11-01", "Example Energy Microgen Export"))
+        self.assertEqual(tariff["areas"], {"all": {"rates": {"Export": "0.185"}}})
+        self.assertEqual(tariff["source"]["url"], sync.GUIDE)
+        self.assertFalse(plan.dated)
+
+
 class Plans(unittest.TestCase):
     def test_prices_include_vat_and_each_column_is_an_area(self) -> None:
         plans, skipped = sync.plans_for("example-energy", PAGE, "2026-11-11")
@@ -114,7 +155,7 @@ class Plans(unittest.TestCase):
         self.assertEqual(sorted(plans[1].areas), ["urban"])
 
     def test_read_walks_the_directory_and_carries_on_past_a_refused_page(self) -> None:
-        answers = {"https://selectra.ie/energy/providers": DIRECTORY,
+        answers = {"https://selectra.ie/energy/providers": DIRECTORY, sync.GUIDE: GUIDE,
                    "https://selectra.ie/energy/providers/example-energy": PAGE,
                    "https://selectra.ie/energy/providers/broken": "<h2>Broadband</h2>"}
 
@@ -122,9 +163,32 @@ class Plans(unittest.TestCase):
             def get(self, url, headers=None):
                 return answers[url].encode()
         result = sync.read(Fetch(), "2026-11-11", {})
-        self.assertEqual(len(result.plans), 2)
+        imports = [p for p in result.plans if p.direction == "import"]
+        self.assertEqual(len(imports), 2)
+        self.assertEqual({p.extra["export"] for p in imports},
+                         {"example-energy/example-energy-microgen-export"})
+        exports = [p for p in result.plans if p.direction == "export"]
+        self.assertEqual([(p.id, p.areas["all"].rates["Export"]) for p in exports],
+                         [("example-energy-microgen-export", sync.Decimal("0.185"))])
         self.assertTrue(any(s.startswith("broken: page refused") for s in result.skipped))
+        self.assertIn("elsewhere-power: an export rate on the guide for a supplier not in the "
+                      "directory", result.skipped)
+        self.assertFalse(any("electric-ireland" in s for s in result.skipped))
         self.assertTrue(any("assumed" in n for n in result.notes))
+
+    def test_a_supplier_whose_paid_figure_is_unclear_gets_no_export(self) -> None:
+        directory = '<a href="/energy/providers/prepaypower">x</a>'
+        answers = {"https://selectra.ie/energy/providers": directory, sync.GUIDE: GUIDE,
+                   "https://selectra.ie/energy/providers/prepaypower": PAGE}
+
+        class Fetch:
+            def get(self, url, headers=None):
+                return answers[url].encode()
+        result = sync.read(Fetch(), "2026-11-11", {})
+        self.assertEqual({p.direction for p in result.plans}, {"import"})
+        self.assertTrue(all("export" not in p.extra for p in result.plans))
+        self.assertIn("prepaypower: export rate not paired, the supplier states 14c and 15.89c "
+                      "with VAT and not which it pays", result.skipped)
 
 
 if __name__ == "__main__":

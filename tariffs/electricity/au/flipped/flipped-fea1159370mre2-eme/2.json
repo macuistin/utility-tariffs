@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "name": "Anytime Switched On 2.2! (Essential Energy Standard)",
+  "provider": "Flipped Energy",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/flipped/cds-au/v1/energy/plans/FEA1159370MRE2@EME"
+  },
+  "prices_include_tax": false,
+  "export": "flipped/flipped-fea1159370mre2-eme-export",
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.308167"
+      },
+      "standing": "1.629088"
+    }
+  }
+}

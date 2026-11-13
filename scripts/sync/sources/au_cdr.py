@@ -12,9 +12,15 @@ Plans the format can hold: a single flat rate, or time of use where the windows 
 cover 24 hours exactly once. Skipped and listed: seasonal periods, step blocks/volume tiers,
 demand charges, banded supply charges, weekday-only windows, anything with an unknown time zone.
 A plan outside the country block's time zone carries its own `timezone`.
+
+The plan detail also lists the retailer's solar feed-in tariff. A flat rate, or rates by time of
+day that cover 24 hours once, becomes an export tariff the plan names. A government scheme rate, a
+rate that is not per kWh or not per year, tiers, and windows that miss a day or leave gaps are
+skipped and listed, and the plan stays unpaired.
 """
 from __future__ import annotations
 
+import dataclasses
 import json
 import re
 from datetime import date
@@ -118,6 +124,65 @@ def express(contract: dict) -> tuple[dict | None, str | None]:
     return out, None
 
 
+def feed_in(contract: dict) -> tuple[dict | None, str | None]:
+    """The retailer's feed-in rates as ({'base_name','base_price','zones'}, None). (None, None)
+    when it publishes none, and (None, reason) when the format cannot hold what it publishes.
+    Government scheme rates belong to old installations and are not read."""
+    windows = []
+    for entry in contract.get("solarFeedInTariff") or []:
+        if entry.get("payerType") == "GOVERNMENT":
+            continue
+        kind = entry.get("tariffUType")
+        if kind == "singleTariff":
+            bodies = [(entry["singleTariff"], entry.get("displayName") or "Export")]
+        elif kind == "timeVaryingTariffs":
+            bodies = [(v, v.get("displayName") or v.get("type") or "Export")
+                      for v in entry["timeVaryingTariffs"]]
+        else:
+            return None, f"feed-in {kind}"
+        for body, name in bodies:
+            rates = body.get("rates") or []
+            if len(rates) != 1 or rates[0].get("measureUnit", "KWH") != "KWH":
+                return None, "feed-in with tiers or a unit that is not kWh"
+            if body.get("period") not in (None, "P1Y"):
+                return None, f"feed-in rate for the period {body['period']}"
+            for window in body.get("timeVariations") or [{"days": sorted(ALL_DAYS)}]:
+                if set(window["days"]) != ALL_DAYS:
+                    return None, "feed-in windows not every day"
+                windows.append((name, window.get("startTime", "00:00"),
+                                window.get("endTime", "00:00"), rates[0]["unitPrice"]))
+    if not windows:
+        return None, None
+    return cover(windows)
+
+
+def cover(windows: list[tuple[str, str, str, str]]) -> tuple[dict | None, str | None]:
+    """Windows that cover 24 hours exactly once, as the longest one for the base and the rest as zones."""
+    covered, spans = [0] * 1440, []
+    for name, start, end, price in windows:
+        s, e = minutes(start), minutes(end, end=True)
+        span = list(range(1440)) if e == s else list(range(s, e)) if e > s \
+            else list(range(s, 1440)) + list(range(0, e))
+        for minute in span:
+            covered[minute] += 1
+        spans.append((name, f"{clock(s)}-{clock(e)}", price, len(span)))
+    if any(c != 1 for c in covered):
+        return None, "feed-in windows overlap or leave gaps"
+    spans.sort(key=lambda w: -w[3])
+    return {"base_name": spans[0][0], "base_price": spans[0][2],
+            "zones": [(n, h, p) for n, h, p, _ in spans[1:]]}, None
+
+
+def export_plan(plan: Plan, priced: dict) -> Plan:
+    """The feed-in as an export tariff beside the plan, with the plan's dates and time zone."""
+    bands, areas = single((priced["base_name"], priced["base_price"]), priced["zones"], None)
+    return Plan(country=COUNTRY, provider_id=plan.provider_id, provider=plan.provider,
+                id=f"{plan.id}-export", name=f"{plan.name} export",
+                effective_from=plan.effective_from, effective_to=plan.effective_to, dated=False,
+                source_url=plan.source_url, prices_include_tax=False, timezone=plan.timezone,
+                bands=bands, areas=areas, direction="export")
+
+
 def plan_from_detail(brand: str, plan_id: str, data: dict) -> tuple[Plan | None, str | None]:
     """(plan, None), or (None, why the format cannot hold it)."""
     priced, why = express(data.get("electricityContract") or {})
@@ -143,16 +208,25 @@ def detail_url(brand: str, plan_id: str) -> str:
     return f"{HOST}/{brand}/cds-au/v1/energy/plans/{plan_id}"
 
 
-def fetch_plan(fetch, url: str) -> tuple[Plan | None, str | None]:
-    """Read one plan by its detail link."""
+def fetch_plan(fetch, url: str) -> tuple[list[Plan], list[str]]:
+    """Read one plan by its detail link: the plan and the export it pays when the retailer
+    publishes a feed-in tariff the format can hold, and the reasons for anything left out."""
     match = re.match(re.escape(HOST) + r"/([^/]+)/cds-au/v1/energy/plans/(.+)$", url)
     if not match:
-        return None, "not a plan detail link"
+        return [], ["not a plan detail link"]
     try:
         detail = json.loads(fetch.get(url, {"Accept": "application/json", "x-v": "3", "x-min-v": "1"}))
     except Blocked as error:
-        return None, f"detail failed: {error}"
-    return plan_from_detail(match.group(1), match.group(2), detail["data"])
+        return [], [f"detail failed: {error}"]
+    plan, why = plan_from_detail(match.group(1), match.group(2), detail["data"])
+    if plan is None:
+        return [], [why or "not held"]
+    priced, why = feed_in(detail["data"].get("electricityContract") or {})
+    if priced is None:
+        return [plan], [f"no export paired: {why}"] if why else []
+    export = export_plan(plan, priced)
+    paired = dataclasses.replace(plan, extra={**plan.extra, "export": f"{plan.provider_id}/{export.id}"})
+    return [paired, export], []
 
 
 def read(fetch, today: str, stored: dict) -> Result:
@@ -160,11 +234,10 @@ def read(fetch, today: str, stored: dict) -> Result:
     for key, latest in sorted(stored.items()):
         if latest.get("effective_to"):
             continue
-        plan, why = fetch_plan(fetch, latest["source"]["url"])
-        if plan is None:
-            result.skipped.append(f"{'/'.join(key)}: {why}")
-        elif plan.effective_to and plan.effective_to <= today:
-            result.skipped.append(f"{'/'.join(key)}: the retailer ended it on {plan.effective_to}")
+        plans, reasons = fetch_plan(fetch, latest["source"]["url"])
+        result.skipped += [f"{'/'.join(key)}: {why}" for why in reasons]
+        if plans and plans[0].effective_to and plans[0].effective_to <= today:
+            result.skipped.append(f"{'/'.join(key)}: the retailer ended it on {plans[0].effective_to}")
         else:
-            result.plans.append(plan)
+            result.plans += plans
     return result

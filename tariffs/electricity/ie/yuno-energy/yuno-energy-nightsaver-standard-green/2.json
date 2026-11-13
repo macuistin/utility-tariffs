@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "name": "NightSaver Standard Green",
+  "provider": "Yuno Energy",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/providers/yuno-energy"
+  },
+  "export": "yuno-energy/yuno-energy-microgen-export",
+  "bands": [
+    {
+      "name": "Day"
+    },
+    {
+      "hours": "23:00-08:00",
+      "name": "Night"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "Day": "0.409731",
+        "Night": "0.237947"
+      },
+      "standing": "1.083452"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "Day": "0.409731",
+        "Night": "0.237947"
+      },
+      "standing": "0.898164"
+    }
+  }
+}

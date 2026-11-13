@@ -56,11 +56,9 @@ def discover(fetch, brands: list[str], per_brand: int, today: str, tariffs=TARIF
                  if not (tariffs / "au" / au_cdr.slugify(brand)
                          / au_cdr.slugify(f"{brand}-{p['planId']}")).exists()]
         for item in pick(fresh, per_brand):
-            plan, why = au_cdr.fetch_plan(fetch, au_cdr.detail_url(brand, item["planId"]))
-            if plan:
-                plans.append(plan)
-            else:
-                lines.append(f"skipped {brand}: {item['displayName']}: {why}")
+            found, reasons = au_cdr.fetch_plan(fetch, au_cdr.detail_url(brand, item["planId"]))
+            plans += found
+            lines += [f"skipped {brand}: {item['displayName']}: {why}" for why in reasons]
     outcome = apply(plans, au_cdr.SOURCE_ID, today, tariffs)
     return lines + [f"added {key}" for key in outcome.added] + \
         [f"refused {why}" for why in outcome.refused]

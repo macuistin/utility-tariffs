@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "name": "VIC-ENGIE Perks Plus Plus Elec (Powercor)",
+  "provider": "ENGIE",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/engie/cds-au/v1/energy/plans/ENG814233MR@VEC"
+  },
+  "prices_include_tax": false,
+  "export": "engie/engie-eng814233mr-vec-export",
+  "bands": [
+    {
+      "name": "Base"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Base": "0.2565"
+      },
+      "standing": "1.255"
+    }
+  }
+}

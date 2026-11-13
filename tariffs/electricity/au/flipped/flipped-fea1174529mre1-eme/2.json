@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "name": "Freedom Switched On 2.3! Controlled Load (Ausgrid)",
+  "provider": "Flipped Energy",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "au-cdr-energy",
+    "url": "https://cdr.energymadeeasy.gov.au/flipped/cds-au/v1/energy/plans/FEA1174529MRE1@EME"
+  },
+  "prices_include_tax": false,
+  "export": "flipped/flipped-fea1174529mre1-eme-export",
+  "bands": [
+    {
+      "name": "Overnight"
+    },
+    {
+      "hours": "08:00-16:00",
+      "name": "Day"
+    },
+    {
+      "hours": "16:00-20:00",
+      "name": "Evening"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Day": "0.12812",
+        "Evening": "0.46158",
+        "Overnight": "0.19388"
+      },
+      "standing": "1.09561"
+    }
+  }
+}
