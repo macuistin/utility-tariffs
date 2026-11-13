@@ -107,6 +107,20 @@ class Apply(unittest.TestCase):
         self.assertEqual(self.stored()[3]["effective_from"], "2026-12-01")  # a later source date is kept
         self.assertEqual(len(outcome.revised), 1)
 
+    def test_a_new_pairing_is_dated_by_the_run_even_from_a_dated_source(self) -> None:
+        self.apply([plan(start="2026-10-01")])
+        outcome = self.apply([plan(start="2026-10-01", extra={"export": "p/out"})],
+                             today="2026-11-13")
+        self.assertEqual(outcome.revised, ["ie/p/flat revision 2 from 2026-11-13"])
+        self.assertEqual(self.stored()[2]["export"], "p/out")
+        again = self.apply([plan(start="2026-10-01", extra={"export": "p/out"})],
+                           today="2026-11-14")
+        self.assertEqual(again.unchanged, ["ie/p/flat"])
+        # a price change at the same stated start is still refused
+        refused = self.apply([plan("0.3", "2026-10-01", extra={"export": "p/out"})],
+                             today="2026-11-15")
+        self.assertEqual(len(refused.refused), 1)
+
     def test_a_dated_source_that_goes_backwards_is_refused(self) -> None:
         self.apply([plan(start="2026-06-01")])
         outcome = self.apply([plan("0.3", "2026-03-01")])

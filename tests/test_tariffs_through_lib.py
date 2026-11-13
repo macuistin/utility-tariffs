@@ -363,7 +363,8 @@ class Export(unittest.TestCase):
         ids = {d["_meta"]["id"] for d in export_documents()}
         self.assertEqual(ids, {"octopus-outgoing-var-24-10-26", "octopus-outgoing-seg-fix-12m-20-07-07",
                                "octopus-outgoing-seg-fix-12m-26-10-21",
-                               "octopus-outgoing-prime-fix-12m-26-06-23"})
+                               "octopus-outgoing-prime-fix-12m-26-06-23",
+                               "electric-ireland-microgen-export"})
 
     def test_flat_exports_price_through_lib(self) -> None:
         # PAGE (Octopus API, region A, all regions equal): 12.0, 4.1 and 4.1 p/kWh. Pairing an
@@ -377,6 +378,26 @@ class Export(unittest.TestCase):
                 standing = cents(standing_of(host))
                 # export is a credit: the standing charge less 100 kWh at the export price
                 self.assertEqual(cents(bill.total), standing - cents(Decimal(100) * flat_price(export)))
+
+    def test_electric_ireland_pays_the_microgen_rate_outside_the_vat(self) -> None:
+        # PAGE (Electric Ireland microgeneration page): 19.5c per kWh. PAGE (its pricing page):
+        # standing charge 301.45 a year, urban. ASSUMPTION: one day, no import, 100 kWh exported.
+        # Each line is rounded to the cent: standing 0.82589 is 0.83 and the levy 0.51 / 30 is
+        # 0.02, together 0.85. VAT at 9% is 0.0765, so 0.08, and the day costs 0.93. The 100 kWh
+        # credit is 19.50 and carries no VAT.
+        for tariff, meta, block in stored():
+            if meta["tariff"] != "electric-ireland-home-electric-night-boost":
+                continue
+            if not tariff.get("export"):
+                continue
+            export = next(d for d in export_documents()
+                          if tariff["export"] == f"{d['_meta']['provider']}/{d['_meta']['id']}")
+            doc = compile_area(tariff, "urban", block=block, meta=meta, on="2026-11-13",
+                               export_file=export)
+            bill = price_bill(load(doc), BillInputs(1, 30, {}, Decimal(100)))
+            self.assertEqual(cents(bill.total), Decimal("0.93") - Decimal("19.50"))
+            return
+        self.fail("no Night Boost revision names an export")
 
     def test_without_a_paired_export_nothing_is_credited(self) -> None:
         host = by_id(documents(), self.HOST)
@@ -417,7 +438,8 @@ class Export(unittest.TestCase):
 class Sanity(unittest.TestCase):
     def test_root(self) -> None:
         self.assertTrue((ROOT / "lib" / "tariff" / "engine.py").exists())
-        self.assertEqual(len(documents()), 225)
+        self.assertEqual(len(documents()), sum(
+            len(t["areas"]) for t, _, _ in stored() if t.get("direction") != "export"))
         self.assertGreater(timedelta(days=1).days, 0)
         self.assertTrue(sys.version_info >= (3, 9))
 

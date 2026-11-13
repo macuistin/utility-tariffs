@@ -6,8 +6,11 @@ charge, the PSO levy and the date the prices started, all without VAT. A bill is
 supplier bills it: energy at the rates before the discount, the discount on energy, the standing
 charge and the levy, then VAT on all of it.
 
+The microgeneration page states the export rate, one flat price for every customer. It is stored
+as an export tariff and each plan names it, so a bill pays for exported energy.
+
 Stop rather than guess: a plan with a rate row this module does not know, or a band with no
-stated hours, is skipped and listed.
+stated hours, is skipped and listed. A microgeneration page with no export rate stops the source.
 """
 from __future__ import annotations
 
@@ -26,6 +29,8 @@ PROVIDER_ID = "electric-ireland"
 PROVIDER = "Electric Ireland"
 BASE = "https://www.electricireland.ie/switch/new-customer"
 PLANS_URL = f"{BASE}/price-plans?priceType=E"
+MICROGEN_URL = "https://www.electricireland.ie/residential/products/microgeneration"
+EXPORT_ID = f"{PROVIDER_ID}-microgen-export"
 REGIONS = ("urban", "rural")
 # The order is the priority: a later band wins where two overlap, as Night Boost does over Night.
 BANDS = ("Day", "Night", "Peak", "Night Boost")
@@ -40,6 +45,7 @@ DISCOUNT = re.compile(r"^Effective .* with ([\d.]+)% ")
 STANDING = re.compile(r"^Standing charge (?:24 hour|NightSaver) (urban|rural) per year")
 VALID = re.compile(r"Prices valid as of (\d{1,2})(?:st|nd|rd|th)?(?: of)? ([A-Za-z]+) (\d{4})")
 CENTS = re.compile(r"^([\d.]+) c/kWh$")
+EXPORT = re.compile(r"Microgen export rate of ([\d.]+)c per kWh", re.I)
 EURO = re.compile(r"^€([\d,]+\.\d\d)$")
 
 
@@ -155,6 +161,22 @@ def _bands(rates: dict[str, Decimal], hours: dict[str, str]) -> list[dict]:
     return [{"name": "Day"}] + [{"name": name, "hours": hours[name]} for name in names[1:]]
 
 
+def export_rate(page: str) -> Decimal:
+    """The microgeneration page's export rate in euro per kWh. Raises ValueError when it is absent."""
+    match = EXPORT.search(_text(page))
+    if not match:
+        raise ValueError("no 'Microgen export rate of ... c per kWh' on the microgeneration page")
+    return Decimal(match.group(1)) / 100
+
+
+def export_plan(rate: Decimal, today: str) -> Plan:
+    """The flat export price. The page gives no start date, so a change is dated by the run."""
+    return Plan(country=COUNTRY, provider_id=PROVIDER_ID, provider=PROVIDER, id=EXPORT_ID,
+                name="Microgen Export", effective_from=today, dated=False, source_url=MICROGEN_URL,
+                bands=[{"name": "Export"}], areas={"all": Area(rates={"Export": rate})},
+                direction="export")
+
+
 def plan_for(plan_id: str, name: str, hours: dict[str, str], charges: Charges) -> Plan:
     """The plan as the store holds it, an area for each of urban and rural."""
     bands = _bands(charges.rates, hours)
@@ -166,17 +188,21 @@ def plan_for(plan_id: str, name: str, hours: dict[str, str], charges: Charges) -
                 effective_from=charges.valid_from,
                 source_url=f"{BASE}/priceplan-charges?pricePlanId={plan_id}", bands=bands,
                 areas=areas, prices_include_tax=False,
-                extra={"bill": bill(charges.discount, charges.levy)})
+                extra={"bill": bill(charges.discount, charges.levy),
+                       "export": f"{PROVIDER_ID}/{EXPORT_ID}"})
 
 
 def read(fetch, today: str, stored: dict) -> Result:
     result = Result(notes=["a plan's discount is for paying by direct debit with online billing",
-                           "night storage heating prices are not held: they need a second meter"])
+                           "night storage heating prices are not held: they need a second meter",
+                           "the export rate is for a registered microgenerator with a smart meter"])
     page = fetch.get(PLANS_URL).decode("utf-8", "replace")
     listed = plan_ids(page)
     if not listed:
         raise ValueError("no price plans on the page")
-    seen: set[str] = set()
+    result.plans.append(export_plan(export_rate(fetch.get(MICROGEN_URL).decode("utf-8", "replace")),
+                                    today))
+    seen: set[str] = {EXPORT_ID}
     for plan_id, name in listed:
         pricing = fetch.get(f"{BASE}/priceplan-charges?pricePlanId={plan_id}")
         try:
