@@ -27,8 +27,11 @@ the product page shows only 9.0). All 14 regions carry the same rate and no stan
 Skipped: Agile Outgoing (half-hourly), Flux Export (varies by region and time), Power Pack and the
 three Zero export products (restricted to registered homes).
 
-Pairing: the API does not say which export product goes with which import product, so no Octopus
-import file carries an `export` reference yet. Add one only where Octopus states it. The July 2020
+Pairing: the API does not say which export product goes with which import product. Checked on
+2026-11-13: a product has a name, a description and a list of rates and nothing that names another
+product. So no Octopus import file carries an `export` reference. The export products are open to
+any customer, so a client offers the customer the choice (`Store.definition(..., export=...)`).
+Add a reference only where Octopus states it. The July 2020
 Smart Export Guarantee product has no rate history in the files because only its current rate was
 read, so its `effective_from` is the date the rate was fetched.
 

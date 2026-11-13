@@ -79,7 +79,8 @@ def read(fetch, today: str, stored: dict) -> Result:
         plans=plans(pdf_text(fetch.get(URL))),
         skipped=["Homeflex: seasonal and time-of-use with weekday/weekend and public-holiday rules",
                  "Homepower Bulk: sectional-title bulk supply, not a household tariff",
-                 "Gen-offset Homeflex: grid-tied generation credit, needs the export shape",
+                 "Gen-offset: a net-billing credit by time-of-use period on Homeflex and Ruraflex rates, so it "
+                 "goes with the skipped Homeflex tariff",
                  "Municipal tariffs: about 160 municipal PDFs, not attempted"],
         notes=["Homepower: energy + ancillary + network demand as the unit rate; network capacity + "
                "service/admin + generation capacity as the daily charge"])

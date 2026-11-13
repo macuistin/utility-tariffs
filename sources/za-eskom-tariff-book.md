@@ -13,3 +13,8 @@
 - Frequency: yearly (April), mid-year corrections possible.
 - Not covered: Homeflex (seasonal TOU, weekday split), Homepower Bulk (sectional title developments),
   municipal tariffs (about 160 municipalities, each its own PDF; NERSA approves them annually).
+- Export: the booklet's Gen-offset tariff is a net-billing credit. It credits energy exported up to
+  the energy consumed in each time-of-use period, at the Homeflex (urban) or Ruraflex (rural) energy
+  rates less part of the generation capacity and service charges, by transmission zone and voltage.
+  It belongs to those time-of-use tariffs, which are skipped, so no held tariff has an export.
+  Homelight and Homepower have no export price in the booklet.
