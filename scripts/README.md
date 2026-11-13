@@ -38,6 +38,7 @@ fails there gets its own issue. `docs/design.md` has the reasons.
 | `octopus_gb` | `sources/octopus-energy-gb.md` | Octopus Energy's product API: import and export |
 | `ofgem_gb` | `sources/ofgem-price-cap.md` | The price cap workbook linked from Ofgem's page |
 | `selectra_ie` | `sources/selectra-ie.md` | Irish supplier pages |
+| `electric_ireland` | `sources/electric-ireland.md` | Electric Ireland's price plans page and each plan's full pricing |
 | `au_cdr` | `sources/au-cdr-energy.md` | Australian plan detail for the plans already stored |
 | `fr_cre` | `sources/fr-cre-trve.md` | The French regulated tariff file |
 | `za_eskom` | `sources/za-eskom-tariff-book.md` | Eskom's yearly booklet. Its link and start date are constants edited by hand each year |

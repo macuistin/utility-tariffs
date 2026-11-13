@@ -11,7 +11,7 @@ from importlib import import_module
 
 from scripts.sync.plan import Plan
 
-NAMES = ("octopus_gb", "ofgem_gb", "selectra_ie", "au_cdr", "fr_cre", "za_eskom")
+NAMES = ("octopus_gb", "ofgem_gb", "selectra_ie", "electric_ireland", "au_cdr", "fr_cre", "za_eskom")
 
 
 @dataclass
