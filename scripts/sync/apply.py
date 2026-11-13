@@ -39,6 +39,13 @@ def same_pricing(a: dict, b: dict) -> bool:
     return strip(a) == strip(b)
 
 
+def pairing_only(a: dict, b: dict) -> bool:
+    """True when the two differ only in the export they pay. The supplier dates a price, not a
+    pairing, so such a revision starts on the day the sync found it."""
+    strip = lambda d: {k: v for k, v in d.items() if k not in (*NOT_PRICING, "export")}  # noqa: E731
+    return strip(a) == strip(b)
+
+
 def stored_for(source_id: str, country: str, tariffs: Path) -> dict[tuple[str, str, str], dict]:
     """{(country, provider id, tariff id): latest file} for the tariffs this source last wrote."""
     out = {}
@@ -86,7 +93,8 @@ def apply(plans: list[Plan], source_id: str, today: str, tariffs: Path) -> Outco
         if same_pricing(latest, tariff) and (not ended or ended == tariff.get("effective_to")):
             outcome.unchanged.append(label)
             continue
-        if tariff["effective_from"] <= latest["effective_from"] and not plan.dated:
+        undated = not plan.dated or pairing_only(latest, tariff)
+        if tariff["effective_from"] <= latest["effective_from"] and undated:
             tariff["effective_from"] = today
         starts = tariff["effective_from"]
         if starts <= latest["effective_from"] or (ended and ended > starts):

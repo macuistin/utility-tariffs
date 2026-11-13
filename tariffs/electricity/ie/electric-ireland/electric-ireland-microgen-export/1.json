@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "Microgen Export",
+  "provider": "Electric Ireland",
+  "direction": "export",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "electric-ireland",
+    "url": "https://www.electricireland.ie/residential/products/microgeneration"
+  },
+  "bands": [
+    {
+      "name": "Export"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Export": "0.195"
+      }
+    }
+  }
+}

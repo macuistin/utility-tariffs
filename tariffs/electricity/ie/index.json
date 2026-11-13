@@ -121,6 +121,11 @@
             "1": {
               "checksum": "sha256:0ae06a238f9b69387024be18474e222b2c9297d00a54dfa6e54381f61f82a2c9",
               "effective_from": "2026-10-14",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:6a48a349f7b685435e01eb88067ca1d9c9b1bc44f33e57e4a88f5127d0769dc6",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -131,6 +136,11 @@
             "1": {
               "checksum": "sha256:2d67ea6b9e5af39d7b907d5b5a6d9e3e99803bb3a493e353ca8ff25bef417771",
               "effective_from": "2026-10-14",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:d3e1c84ed7fd006920346c9754b6f0ca5fded856c69da98acc32a4c7d4f88ed7",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -141,6 +151,11 @@
             "1": {
               "checksum": "sha256:d0b2748b0a34a8d0116d741a026dd4a086286a25a5c33a8118e653a8d6bcad9c",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:6d050fe3cc731c514b2366dcb0028a993fa4c37ab2bcc8c42ecc2f1430a975d8",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -151,6 +166,11 @@
             "1": {
               "checksum": "sha256:9020613796a79c395db1f6b5328db6932811289a72246ea07081a7c2fe511d5f",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:20d3f4b29f08ea7ba57123d967fa5a129e6b4ee63f706891fa4c284c6fa18da3",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -161,6 +181,11 @@
             "1": {
               "checksum": "sha256:d87e370b52e0bbe3ef57179e97049ccd826748cf482eb8d2bf6ee74c32b000cb",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:2cb65301c9bc3b8472b67611fbecb54fa476060d227b66625ffa82e8cd11fb16",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -171,6 +196,11 @@
             "1": {
               "checksum": "sha256:d0fc2f918b5da9fd9987a713d27c1b7433c5816bc677e83ea4f79fdc685aa4cb",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:8ea1d08c80b696acc4254ca44dd991332557d3ea10e19817a5f28450e0e30c7b",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }
@@ -181,6 +211,22 @@
             "1": {
               "checksum": "sha256:4b64b115a3f885f3267dc70f21f0c35484ce76384c8f723a5a6023dad3cd187b",
               "effective_from": "2026-10-01",
+              "effective_to": "2026-11-13"
+            },
+            "2": {
+              "checksum": "sha256:8624ee7d408eed7555ffa7beb72a2601ed5615053ab14a6db4d81445a12fed5b",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
+        "electric-ireland-microgen-export": {
+          "direction": "export",
+          "name": "Microgen Export",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:18accd9018d4dc5fd2d3508b22c3248e9406af476ad21bf78a9a1e94d9050e20",
+              "effective_from": "2026-11-13",
               "effective_to": null
             }
           }

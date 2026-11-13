@@ -48,6 +48,8 @@ def _pricing(rates: list[tuple[str, str]], *, discount: str = "5.5",
             f"<div>Prices valid as of {valid}, prices are subject to change.</div>")
 
 
+MICROGEN = ("<h1>Microgeneration</h1><p>Electric Ireland is supporting customers with a current "
+            "Microgen export rate of 19.5c per kWh.</p><p>This rate is variable.</p>")
 BOOST = [("Standard Day unit price", "36.50 c/kWh"),
          ("Standard Night unit / Night storage heating unit price", "18.00 c/kWh"),
          ("Standard Night Boost unit price", "10.56 c/kWh")]
@@ -163,10 +165,36 @@ class Plans(unittest.TestCase):
                 self.plan(rates, hours)
 
 
+class Export(unittest.TestCase):
+    def test_the_export_rate_is_read_in_euro_and_stored_as_a_flat_export_tariff(self) -> None:
+        rate = sync.export_rate(MICROGEN)
+        self.assertEqual(rate, D("0.195"))
+        plan = sync.export_plan(rate, "2026-11-13")
+        tariff = to_tariff(plan, sync.SOURCE_ID)
+        self.assertFalse(plan.dated)
+        self.assertEqual((tariff["direction"], tariff["effective_from"], tariff["bands"]),
+                         ("export", "2026-11-13", [{"name": "Export"}]))
+        self.assertEqual(tariff["areas"], {"all": {"rates": {"Export": "0.195"}}})
+        self.assertEqual(tariff["source"]["url"], sync.MICROGEN_URL)
+
+    def test_the_credit_is_added_outside_the_vat(self) -> None:
+        # SOURCE: 19.5c export, the BOOST rates and levy. ASSUMPTION: 30 days, the kWh below.
+        # Imports as in the bill test give 184.56 and 16.61 VAT. 47 kWh x 0.195 = 9.165 = 9.17
+        # credit, with no VAT on it: 201.17 - 9.17 = 192.00.
+        plan = Plans().plan()
+        export = to_tariff(sync.export_plan(D("0.195"), "2026-11-13"), sync.SOURCE_ID)
+        doc = compile_area(to_tariff(plan, sync.SOURCE_ID), "urban", block=country(),
+                           meta={"country": "IE", "provider": "p", "tariff": "t", "revision": 1},
+                           on="2026-10-15", export_file=export)
+        kwh = {"Day": D(67), "Night": D(619), "Night Boost": D(257)}
+        bill = price_bill(parse_definition(doc), BillInputs(30, 30, kwh, D(47)))
+        self.assertEqual(bill.total, D("192.00"))
+
+
 class Read(unittest.TestCase):
     def fetch(self, page: str = PAGE):
         free = [*BOOST[:2], ("Standard Free Saturday or Sunday unit price", "0.00 c/kWh")]
-        answers = {sync.PLANS_URL: page,
+        answers = {sync.PLANS_URL: page, sync.MICROGEN_URL: MICROGEN,
                    f"{sync.BASE}/priceplan-charges?pricePlanId=FLAT1": _pricing(FLAT),
                    f"{sync.BASE}/priceplan-charges?pricePlanId=BOOST1": _pricing(BOOST),
                    f"{sync.BASE}/priceplan-charges?pricePlanId=BOOST2": _pricing(BOOST),
@@ -180,14 +208,22 @@ class Read(unittest.TestCase):
 
     def test_read_takes_each_plan_and_lists_what_it_skipped(self) -> None:
         result = sync.read(self.fetch(), "2026-11-13", {})
-        self.assertEqual([p.id for p in result.plans], ["electric-ireland-flat-plan",
-                                                       "electric-ireland-home-plan-night-boost"])
+        self.assertEqual([p.id for p in result.plans], [
+            "electric-ireland-microgen-export", "electric-ireland-flat-plan",
+            "electric-ireland-home-plan-night-boost"])
         self.assertEqual(result.skipped, [
             "Free Day Plan: rate rows Free Saturday or Sunday not mapped",
             "Home Plan Night Boost: a second plan with the id "
             "electric-ireland-home-plan-night-boost",
             "Changed Plan: no prices excluding VAT"])
-        self.assertEqual(len(result.notes), 2)
+        self.assertEqual(len(result.notes), 3)
+        self.assertEqual({p.extra["export"] for p in result.plans[1:]},
+                         {"electric-ireland/electric-ireland-microgen-export"})
+
+    def test_a_microgeneration_page_with_no_rate_stops_the_source(self) -> None:
+        for page in ("<p>Microgeneration is here</p>", "<p>Microgen export rate of 19.5 per kWh</p>"):
+            with self.subTest(page), self.assertRaisesRegex(ValueError, "no 'Microgen export"):
+                sync.export_rate(page)
 
     def test_a_page_with_no_plans_stops_the_source(self) -> None:
         with self.assertRaisesRegex(ValueError, "no price plans"):

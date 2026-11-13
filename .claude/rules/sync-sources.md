@@ -23,6 +23,9 @@ paths:
 - A source is all or nothing. If it raises, its files are restored and the other sources still
   run. Raise on anything unexpected. Do not catch and carry on.
 - A row the format cannot hold is added to `skipped` with the reason. Never round it into shape.
+- A source that states no start date sets `dated=False`, and a changed price starts on the day of
+  the run. A revision that differs only by the export a plan pays also starts on the day of the
+  run, since the supplier dates a price and not a pairing.
 - A stored tariff the source no longer lists is reported as missing and left alone. Withdrawing
   a tariff is a person's decision.
 - A change `apply` cannot place is refused and listed. Do not loosen `apply` to make a source
