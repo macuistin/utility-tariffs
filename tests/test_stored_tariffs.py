@@ -55,15 +55,12 @@ class Stored(unittest.TestCase):
                         self.assertEqual(value, price(value))
                         self.assertGreaterEqual(Decimal(value), 0)
 
-    def test_every_source_has_its_note_and_a_reader_or_says_it_is_read_by_hand(self) -> None:
+    def test_every_source_has_its_note_and_a_reader_or_none(self) -> None:
         readers = {sources.load(name).SOURCE_ID for name in sources.NAMES}
         used = {doc["source"]["id"] for _, doc in files()}
+        self.assertEqual(used - readers, set())
         for source_id in used:
-            note = ROOT / "sources" / f"{source_id}.md"
-            self.assertTrue(note.exists(), source_id)
-            if source_id not in readers:
-                # A tariff no sync reads goes stale in silence unless its note owns up to it.
-                self.assertIn("**How it is read:** by hand.", note.read_text(), source_id)
+            self.assertTrue((ROOT / "sources" / f"{source_id}.md").exists(), source_id)
 
     def test_the_layout_puts_values_first_and_the_collection_last(self) -> None:
         for path in sorted(TARIFFS.glob("*/index.json")):

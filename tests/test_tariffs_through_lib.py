@@ -79,25 +79,47 @@ def by_id(docs: list[dict], tariff_id: str) -> dict:
     return next(d for d in docs if d["id"] == tariff_id)
 
 
+def nodes(node: dict):
+    """Every node of a bill tree."""
+    yield node
+    inner = node.get("of")
+    if isinstance(inner, dict):
+        for child in ([inner] if "kind" in inner else inner.values()):
+            yield from nodes(child)
+
+
 def standing_of(doc: dict) -> Decimal:
-    node = doc["bill"]["total"]
-    while node["kind"] != "per_day":
-        node = node["of"] if node["kind"] in ("tax", "adjust") else node["of"]["standing"]
-    return Decimal(node["amount"])
+    return next(Decimal(n["amount"]) for n in nodes(doc["bill"]["total"]) if n["kind"] == "per_day")
+
+
+def tax_of(doc: dict) -> dict:
+    return next(n for n in nodes(doc["bill"]["total"]) if n["kind"] == "tax")
+
+
+def hand_node(node: dict, prices: dict[str, Decimal], kwh: dict[str, Decimal], days: int) -> Decimal:
+    """One node worked by hand, each line rounded half up to the cent as the bill lists it."""
+    kind = node["kind"]
+    if kind == "energy_by_band":
+        return sum((cents(kwh[b] * prices[b]) for b in kwh), Decimal(0))
+    if kind == "per_day":
+        return cents(Decimal(node["amount"]) * days)
+    if kind == "per_period":  # the bill is one whole period of one month
+        return cents(Decimal(node["amount"]))
+    if kind == "sum":
+        return sum((hand_node(n, prices, kwh, days) for n in node["of"].values()), Decimal(0))
+    inner = hand_node(node["of"], prices, kwh, days)
+    if kind == "adjust" or (kind == "tax" and node["mode"] == "added"):
+        return inner + cents(inner * Decimal(node["percent"]) / 100)
+    return inner  # a tax already in the prices adds nothing
 
 
 def hand_bill(doc: dict, kwh: dict[str, Decimal], days: int) -> Decimal:
-    """The bill worked by hand: each band to the cent, standing for the days, tax as stated."""
+    """The bill worked by hand from the definition's own tree: bands, standing, levy, discount
+    and tax as stated."""
     prices = {doc["import"]["base"]["name"]: Decimal(doc["import"]["base"]["price"])}
     for zone in doc["import"].get("zones", []):
         prices[zone["name"]] = Decimal(zone["price"])
-    energy = sum((cents(kwh[b] * prices[b]) for b in kwh), Decimal(0))
-    standing = cents(standing_of(doc) * days)
-    total = energy + standing
-    node = doc["bill"]["total"]
-    if node["kind"] == "tax" and node["mode"] == "added":
-        total += cents(total * Decimal(node["percent"]) / 100)
-    return total
+    return hand_node(doc["bill"]["total"], prices, kwh, days)
 
 
 @unittest.skipUnless(LIB_OK, "needs Python 3.14 for lib/")
@@ -150,6 +172,8 @@ class EveryDefinition(unittest.TestCase):
             if doc["country"] != "IE":
                 continue
             for zone in doc["import"].get("zones", []):
+                if zone["name"] == "Peak":  # a peak band is dearer than the day rate by design
+                    continue
                 with self.subTest(doc["id"]):
                     self.assertLess(Decimal(zone["price"]), Decimal(doc["import"]["base"]["price"]))
 
@@ -159,7 +183,7 @@ class Vat(unittest.TestCase):
     def test_irish_prices_include_9_percent_vat(self) -> None:
         # PAGE: unit rates were stored including 9 percent VAT and the tax node says so.
         for doc in documents():
-            if doc["country"] != "IE":
+            if doc["country"] != "IE" or tax_of(doc)["mode"] == "added":
                 continue
             with self.subTest(doc["id"]):
                 node = doc["bill"]["total"]
@@ -173,6 +197,25 @@ class Vat(unittest.TestCase):
                 # The VAT inside the bill is the total less the total over 1.09.
                 expected = cents(bill.total - bill.total / Decimal("1.09"))
                 self.assertEqual(bill.root.tax, expected)
+
+    def test_irish_prices_without_vat_have_9_percent_added_to_every_charge(self) -> None:
+        # PAGE: the supplier's own pricing page gives rates, standing charge and levy without
+        # VAT. ASSUMPTION: 30 days and 100 kWh in the base band.
+        seen = 0
+        for doc in documents():
+            if doc["country"] != "IE" or tax_of(doc)["mode"] != "added":
+                continue
+            seen += 1
+            with self.subTest(doc["id"]):
+                self.assertEqual(tax_of(doc)["percent"], "9")
+                kwh = {doc["import"]["base"]["name"]: Decimal(100)}
+                bill = price_bill(load(doc), BillInputs(30, 30, kwh, Decimal(0)))
+                charges = bill.root.children["charges"]
+                before = charges.children["of"].amount
+                self.assertEqual(charges.tax, cents(before * Decimal("0.09")))
+                self.assertEqual(bill.total, before + charges.tax)
+                self.assertEqual(bill.total, hand_bill(doc, kwh, 30))
+        self.assertGreater(seen, 0)
 
     def test_gb_vat_is_recorded_as_zero_percent_included(self) -> None:
         # ASSUMPTION: prices are the published inclusive figures; electricity VAT is 0 percent
@@ -374,7 +417,7 @@ class Export(unittest.TestCase):
 class Sanity(unittest.TestCase):
     def test_root(self) -> None:
         self.assertTrue((ROOT / "lib" / "tariff" / "engine.py").exists())
-        self.assertEqual(len(documents()), 213)
+        self.assertEqual(len(documents()), 225)
         self.assertGreater(timedelta(days=1).days, 0)
         self.assertTrue(sys.version_info >= (3, 9))
 

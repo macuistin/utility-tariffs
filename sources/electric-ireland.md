@@ -1,20 +1,28 @@
 # electric-ireland
 
-- **Covers:** Electric Ireland's household electricity plans for new customers, as listed on
-  https://www.electricireland.ie/switch/new-customer/price-plans?priceType=E. A supplier page.
-- **Pages read:** the price plans page, for each plan's name, bands, band hours and unit rates.
-  The page shows no standing charge, so that is read from the same plan's row on
-  https://selectra.ie/energy/providers/electric-ireland (see `selectra-ie.md`).
-- **Prices as shown:** unit rates in c/kWh for each band with its hours, and a discount on unit
-  rates beside them. The page does not say whether a rate includes VAT or the discount. The
-  comparison page lists the same plans "excl. VAT, incl. discounts", and its figures match the
-  supplier's once 9% VAT is added, so the supplier's rates are taken as including both. The
-  standing charge is in euro a year including 9% VAT and is stored per day, divided by 365.
+- **Covers:** Electric Ireland's household electricity plans for new customers: unit rates by
+  band, band hours, the discount, the standing charge and the PSO levy. Official, the supplier's
+  own pages.
+- **Pages read:** the price plans page,
+  https://www.electricireland.ie/switch/new-customer/price-plans?priceType=E, for the list of
+  plans and the hours of each band. Then each plan's "Full pricing information",
+  `/switch/new-customer/priceplan-charges?pricePlanId=<id>`, an HTML fragment the page loads.
+- **Prices as shown:** the pricing page has one set of tables including VAT and one excluding it.
+  The sync reads the set excluding VAT: unit rates in c/kWh before the discount, the discount as
+  a percentage for paying by direct debit with online billing, standing charges for urban and
+  rural in euro a year, and the PSO levy in euro a year. The page says "Prices valid as of" a
+  date, which is the revision's start.
+- **How it is stored:** rates without VAT and before the discount, the standing charge per day
+  (the year's figure divided by 365) and a bill of the supplier's own shape: the discount on
+  energy only, the levy for each month, then VAT on every charge. The pricing page says the bill
+  shows the rate before discounts and the discount as one line.
 - **Terms:** not read. The page links its residential pricing terms in the footer.
-- **How it is read:** by hand. There is no sync module, so a price change is not picked up until
-  someone reads the page again.
-- **Frequency:** when a plan is reported wrong or missing.
-- **Known gaps:** the page states no start date, so a revision is dated the day it was read. It
-  shows no PSO levy. Only the Night Boost plan is held from this page. The plan that gives free
-  weekend hours and the plans with a Peak rate are not held. No tariff from this source has a
-  `checks` entry yet.
+- **How it is read:** `scripts/sync/sources/electric_ireland.py`, one request for the plans page
+  and one for each plan.
+- **Frequency:** weekly at most.
+- **Known gaps:** the plan with free weekend hours is skipped, because the customer picks the
+  free day. Night storage heating prices are not held, since they need a second meter. Two plans
+  on the page share a name apart from a plus sign, and the second is skipped. Plans for existing
+  customers are not on the page. `selectra-ie` still lists two of this supplier's plans from the
+  comparison page, with prices after the discount. No tariff from this source has a `checks`
+  entry yet.

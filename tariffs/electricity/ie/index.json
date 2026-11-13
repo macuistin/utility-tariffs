@@ -115,12 +115,72 @@
     "electric-ireland": {
       "name": "Electric Ireland",
       "tariffs": {
+        "electric-ireland-electricity": {
+          "name": "Electricity",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:0ae06a238f9b69387024be18474e222b2c9297d00a54dfa6e54381f61f82a2c9",
+              "effective_from": "2026-10-14",
+              "effective_to": null
+            }
+          }
+        },
+        "electric-ireland-electricity-nightsaver": {
+          "name": "Electricity Nightsaver",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:2d67ea6b9e5af39d7b907d5b5a6d9e3e99803bb3a493e353ca8ff25bef417771",
+              "effective_from": "2026-10-14",
+              "effective_to": null
+            }
+          }
+        },
+        "electric-ireland-green-electricity": {
+          "name": "Green Electricity",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d0b2748b0a34a8d0116d741a026dd4a086286a25a5c33a8118e653a8d6bcad9c",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "electric-ireland-green-electricity-nightsaver": {
+          "name": "Green Electricity NightSaver",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:9020613796a79c395db1f6b5328db6932811289a72246ea07081a7c2fe511d5f",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
         "electric-ireland-home-electric-night-boost": {
           "name": "Home Electric+ Night Boost",
           "revisions": {
             "1": {
-              "checksum": "sha256:1936a4ade239181a5b7ce5d7fd9c6b47e2bafa1c30fb134a49dc6f632bfb3875",
-              "effective_from": "2026-11-13",
+              "checksum": "sha256:d87e370b52e0bbe3ef57179e97049ccd826748cf482eb8d2bf6ee74c32b000cb",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "electric-ireland-home-electric-saver-16": {
+          "name": "Home Electric+ Saver 16%",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:d0fc2f918b5da9fd9987a713d27c1b7433c5816bc677e83ea4f79fdc685aa4cb",
+              "effective_from": "2026-10-01",
+              "effective_to": null
+            }
+          }
+        },
+        "electric-ireland-home-electric-sst-saver-16": {
+          "name": "Home Electric + SST Saver 16%",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:4b64b115a3f885f3267dc70f21f0c35484ce76384c8f723a5a6023dad3cd187b",
+              "effective_from": "2026-10-01",
               "effective_to": null
             }
           }

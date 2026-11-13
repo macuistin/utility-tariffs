@@ -21,9 +21,6 @@ paths:
   zone and tax-inclusive prices are assumed. `service` is refused.
 - Every file names its `source`: the id of a note in `sources/` and the link the figures were
   read from. Write the source note first if there is none.
-- A tariff typed by hand from a source no sync reads is allowed, and goes stale in silence. Its
-  source note must say `**How it is read:** by hand.` (a test checks it), and an issue asks for
-  the sync module.
 - The first band is the base rate and has only a name. A later band wins over the ones before
   it, so the order is the priority.
 - A tariff with one price has one area, `all`. Add areas only where the price differs by place.

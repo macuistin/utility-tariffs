@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "name": "Green Electricity NightSaver",
+  "provider": "Electric Ireland",
+  "effective_from": "2026-10-01",
+  "source": {
+    "id": "electric-ireland",
+    "url": "https://www.electricireland.ie/switch/new-customer/priceplan-charges?pricePlanId=EGN1"
+  },
+  "prices_include_tax": false,
+  "bill": {
+    "total": {
+      "kind": "sum",
+      "of": {
+        "charges": {
+          "kind": "tax",
+          "mode": "added",
+          "name": "VAT",
+          "of": {
+            "kind": "sum",
+            "of": {
+              "energy": {
+                "kind": "adjust",
+                "name": "Discount",
+                "of": {
+                  "kind": "energy_by_band",
+                  "round_bands": true
+                },
+                "percent": "-5.5"
+              },
+              "levy": {
+                "amount": "0.51",
+                "kind": "per_period",
+                "per": "month",
+                "share": "days_in_period"
+              },
+              "standing": {
+                "kind": "per_day"
+              }
+            }
+          },
+          "percent": "$country.vat_percent"
+        }
+      }
+    }
+  },
+  "bands": [
+    {
+      "name": "Day"
+    },
+    {
+      "hours": "23:00-08:00",
+      "name": "Night"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "Day": "0.3749",
+        "Night": "0.1859"
+      },
+      "standing": "1.006603"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "Day": "0.3749",
+        "Night": "0.1859"
+      },
+      "standing": "0.82589"
+    }
+  }
+}
