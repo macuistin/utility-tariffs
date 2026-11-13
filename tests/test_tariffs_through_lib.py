@@ -374,7 +374,7 @@ class Export(unittest.TestCase):
 class Sanity(unittest.TestCase):
     def test_root(self) -> None:
         self.assertTrue((ROOT / "lib" / "tariff" / "engine.py").exists())
-        self.assertEqual(len(documents()), 211)
+        self.assertEqual(len(documents()), 213)
         self.assertGreater(timedelta(days=1).days, 0)
         self.assertTrue(sys.version_info >= (3, 9))
 

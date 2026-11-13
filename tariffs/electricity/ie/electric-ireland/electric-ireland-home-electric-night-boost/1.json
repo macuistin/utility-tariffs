@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "name": "Home Electric+ Night Boost",
+  "provider": "Electric Ireland",
+  "effective_from": "2026-11-13",
+  "source": {
+    "id": "electric-ireland",
+    "url": "https://www.electricireland.ie/switch/new-customer/price-plans?priceType=E"
+  },
+  "bands": [
+    {
+      "name": "Day"
+    },
+    {
+      "hours": "23:00-08:00",
+      "name": "Night"
+    },
+    {
+      "hours": "02:00-04:00",
+      "name": "Night Boost"
+    }
+  ],
+  "areas": {
+    "rural": {
+      "label": "Rural",
+      "rates": {
+        "Day": "0.376",
+        "Night": "0.1854",
+        "Night Boost": "0.1088"
+      },
+      "standing": "1.097205"
+    },
+    "urban": {
+      "label": "Urban",
+      "rates": {
+        "Day": "0.376",
+        "Night": "0.1854",
+        "Night Boost": "0.1088"
+      },
+      "standing": "0.900219"
+    }
+  }
+}

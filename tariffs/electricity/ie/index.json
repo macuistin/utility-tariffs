@@ -115,6 +115,16 @@
     "electric-ireland": {
       "name": "Electric Ireland",
       "tariffs": {
+        "electric-ireland-home-electric-night-boost": {
+          "name": "Home Electric+ Night Boost",
+          "revisions": {
+            "1": {
+              "checksum": "sha256:1936a4ade239181a5b7ce5d7fd9c6b47e2bafa1c30fb134a49dc6f632bfb3875",
+              "effective_from": "2026-11-13",
+              "effective_to": null
+            }
+          }
+        },
         "electric-ireland-nightsaver-standard-green": {
           "name": "NightSaver Standard Green",
           "revisions": {

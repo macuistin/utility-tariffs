@@ -51,10 +51,10 @@
     },
     "IE": {
       "availability": "available",
-      "checksum": "sha256:7b27b5d719646ca4116d440dc4c178cd476a36566336d8ef4811ec620ade6d98",
+      "checksum": "sha256:8d4c5c7042e0389ed35386a086f5b2ab36d8660905f571d28de4feb6f16017bd",
       "path": "ie/index.json",
       "providers": 11,
-      "tariffs": 19
+      "tariffs": 20
     },
     "IT": {
       "availability": "unavailable",
