@@ -76,4 +76,4 @@ definition = store.custom_definition("IE", mine, date.today())
 
 ## Licence
 
-To be decided before any data is published. See `docs/licence.md`.
+The code and the tariff files in this repository are under the MIT licence (`LICENSE`). See `docs/licence.md` for what that covers.
