@@ -3,9 +3,14 @@
 Stop rather than guess: a plan with a row we cannot map (for example a Peak rate with no stated
 hours) is skipped and listed, and a page without the expected VAT notes is refused. The page gives
 no date a price started, only when the page was updated, so a changed price is dated by the run.
+
+The microgeneration guide lists each supplier's export rate in one table. Each listed supplier gets
+an export tariff, and its plans name it, so a bill pays for exported energy. A table that changed
+shape stops the source.
 """
 from __future__ import annotations
 
+import dataclasses
 import re
 from datetime import datetime
 from decimal import Decimal
@@ -22,10 +27,19 @@ VAT = Decimal("1.09")
 # Check against the supplier sheet.
 NIGHT_HOURS = "23:00-08:00"
 REGIONS = ("urban", "rural")  # the two price columns, in page order
+GUIDE = f"{BASE}/energy/guides/prices/best-microgeneration-rates-ireland"
+EXPORT_HEADER = ["Supplier", "Microgeneration Rate", "Payment"]
+# Suppliers whose export rate is not paired, with the reason. Edit by hand when the supplier
+# states which figure it pays. The supplier's own page gives 14c and 15.89c with VAT.
+NOT_PAIRED = {"prepaypower": "the supplier states 14c and 15.89c with VAT and not which it pays"}
+# Suppliers with their own source, which reads the supplier's page.
+OWN_SOURCE = {"electric-ireland"}
 
 RATE = re.compile(r"^([A-Za-z0-9][A-Za-z0-9 -]*?)\s+([\d.]+)\s*c/kWh\s+([\d.]+)\s*c/kWh$")
 STANDING = re.compile(r"^Standing\s+€([\d,.]+)/yr\s+€([\d,.]+)/yr$")
 UPDATED = re.compile(r"Last updated (\d{1,2} [A-Za-z]+ \d{4})")
+GUIDE_UPDATED = re.compile(r"Updated (\d{1,2} [A-Za-z]+ \d{4})")
+EXPORT_RATE = re.compile(r"^€(0\.\d+) per kWh$")
 
 
 class _Text(HTMLParser):
@@ -120,6 +134,37 @@ def parse_provider(html: str) -> dict:
     return {"updated": updated, "plans": ok, "skipped": skipped}
 
 
+def parse_export_guide(html: str) -> tuple[str | None, dict[str, Decimal]]:
+    """The guide's date, and {supplier slug: euro per kWh} from its rate table. Raises ValueError
+    when the table or a figure is not as expected."""
+    lines, _ = to_lines(html)
+    found = GUIDE_UPDATED.search(" ".join(lines))
+    updated = datetime.strptime(found.group(1), "%d %B %Y").date().isoformat() if found else None
+    for table in re.findall(r"<table.*?</table>", html, re.S):
+        rows = [[" ".join(to_lines(cell)[0]) for cell in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", row, re.S)]
+                for row in re.findall(r"<tr.*?</tr>", table, re.S)]
+        if rows and rows[0] == EXPORT_HEADER:
+            break
+    else:
+        raise ValueError("no table headed Supplier, Microgeneration Rate, Payment")
+    rates = {}
+    for supplier, rate, *_ in rows[1:]:
+        match = EXPORT_RATE.match(rate.replace("\xa0", " "))
+        if not match:
+            raise ValueError(f"{supplier}: no export rate in {rate!r}")
+        rates[slugify(supplier.replace("á", "a"))] = Decimal(match.group(1))
+    return updated, rates
+
+
+def export_plan(slug: str, rate: Decimal, start: str) -> Plan:
+    """A supplier's flat export price. The guide gives no start date of the rate itself."""
+    name = slug.replace("-", " ").title()
+    return Plan(country=COUNTRY, provider_id=slug, provider=name, id=f"{slug}-microgen-export",
+                name=f"{name} Microgen Export", effective_from=start, dated=False, source_url=GUIDE,
+                bands=[{"name": "Export"}], areas={"all": Area(rates={"Export": rate})},
+                direction="export")
+
+
 def plans_for(slug: str, html: str, today: str) -> tuple[list[Plan], list[str]]:
     """The plans on one supplier page, an area for each of urban and rural, and what was skipped."""
     parsed = parse_provider(html)
@@ -153,13 +198,23 @@ def read(fetch, today: str, stored: dict) -> Result:
     result = Result(notes=[f"NightSaver night hours are assumed to be {NIGHT_HOURS}",
                            "prices are the page's figures after new-customer discounts"])
     directory = fetch.get(f"{BASE}/energy/providers").decode("utf-8", "replace")
-    for slug in provider_slugs(directory):
+    updated, exports = parse_export_guide(fetch.get(GUIDE).decode("utf-8", "replace"))
+    slugs = provider_slugs(directory)
+    for slug in sorted(set(exports) - set(slugs) - OWN_SOURCE):
+        result.skipped.append(f"{slug}: an export rate on the guide for a supplier not in the directory")
+    for slug in slugs:
         html = fetch.get(f"{BASE}/energy/providers/{slug}").decode("utf-8", "replace")
         try:
             plans, skipped = plans_for(slug, html, today)
         except ValueError as error:
             result.skipped.append(f"{slug}: page refused: {error}")
             continue
+        if slug in NOT_PAIRED:
+            result.skipped.append(f"{slug}: export rate not paired, {NOT_PAIRED[slug]}")
+        elif slug in exports and slug not in OWN_SOURCE and plans:
+            result.plans.append(export_plan(slug, exports[slug], updated or today))
+            plans = [dataclasses.replace(p, extra={**p.extra, "export": f"{slug}/{slug}-microgen-export"})
+                     for p in plans]
         result.plans += plans
         result.skipped += skipped
     return result

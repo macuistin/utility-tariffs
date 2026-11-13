@@ -37,7 +37,7 @@ fails there gets its own issue. `docs/design.md` has the reasons.
 | --- | --- | --- |
 | `octopus_gb` | `sources/octopus-energy-gb.md` | Octopus Energy's product API: import and export |
 | `ofgem_gb` | `sources/ofgem-price-cap.md` | The price cap workbook linked from Ofgem's page |
-| `selectra_ie` | `sources/selectra-ie.md` | Irish supplier pages |
+| `selectra_ie` | `sources/selectra-ie.md` | Irish supplier pages and their export rates |
 | `electric_ireland` | `sources/electric-ireland.md` | Electric Ireland's price plans page, each plan's full pricing and the microgeneration export rate |
 | `au_cdr` | `sources/au-cdr-energy.md` | Australian plan detail for the plans already stored |
 | `fr_cre` | `sources/fr-cre-trve.md` | The French regulated tariff file |

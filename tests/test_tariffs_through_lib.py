@@ -361,10 +361,12 @@ class Export(unittest.TestCase):
 
     def test_there_are_export_files(self) -> None:
         ids = {d["_meta"]["id"] for d in export_documents()}
-        self.assertEqual(ids, {"octopus-outgoing-var-24-10-26", "octopus-outgoing-seg-fix-12m-20-07-07",
-                               "octopus-outgoing-seg-fix-12m-26-10-21",
-                               "octopus-outgoing-prime-fix-12m-26-06-23",
-                               "electric-ireland-microgen-export"})
+        octopus = {"octopus-outgoing-var-24-10-26", "octopus-outgoing-seg-fix-12m-20-07-07",
+                   "octopus-outgoing-seg-fix-12m-26-10-21", "octopus-outgoing-prime-fix-12m-26-06-23"}
+        self.assertEqual({i for i in ids if i.startswith("octopus")}, octopus)
+        # Each Irish supplier's export is one flat microgeneration rate.
+        self.assertTrue(all(i.endswith("-microgen-export") for i in ids - octopus))
+        self.assertIn("electric-ireland-microgen-export", ids)
 
     def test_flat_exports_price_through_lib(self) -> None:
         # PAGE (Octopus API, region A, all regions equal): 12.0, 4.1 and 4.1 p/kWh. Pairing an

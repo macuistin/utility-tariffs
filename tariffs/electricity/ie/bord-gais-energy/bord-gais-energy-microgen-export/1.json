@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "Bord Gais Energy Microgen Export",
+  "provider": "Bord Gais Energy",
+  "direction": "export",
+  "effective_from": "2026-11-01",
+  "source": {
+    "id": "selectra-ie",
+    "url": "https://selectra.ie/energy/guides/prices/best-microgeneration-rates-ireland"
+  },
+  "bands": [
+    {
+      "name": "Export"
+    }
+  ],
+  "areas": {
+    "all": {
+      "rates": {
+        "Export": "0.185"
+      }
+    }
+  }
+}
