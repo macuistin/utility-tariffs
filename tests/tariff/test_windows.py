@@ -8,7 +8,8 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
-from lib.tariff import PriceSlot, WindowSearch, find_window
+from lib.tariff import PriceSlot, WindowSearch, find_window, parse_definition, price_curve
+from tests.tariff.example_definition import example_document
 
 D = Decimal
 DUBLIN = ZoneInfo("Europe/Dublin")
@@ -130,3 +131,15 @@ def test_a_duration_or_power_of_zero_is_refused() -> None:
         find_window(_slots("0.1"), WindowSearch(timedelta(0)))
     with pytest.raises(ValueError, match="above zero"):
         find_window(_slots("0.1"), WindowSearch(timedelta(hours=1), power_kw=D(0)))
+
+
+def test_a_window_over_the_clocks_going_back_costs_real_elapsed_time() -> None:
+    definition = parse_definition(example_document())
+    start = datetime(2026, 10, 25, 0, 0, tzinfo=DUBLIN)
+    curve = price_curve(definition, start, start + timedelta(hours=25))
+    prices = {slot.import_band: slot.import_price for slot in curve}
+    found = find_window(curve, WindowSearch(timedelta(hours=4)))
+    assert found is not None
+    assert found.end.timestamp() - found.start.timestamp() == 4 * 3600
+    # The two boost hours and two night hours beside them, whatever the clock says.
+    assert found.cost == 2 * prices["Boost"] + 2 * prices["Night"]
