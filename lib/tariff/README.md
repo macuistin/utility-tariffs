@@ -15,6 +15,7 @@ read option keys.
 - `SlotDay`, `SlotEnergy`, `SlotHistory`, `FLOWS`, `DEFAULT_LOADS`: energy in half-hour slots, a local day at a time, kept for
   about 400 days (see below)
 - `StoredEnergy`, `stored_energy_change`, `value_per_stored_kwh`: the value of stored energy
+- `marginal_prices`, `price_curve`, `MarginalPrices`, `PriceSlot`: what one more kWh costs in each band, and the all-in import and export price over a time range (see below)
 
 ## Half-hourly slots
 
@@ -135,3 +136,16 @@ Reading the saved options by `CONF_` key (`core/tariff.py`: `build_tariff`, the 
 changes and the option saves) and the tariff snapshot (`core/tariff_snapshot.py`) stay in the
 integration, because they name the integration's own keys. The stored bill rows themselves
 (`bill_days`: `day_row`, `with_day`, `tariff_in_effect`, `tariff_changes`) are here.
+
+## Price curve
+
+`marginal_prices(definition)` gives the price of one more kWh in every import band and every export
+band. It is the bill engine's own answer: the bill with a large extra amount in the band, less the
+bill without it, divided by the amount. A discount, VAT, a levy and any charge the engine learns
+later are in the price with no second copy of the rules, and a charge that does not depend on the
+energy cancels out. Export is the credit for a kWh, as a positive number.
+
+`price_curve(definition, start, end)` cuts a time range into the engine's half-hour slots, takes
+the band in force at the start of each, and joins neighbours with the same bands. Slots are real
+elapsed time, so a clock change gives 23 or 25 hours. A tariff with fixed bands gives a few long
+slots. The window search and the price sensors read this series.

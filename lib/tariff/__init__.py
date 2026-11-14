@@ -30,6 +30,7 @@ from .period_bill import (
     start_month_of,
 )
 from .periods import RatePeriod
+from .price_curve import MarginalPrices, PriceSlot, marginal_prices, price_curve
 from .reprice import BillPeriod, Repriced, Rounding, import_by_band, reprice
 from .slot_history import SlotHistory
 from .slots import DEFAULT_LOADS, FLOWS, SlotDay, SlotEnergy, StoredSlotDay
@@ -71,6 +72,10 @@ __all__ = [
     "TariffDefinition",
     "load_definition",
     "parse_definition",
+    "MarginalPrices",
+    "PriceSlot",
+    "marginal_prices",
+    "price_curve",
     "Repriced",
     "Rounding",
     "import_by_band",
