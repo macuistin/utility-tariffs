@@ -35,6 +35,7 @@ from .reprice import BillPeriod, Repriced, Rounding, import_by_band, reprice
 from .slot_history import SlotHistory
 from .slots import DEFAULT_LOADS, FLOWS, SlotDay, SlotEnergy, StoredSlotDay
 from .stored_energy import StoredEnergy, stored_energy_change, value_per_stored_kwh
+from .windows import Window, WindowSearch, find_window
 
 __all__ = [
     "SCHEMA_VERSION",
@@ -76,6 +77,9 @@ __all__ = [
     "PriceSlot",
     "marginal_prices",
     "price_curve",
+    "Window",
+    "WindowSearch",
+    "find_window",
     "Repriced",
     "Rounding",
     "import_by_band",
