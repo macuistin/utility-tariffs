@@ -32,6 +32,7 @@ from .period_bill import (
 from .periods import RatePeriod
 from .price_curve import MarginalPrices, PriceSlot, marginal_prices, price_curve
 from .reprice import BillPeriod, Repriced, Rounding, import_by_band, reprice
+from .savings import Battery, Savings, savings
 from .slot_history import SlotHistory
 from .slots import DEFAULT_LOADS, FLOWS, SlotDay, SlotEnergy, StoredSlotDay
 from .stored_energy import StoredEnergy, stored_energy_change, value_per_stored_kwh
@@ -77,6 +78,9 @@ __all__ = [
     "PriceSlot",
     "marginal_prices",
     "price_curve",
+    "Battery",
+    "Savings",
+    "savings",
     "Window",
     "WindowSearch",
     "find_window",

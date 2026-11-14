@@ -15,6 +15,7 @@ read option keys.
 - `SlotDay`, `SlotEnergy`, `SlotHistory`, `FLOWS`, `DEFAULT_LOADS`: energy in half-hour slots, a local day at a time, kept for
   about 400 days (see below)
 - `find_window`, `WindowSearch`, `Window`: the cheapest or dearest stretch of a given length in a price series (see below)
+- `savings`, `Savings`, `Battery`: what solar and a battery saved over some days (see below)
 - `StoredEnergy`, `stored_energy_change`, `value_per_stored_kwh`: the value of stored energy
 - `marginal_prices`, `price_curve`, `MarginalPrices`, `PriceSlot`: what one more kWh costs in each band, and the all-in import and export price over a time range (see below)
 
@@ -164,3 +165,14 @@ the time in each slot, times that slot's all-in price, for import or for export.
 - A window is offered only where every moment of it has a price. `Window.complete` is False when
   the prices end before the `latest_end` asked for.
 - `Window.saving` is the cost of starting as early as allowed, less the cost of this window.
+
+## Savings
+
+`savings(days, tariff, period, battery=None)` takes slot days, as `reprice` does, and answers what
+the system saved. Two bills are priced under the same tariff: the whole house load bought from the
+grid, and what was paid. The standing charge and levy cancel. The export credit is on the paid
+side only. A `Battery` adds the value of the change in stored energy (grid energy bought for the
+battery at its average cost, else the cheapest rate) and takes off wear per kWh discharged.
+
+Solar only and battery only need no special case: with no battery the stored value is 0 and the
+discharge is 0. A house load reading is required, and the call raises `ValueError` without one.
