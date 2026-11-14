@@ -8,11 +8,12 @@ standard library, so any script, skill or integration can import or copy them.
 | --- | --- |
 | `tariff/` | The tariff definition reader, the bill engine, band assignment, half-hourly slots and repricing. `tariff/README.md` lists the public names |
 | `tariffstore/` | The store's own code: validator, checksum, index build, compile step and the client (`Store`) |
+| `tariffranking/` | Prices every plan over the same measured usage and ranks them, with the current plan's rank. Imports `tariff/` only |
 | `timeutil/` | Clock helpers that `tariff/` imports (`shift_real`, `elapsed_seconds`, `local_time_on`) |
 
 ## Using it from another project
 
-Copy the three folders as they stand and do not edit the copy. Record the commit copied, so a
+Copy the folders as they stand and do not edit the copy. Record the commit copied, so a
 later copy can be compared. The Home Assistant integration `macuistin/givenergy_inverter_manager`
 does this with a script, a weekly workflow that opens a pull request, and a release check. Change
 the code here, with its tests, and let the copy follow.

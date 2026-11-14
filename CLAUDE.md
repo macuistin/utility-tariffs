@@ -22,6 +22,7 @@ A tariff file is data. It holds no code and no formulas.
 | `tariffs/electricity/<cc>/index.json` | Country values on top, edited by hand. Then `providers`, generated |
 | `tariffs/electricity/<cc>/<provider>/<tariff>/<n>.json` | One revision of one tariff. Written by hand or by a sync |
 | `lib/tariffstore/` | The format in code: validator (`schema.py`), index build, compile step, layout and the client (`Store`, `FolderCache`). Written here |
+| `lib/tariffranking/` | Prices every plan over the same measured usage and ranks them. Imports `lib/tariff/` only. The integration copies it |
 | `lib/tariff/`, `lib/timeutil/` | The bill engine and its clock helpers: the tariff model, bill maths, bands, half-hourly slots, repricing. Written here. The integration copies all of `lib/` and never edits its copy |
 | `scripts/build.py` | Writes or checks the indexes. The only writer of an index |
 | `scripts/sync/` | The sync: `plan.py`, `apply.py`, `http.py`, and one module per source under `sources/` |
@@ -37,7 +38,7 @@ A tariff file is data. It holds no code and no formulas.
 - This repository is the source of truth for all tariff and billing code and calculations.
   A project that uses it copies `lib/` and changes nothing in the copy.
 - `lib/` and `scripts/` import only the standard library and each other. `lib/tariffstore/`
-  never imports `lib/tariff/` or `scripts/`, and `lib/tariff/` imports only `lib/timeutil/`.
+  never imports `lib/tariff/` or `scripts/`, `lib/tariff/` imports only `lib/timeutil/`, and `lib/tariffranking/` imports only `lib/tariff/`.
   `tests/test_repo_rules.py` enforces all of it.
 - There is one way in. Every tariff, typed or synced, passes `validate_tariff` and
   `scripts.build --check`. Do not add a second validator or a second build path.

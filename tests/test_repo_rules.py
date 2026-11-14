@@ -93,9 +93,9 @@ class Imports(unittest.TestCase):
                     self.assertFalse(name.startswith(("lib.tariff.", "lib.timeutil", "scripts"))
                                      or name == "lib.tariff")
 
-    def test_the_engine_reaches_only_its_clock_helpers(self) -> None:
+    def test_each_library_reaches_only_the_packages_it_is_allowed(self) -> None:
         allowed = {"tariff": {"tariff", "timeutil"}, "timeutil": {"timeutil"},
-                   "tariffstore": {"tariffstore"}}
+                   "tariffstore": {"tariffstore"}, "tariffranking": {"tariffranking", "tariff"}}
         for package, may in allowed.items():
             for path in sorted((ROOT / "lib" / package).rglob("*.py")):
                 with self.subTest(path.relative_to(ROOT).as_posix()):
