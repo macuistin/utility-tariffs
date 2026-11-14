@@ -30,10 +30,12 @@ from .period_bill import (
     start_month_of,
 )
 from .periods import RatePeriod
+from .price_curve import MarginalPrices, PriceSlot, marginal_prices, price_curve
 from .reprice import BillPeriod, Repriced, Rounding, import_by_band, reprice
 from .slot_history import SlotHistory
 from .slots import DEFAULT_LOADS, FLOWS, SlotDay, SlotEnergy, StoredSlotDay
 from .stored_energy import StoredEnergy, stored_energy_change, value_per_stored_kwh
+from .windows import Window, WindowSearch, find_window
 
 __all__ = [
     "SCHEMA_VERSION",
@@ -71,6 +73,13 @@ __all__ = [
     "TariffDefinition",
     "load_definition",
     "parse_definition",
+    "MarginalPrices",
+    "PriceSlot",
+    "marginal_prices",
+    "price_curve",
+    "Window",
+    "WindowSearch",
+    "find_window",
     "Repriced",
     "Rounding",
     "import_by_band",
